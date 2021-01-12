@@ -1,6 +1,6 @@
 {
   "name": "proj-cli",
-  "description": "projektien aloitus cli",
+  "description": "cli for starting projects",
   "version": "0.0.1",
   "author": "metatavu",
   "bin": {
