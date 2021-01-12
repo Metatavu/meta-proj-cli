@@ -25,3 +25,19 @@ other useful libraries
 configstore
 saving data to a file made easy
 https://github.com/yeoman/configstore
+
+===wanted features===
+piping of commands aka command collections
+saving of progress
+requesting for details and options (wizard style)
+configuration checking
+brand as meta-proj-cli
+saving configuration (keys and such)
+publicity
+
+===first commands to construct===
+creating a react project
+creating a github repository
+
+===list of wanted commands===
+creating github issue and branch
