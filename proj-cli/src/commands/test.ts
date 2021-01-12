@@ -1,5 +1,8 @@
 import { Command, flags } from "@oclif/command"
 
+/**
+* Test class
+*/
 export default class Test extends Command {
   static description = 'test'
 
