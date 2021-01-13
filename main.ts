@@ -1,9 +1,15 @@
-const vorpal = require( 'vorpal' )();
+import * as Vorpal from "vorpal";
+import { test } from "./commands/test";
+import { test2 } from "./commands/test2";
 
+const vorpal = new Vorpal();
 
-//shows propmt and accepts commands, redirects them to relevant files
+/**
+ * shows propmt and accepts commands
+ * redirects commands to relevant files
+ */
 vorpal
-    .delimiter("meta-proj-cli~$:")
-    .use(require("./commands/test.ts"))
-    .use(require("./commands/test2.ts"))
-    .show();
+  .delimiter("meta-proj-cli~$:")
+  .use(test)
+  .use(test2)
+  .show();

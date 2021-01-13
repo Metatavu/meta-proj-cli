@@ -1,15 +1,15 @@
-//shows a debug command
-function test(args, callback) {
-    
-    this.log(`test: succesful`);
-    callback();
+import * as Vorpal from "vorpal";
 
+/**
+ * Shows a debug message
+ */
+async function action() {
+  this.log(`test: succesful`);
 }
 
-//exports contents of file to be usable by main.ts
-module.exports = (vorpal) => {
-    vorpal
-        .command("test")
-        .description(`Outputs a debug message`)
-        .action(test);
-}
+/**
+ * Exports contents of file to be usable by main.ts
+ */
+export const test = (vorpal: Vorpal) => vorpal
+  .command("test", `Outputs a debug message`)
+  .action(action);
