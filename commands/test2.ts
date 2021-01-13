@@ -13,7 +13,6 @@ async function action(args) {
   }
 }
 
-
 /**
  * exports contents of file to be usable by main.ts
  */
