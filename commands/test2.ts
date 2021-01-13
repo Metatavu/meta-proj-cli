@@ -20,5 +20,3 @@ async function action(args) {
 export const test2 = (vorpal: Vorpal) => vorpal
   .command("test2", `shows if it got piped data`)
   .action(action);
-
-
