@@ -1,7 +1,7 @@
 {
   "name": "meta-proj-cli",
   "version": "0.0.1",
-  "description": "a program to help with starting programs",
+  "description": "a program to help with starting projects",
   "main": "main.js",
   "dependencies": {
     "@types/node": "^14.14.20",
