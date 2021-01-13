@@ -15,7 +15,6 @@ https://vorpal.js.org/
 
 
 ## framework chosen:
-~~ oclif ~~
 vorpal
 
 ### other useful libraries
