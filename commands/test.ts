@@ -4,7 +4,7 @@ import * as Vorpal from "vorpal";
  * Shows a debug message
  */
 async function action() {
-  this.log(`test: succesful`);
+  this.log(`test: successful`);
 }
 
 /**
