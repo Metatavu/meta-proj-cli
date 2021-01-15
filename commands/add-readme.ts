@@ -9,14 +9,26 @@ const vorpal = new Vorpal();
  * @param args receives strings from stdin
  */
 async function action(args) {
-  
-  await execSync("git init", {cwd : "./git-container"});
-  await execSync("git add README.md", {cwd : "./git-container"});
-  await execSync('git commit -m "first commit"', {cwd : "./git-container"});
-  await execSync("git branch -M master", {cwd : "./git-container"});
-  await execSync(`git remote add origin git@github.com:eetupur/testirepo.git`, {cwd : "./git-container"});
-  await execSync("git push -u origin master", {cwd : "./git-container"});
-  
+
+  let path : string = "./git-container";
+
+  if(args.options.path){
+    path = args.options.path;
+
+    this.log(path);
+
+    await execSync(`mkdir ${path}`);
+    await execSync(`cp README.md ${path}`, { cwd : "./git-container"});
+
+  }
+
+  await execSync("git init", {cwd : path});
+  await execSync("git add README.md", {cwd : path});
+  await execSync('git commit -m "first commit"', {cwd : path});
+  await execSync("git branch -M master", {cwd : path});
+  await execSync(`git remote add origin git@github.com:eetupur/testi.git`, {cwd : path});
+  await execSync("git push -u origin master", {cwd : path});
+
 }
 
 /**
@@ -24,4 +36,5 @@ async function action(args) {
  */
 export const addReadme = (vorpal: Vorpal) => vorpal
   .command("add-readme", `Adds a template README to repo`)
+  .option('-p, --path <absolute path>', 'creates a folder to initialize the repository in. !!use only if you want a local copy!!')
   .action(action);

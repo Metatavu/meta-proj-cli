@@ -9,6 +9,7 @@ const vorpal = new Vorpal();
  * @param args gets an object that should always contain a name(string) and possibly options
  * options include:
  * publicity(string)
+ * description(string)
  */
 async function action(args) {
   let name : string = args.name;
@@ -47,7 +48,6 @@ async function action(args) {
       this.log(stderr);
     }
   });
-
 }
 
 /**
