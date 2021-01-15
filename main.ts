@@ -8,8 +8,8 @@ import { addReadme } from "./commands/add-readme";
 const vorpal = new Vorpal();
 
 /**
- * shows propmt and accepts commands
- * redirects commands to relevant files
+ * Shows propmt and accepts commands
+ * Redirects commands to relevant files
  */
 vorpal
   .delimiter("meta-proj-cli~$:")

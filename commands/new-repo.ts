@@ -4,7 +4,7 @@ import { exec } from 'child_process';
 const vorpal = new Vorpal();
 
 /**
- * creates a new github repo with given flags, or activates a wizard to ask for settings
+ * Creates a new github repo with given flags, or activates a wizard to ask for settings
  * 
  * @param args gets an object that should always contain a name(string) and possibly options
  * options include:
@@ -12,11 +12,11 @@ const vorpal = new Vorpal();
  * description(string)
  */
 async function action(args) {
-  let name : string = args.name;
+  const name : string = args.name;
   let publicity : string = "";
   let description : string = "";
 
-  if(!args.options.publicity){
+  if(!args.options.publicity) {
     await this.prompt({
       type : 'input',
       name : 'publicity',
@@ -35,14 +35,13 @@ async function action(args) {
       description = result.description;
     });
     
-  }
-  else{
+  } else {
     publicity = args.options.publicity;
     description = args.options.description;
   }
 
   await exec(`gh repo create ${name} -y --${publicity} ${description ? `-d="${description}"`: ""}`, (error, stdout, stderr) => {
-    if((stderr || error) && !stdout){
+    if((stderr || error) && !stdout) {
       this.log("### an error has occurred, check your command ###");
       this.log(error);
       this.log(stderr);
@@ -51,9 +50,11 @@ async function action(args) {
 }
 
 /**
- * exports contents of file to be usable by main.ts
+ * Exports contents of file to be usable by main.ts
+ * 
+ * @param vorpal vorpal instance
  */
-export const newRepo = (vorpal: Vorpal) => vorpal
+export const newRepo = (vorpal : Vorpal) => vorpal
   .command("new-repo <name>", `Creates a new github repository, add no flags to enter wizard mode`)
   .option(
     '-p, --publicity <type>',

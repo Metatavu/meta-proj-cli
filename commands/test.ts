@@ -9,7 +9,9 @@ async function action() {
 
 /**
  * Exports contents of file to be usable by main.ts
+ * 
+ * @param vorpal vorpal instance
  */
-export const test = (vorpal: Vorpal) => vorpal
+export const test = (vorpal : Vorpal) => vorpal
   .command("test", `Outputs a debug message`)
   .action(action);
