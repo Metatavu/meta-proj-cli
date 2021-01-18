@@ -1,4 +1,4 @@
-import * as Vorpal from "vorpal";
+import Vorpal from "vorpal";
 import { exec } from 'child_process';
 
 const vorpal = new Vorpal();

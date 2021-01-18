@@ -1,4 +1,4 @@
-import * as Vorpal from "vorpal";
+import Vorpal from "vorpal";
 
 /**
  * Shows a debug message

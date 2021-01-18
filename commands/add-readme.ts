@@ -1,5 +1,5 @@
-import * as Vorpal from "vorpal";
-import { execSync } from 'child_process';
+import Vorpal from "vorpal";
+import { execSync } from "child_process";
 
 const vorpal = new Vorpal();
 
@@ -9,7 +9,7 @@ const vorpal = new Vorpal();
  * @param args optional, contains options object, which contains flag data
  * Path(string) 
  */
-async function action(args) {
+async function action(args: { options: { path: string; }; }) {
 
   let path : string = "./git-container";
 
@@ -23,10 +23,12 @@ async function action(args) {
   await execSync("git init", {cwd : path});
   await execSync("git add README.md", {cwd : path});
   await execSync('git commit -m "first commit"', {cwd : path});
-  await execSync("git branch -M master", {cwd : path});
-  await execSync(`git remote add origin 
-  git@github.com:eetupur/testi.git`, {cwd : path});
+  await execSync(`git remote add origin ${process.env.GIT_REPO_BASE_PATH}`, {cwd : path});
   await execSync("git push -u origin master", {cwd : path});
+
+  if(!args.options.path){
+    await execSync("rm -r .git", {cwd : path});
+  }
 }
 
 /**
