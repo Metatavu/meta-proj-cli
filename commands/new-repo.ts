@@ -1,5 +1,7 @@
 import Vorpal from "vorpal";
-import { exec } from 'child_process';
+import { promisify } from "util";
+
+const exec = promisify(require("child_process").exec);
 
 const vorpal = new Vorpal();
 
@@ -15,38 +17,71 @@ async function action(args) {
   const name : string = args.name;
   let publicity : string = "";
   let description : string = "";
+  let error = null;
 
   if(!args.options.publicity) {
-    await this.prompt({
+
+    const pubPrompt = this.prompt({
       type : 'input',
       name : 'publicity',
       message : "set the publicity of the repository (public, private, internal): "
-    },
-    (result) => {
+    });
+
+    await pubPrompt.then((result) => {
       publicity = result.publicity;
     });
-    
-    await this.prompt({
+
+    const descPrompt = this.prompt({
       type : 'input',
       name : 'description',
       message : "give a description for the repository: "
-    },
-    (result) => {
+    });
+
+    await descPrompt.then((result) => {
       description = result.description;
     });
+
+    // await this.prompt({
+    //   type : 'input',
+    //   name : 'publicity',
+    //   message : "set the publicity of the repository (public, private, internal): "
+    // },
+    // (result) => {
+    //   publicity = result.publicity;
+    // });
+
+    
+    // await this.prompt({
+    //   type : 'input',
+    //   name : 'description',
+    //   message : "give a description for the repository: "
+    // },
+    // (result) => {
+    //   description = result.description;
+    // });
     
   } else {
     publicity = args.options.publicity;
     description = args.options.description;
   }
 
-  await exec(`gh repo create ${name} -y --${publicity} ${description ? `-d="${description}"`: ""}`, (error, stdout, stderr) => {
-    if((stderr || error) && !stdout) {
-      this.log("### an error has occurred, check your command ###");
-      this.log(error);
-      this.log(stderr);
-    }
+  const command = await exec(`gh repo create ${name} -y --${publicity} ${description ? `-d="${description}"`: ""}`)
+  .catch((error) => {
+    error = error;
   });
+
+  if (error && !command.stdout){
+    this.log(error);
+    this.log(command.stderr);
+  }
+
+  // await exec(`gh repo create ${name} -y --${publicity} ${description ? `-d="${description}"`: ""}`, (error, stdout, stderr) => {
+  //   if((stderr || error) && !stdout) {
+  //     this.log("### an error has occurred, check your command ###");
+  //     this.log(error);
+  //     this.log(stderr);
+  //   }
+  // });
 }
 
 /**

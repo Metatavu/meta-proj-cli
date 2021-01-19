@@ -1,6 +1,8 @@
 import Vorpal from "vorpal";
 import { execSync } from "child_process";
 
+const { HOME } = process.env;
+
 const vorpal = new Vorpal();
 
 /**
@@ -10,24 +12,26 @@ const vorpal = new Vorpal();
  * Path(string) 
  */
 async function action(args: { options: { path: string; }; }) {
+  let path : string = `${HOME}/.meta-proj-cli/projects/git-container`;
+  let argPath : string = args.options.path;
 
-  let path : string = "./git-container";
+  if (args.options.path) {
+    path = argPath.startsWith("~") ? 
+      HOME + argPath.slice(1) :
+      argPath;
 
-  if(args.options.path){
-    path = args.options.path;
-
-    await execSync(`mkdir ${path}`);
-    await execSync(`cp README.md ${path}`, { cwd : "./git-container"});
+    execSync(`mkdir ${path}`);
+    execSync(`cp README.md ${path}`, { cwd : "./resources"});
   }
 
-  await execSync("git init", {cwd : path});
-  await execSync("git add README.md", {cwd : path});
-  await execSync('git commit -m "first commit"', {cwd : path});
-  await execSync(`git remote add origin ${process.env.GIT_REPO_BASE_PATH}`, {cwd : path});
-  await execSync("git push -u origin master", {cwd : path});
+  execSync("git init", {cwd : path});
+  execSync("git add README.md", {cwd : path});
+  execSync('git commit -m "first commit"', {cwd : path});
+  execSync(`git remote add origin ${process.env.GIT_REPO_BASE_PATH}`, {cwd : path});
+  execSync("git push -u origin master", {cwd : path});
 
-  if(!args.options.path){
-    await execSync("rm -r .git", {cwd : path});
+  if (!args.options.path) {
+    execSync("rm -r .git", {cwd : path});
   }
 }
 

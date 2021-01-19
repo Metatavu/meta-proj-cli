@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Metatavu/meta-proj-cli/issues"
+    "url": "https://github.com/Metatavu/meta-proj-cli"
   },
   "author": "Metatavu",
   "license": "ISC",
@@ -17,6 +17,7 @@
     "@types/node": "^14.14.21",
     "@types/vorpal": "^1.12.0",
     "dotenv": "^8.2.0",
+    "promisify-child-process": "^4.1.1",
     "typescript": "^4.1.3",
     "vorpal": "^1.12.0"
   },
