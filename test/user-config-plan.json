@@ -1,0 +1,10 @@
+{
+  "service-name" : {
+    "configured" : "boolean",
+    "possibly-info-that needs storing" : "any",
+    "info2" : "any"
+  },
+  "next service" : {
+    
+  }
+}
