@@ -5,7 +5,7 @@ import { test } from "./test";
 const vorpal = new Vorpal();
 
 /**
- * ######################################################
+ * Prompts the user and runs corresponding commands
  */
 async function action() {
 
