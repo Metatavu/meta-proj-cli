@@ -10,45 +10,65 @@ const defaultPath = `${HOME}/.meta-proj-cli/projects`;
 /**
  * Creates a new github repo with given flags, or activates a wizard to ask for settings
  * 
- * @param args gets an object that should always contain a name(string) and possibly options
+ * @param args gets an object that can contain a name(string) and options
  * options include:
  * publicity(string)
  * path(string)
  * description(string)
  */
 async function action(args) {
-  const repoName : string = args.name;
-  let publicity : string = args.options.publicity;
+  let repoName : string = args.name;
   let description : string = args.options.description;
+
+  let publicity : string = args.options.publicity ?
+    args.options.publicity :
+    "private";
 
   let givenPath : string =  args.options.path ?
     args.options.path :
     defaultPath;
 
-  if (!args.options.publicity) {
+  if (!publicity || !repoName) {
+    try {
+      if( !repoName) {
+        const nameResult = await this.prompt({
+          type : 'input',
+          name : 'name',
+          message : "Give a name for the repository: "
+        });
+  
+        repoName = nameResult.name;
+      }
+      
+      const publicityResult = await this.prompt({
+        type : 'input',
+        name : 'publicity',
+        message : "Set the publicity of the repository [private(default), public, internal]: "
+      });
+  
+      const descriptionResult = await this.prompt({
+        type : 'input',
+        name : 'description',
+        message : "Give a description for the repository: "
+      });
+  
+      const pathResult = await this.prompt({
+        type : 'input',
+        name : 'path',
+        message : "Set a path where to initiate repository, leave empty for default: "
+      });
 
-    const publicityResult = await this.prompt({
-      type : 'input',
-      name : 'publicity',
-      message : "set the publicity of the repository (public, private, internal): "
-    });
+      description = descriptionResult.description;
 
-    const descriptionResult = await this.prompt({
-      type : 'input',
-      name : 'description',
-      message : "give a description for the repository: "
-    });
-
-    const pathResult = await this.prompt({
-      type : 'input',
-      name : 'path',
-      message : "set a path where to initiate repository, leave empty for default: "
-    });
-
-    publicity = publicityResult.publicity;
-    description = descriptionResult.description;
-    if (pathResult?.path) {
-      givenPath = pathResult.path;
+      if (publicityResult?.publicity) {
+        publicity = publicityResult.publicity;
+      }
+      
+      if (pathResult?.path) {
+        givenPath = pathResult.path;
+      }
+    } catch(err) {
+      this.log("encountered error while prompting: " + err);
     }
   }
 
@@ -78,7 +98,7 @@ async function action(args) {
   execSync(`git commit -q -m "first commit"`, {cwd : repoPath});
   execSync(`git push -q origin develop`, {cwd : repoPath});
   execSync(`git checkout -q -b master`, {cwd : repoPath});
-  execSync(`git push -q origin master`, {cwd : repoPath});
+  execSync(`git push -q origin master`, {cwd : repoPath, stdio : ["ignore", "ignore", "ignore"]});
   execSync(`git checkout -q develop`, {cwd : repoPath});
 }
 
@@ -88,7 +108,7 @@ async function action(args) {
  * @param vorpal vorpal instance
  */
 export const newRepo = (vorpal : Vorpal) => vorpal
-  .command("new-repo <name>", `Creates a new github repository, add no flags to enter wizard mode`)
+  .command("new-repo [name]", `Creates a new github repository, add no flags to enter wizard mode`)
   .option(
     '-p, --publicity <type>',
     'sets the publicity of the repository (public, private, internal), leave empty to enter wizard',
