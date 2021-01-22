@@ -70,9 +70,6 @@ async function action(args) {
     } catch(err) {
       this.log("encountered error while prompting: " + err);
     }
-    
-
-    
   }
 
   givenPath = path.join(...givenPath.split(/\/|\\/));
