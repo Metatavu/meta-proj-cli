@@ -16,7 +16,7 @@ async function action() {
       message : "do you want to make a new repo? "
     });
 
-    if(repoResult.repoAnswer){
+    if (repoResult.repoAnswer) {
       await this
       .use(newRepo)
       .execSync("new-repo");
