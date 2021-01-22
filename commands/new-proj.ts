@@ -21,7 +21,7 @@ async function action() {
       .use(newRepo)
       .execSync("new-repo");
     }
-  } catch(err){
+  } catch(err) {
     this.log("Encountered error while creating repository: " + err)
   }
 
