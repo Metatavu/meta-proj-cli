@@ -9,7 +9,6 @@ const vorpal = new Vorpal();
  */
 async function action() {
 
-
   try{
     const repoResult = await this.prompt({
       type : "confirm",
