@@ -37,7 +37,7 @@ async function action() {
       .use(test)
       .execSync("test");
     }
-  } catch(err){
+  } catch(err) {
     this.log(err)
   }
 }
