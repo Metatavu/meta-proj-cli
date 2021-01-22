@@ -25,7 +25,6 @@ async function action() {
     this.log("Encountered error while creating repository: " + err)
   }
 
-
   try{
     const testResult = await this.prompt({
       type : "confirm",
