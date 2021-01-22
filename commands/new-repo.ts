@@ -29,44 +29,50 @@ async function action(args) {
     defaultPath;
 
   if (!publicity || !repoName) {
-
-    if(!repoName){
-      const nameResult = await this.prompt({
+    try{
+      if(!repoName){
+        const nameResult = await this.prompt({
+          type : 'input',
+          name : 'name',
+          message : "Give a name for the repository: "
+        });
+  
+        repoName = nameResult.name;
+      }
+      
+      const publicityResult = await this.prompt({
         type : 'input',
-        name : 'name',
-        message : "Give a name for the repository: "
+        name : 'publicity',
+        message : "Set the publicity of the repository [private(default), public, internal]: "
+      });
+  
+      const descriptionResult = await this.prompt({
+        type : 'input',
+        name : 'description',
+        message : "Give a description for the repository: "
+      });
+  
+      const pathResult = await this.prompt({
+        type : 'input',
+        name : 'path',
+        message : "Set a path where to initiate repository, leave empty for default: "
       });
 
-      repoName = nameResult.name;
+      description = descriptionResult.description;
+
+      if (publicityResult?.publicity) {
+        publicity = publicityResult.publicity;
+      }
+      
+      if (pathResult?.path) {
+        givenPath = pathResult.path;
+      }
+    } catch(err) {
+      this.log("encountered error while prompting: " + err);
     }
     
-    const publicityResult = await this.prompt({
-      type : 'input',
-      name : 'publicity',
-      message : "Set the publicity of the repository [private(default), public, internal]: "
-    });
 
-    const descriptionResult = await this.prompt({
-      type : 'input',
-      name : 'description',
-      message : "Give a description for the repository: "
-    });
-
-    const pathResult = await this.prompt({
-      type : 'input',
-      name : 'path',
-      message : "Set a path where to initiate repository, leave empty for default: "
-    });
-
-    description = descriptionResult.description;
-
-    if (publicityResult?.publicity) {
-      publicity = publicityResult.publicity;
-    }
     
-    if (pathResult?.path) {
-      givenPath = pathResult.path;
-    }
   }
 
   givenPath = path.join(...givenPath.split(/\/|\\/));
@@ -95,7 +101,7 @@ async function action(args) {
   execSync(`git commit -q -m "first commit"`, {cwd : repoPath});
   execSync(`git push -q origin develop`, {cwd : repoPath});
   execSync(`git checkout -q -b master`, {cwd : repoPath});
-  execSync(`git push -q origin master`, {cwd : repoPath});
+  execSync(`git push -q origin master`, {cwd : repoPath, stdio : ["ignore", "ignore", "ignore"]});
   execSync(`git checkout -q develop`, {cwd : repoPath});
 }
 

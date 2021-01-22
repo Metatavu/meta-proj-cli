@@ -23,7 +23,7 @@ async function action() {
       .execSync("new-repo");
     }
   } catch(err){
-    this.log(err)
+    this.log("Encountered error while creating repository: " + err)
   }
 
 
