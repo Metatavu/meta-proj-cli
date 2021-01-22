@@ -29,8 +29,8 @@ async function action(args) {
     defaultPath;
 
   if (!publicity || !repoName) {
-    try{
-      if(!repoName){
+    try {
+      if( !repoName) {
         const nameResult = await this.prompt({
           type : 'input',
           name : 'name',
