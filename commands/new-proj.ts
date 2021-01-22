@@ -32,7 +32,7 @@ async function action() {
       message : "do you want to run a test "
     });
 
-    if(testResult.testAnswer){
+    if (testResult.testAnswer) {
       await this
       .use(test)
       .execSync("test");
