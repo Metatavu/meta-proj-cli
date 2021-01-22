@@ -1,15 +1,16 @@
-import * as Vorpal from "vorpal";
-import { test } from "./commands/test";
-import { test2 } from "./commands/test2";
+import Vorpal from "vorpal";
+import dotenv from "dotenv";
+import { newRepo } from "./commands/new-repo";
+
+dotenv.config();
 
 const vorpal = new Vorpal();
 
 /**
- * shows propmt and accepts commands
- * redirects commands to relevant files
+ * Shows propmt and accepts commands
+ * Redirects commands to relevant files
  */
 vorpal
   .delimiter("meta-proj-cli~$:")
-  .use(test)
-  .use(test2)
+  .use(newRepo)
   .show();

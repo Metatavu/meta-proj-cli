@@ -1,4 +1,4 @@
-import * as Vorpal from "vorpal";
+import Vorpal from "vorpal";
 
 /**
  * shows, if this got piped data
@@ -15,8 +15,10 @@ async function action(args) {
 }
 
 /**
- * exports contents of file to be usable by main.ts
+ * Exports contents of file to be usable by main.ts
+ * 
+ * @param vorpal vorpal instance
  */
-export const test2 = (vorpal: Vorpal) => vorpal
+export const test2 = (vorpal : Vorpal) => vorpal
   .command("test2", `shows if it got piped data`)
   .action(action);

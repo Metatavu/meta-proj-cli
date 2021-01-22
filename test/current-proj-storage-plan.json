@@ -1,0 +1,8 @@
+{
+  "project-name" : "string",
+      "executed-commands" : ["string"],
+      "latest-command" : "string",
+      "project-config-info" : {
+        "stuff" : "strings probably"
+      }
+}
