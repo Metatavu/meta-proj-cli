@@ -1,13 +1,40 @@
 import Vorpal from "vorpal";
 import { newRepo } from "./new-repo";
 import { test } from "./test";
+import fs from "fs";
+import { ProjectInfo } from "../interfaces/project-info";
 
 const vorpal = new Vorpal();
+const projStoragePath = "./storage/project-storage.json";
 
 /**
  * Prompts the user and runs corresponding commands
  */
 async function action() {
+
+  let projectStorage = JSON.parse(fs.readFileSync(projStoragePath, "utf8"));
+
+  let projectInfo : ProjectInfo = {
+    projectName : null,
+    executedCommands : [],
+    projectConfig : {}
+  }
+
+  try {
+    const nameResult = await this.prompt({
+      type : "input",
+      name : "nameAnswer",
+      message : "Give a name for the project: "
+    });
+
+    if (nameResult.nameAnswer !== "") {
+      projectInfo.projectName = nameResult.nameAnswer;
+    } else {
+      throw new Error("###ERROR### No name was given for the project, try again with a name");
+    }
+  } catch (err) {
+    throw(err);
+  }
 
   try {
     const repoResult = await this.prompt({
@@ -17,12 +44,14 @@ async function action() {
     });
 
     if (repoResult.repoAnswer) {
-      await this
+      await vorpal
       .use(newRepo)
       .execSync("new-repo");
+
+      projectInfo.executedCommands.push("new-repo");
     }
   } catch(err) {
-    this.log("Encountered error while creating repository: " + err)
+    throw("Encountered an error while creating repository: " + err)
   }
 
   try {
@@ -33,13 +62,19 @@ async function action() {
     });
 
     if (testResult.testAnswer) {
-      await this
+      await vorpal
       .use(test)
       .execSync("test");
+
+      projectInfo.executedCommands.push("testi");
     }
   } catch(err) {
-    this.log(err)
+    throw(err)
   }
+
+  projectStorage.projects.push(projectInfo);
+
+  fs.writeFileSync(projStoragePath, JSON.stringify(projectStorage));
 }
 
 /**
