@@ -1,80 +1,27 @@
 import Vorpal from "vorpal";
 import { newRepo } from "./new-repo";
 import { test } from "./test";
-import fs from "fs";
-import { ProjectInfo } from "../interfaces/project-info";
+import { CommandSet } from "../interfaces/command-set";
 
 const vorpal = new Vorpal();
-const projStoragePath = "./storage/project-storage.json";
+const testOrder : CommandSet[] = [{use : newRepo, command : "new-repo"}, {use : test, command : "test"}];
 
 /**
  * Prompts the user and runs corresponding commands
  */
 async function action() {
 
-  let projectStorage = JSON.parse(fs.readFileSync(projStoragePath, "utf8"));
+  const commandOrder = testOrder;
 
-  let projectInfo : ProjectInfo = {
-    projectName : null,
-    executedCommands : [],
-    projectConfig : {}
-  }
-
-  try {
-    const nameResult = await this.prompt({
-      type : "input",
-      name : "nameAnswer",
-      message : "Give a name for the project: "
-    });
-
-    if (nameResult.nameAnswer !== "") {
-      projectInfo.projectName = nameResult.nameAnswer;
-    } else {
-      throw new Error("###ERROR### No name was given for the project, try again with a name");
-    }
-  } catch (err) {
-    throw(err);
-  }
-
-  try {
-    const repoResult = await this.prompt({
-      type : "confirm",
-      name : "repoAnswer",
-      message : "do you want to make a new repo? "
-    });
-
-    if (repoResult.repoAnswer) {
+  for(const command of commandOrder) {
+    try {
       await vorpal
-      .use(newRepo)
-      .execSync("new-repo");
-
-      projectInfo.executedCommands.push("new-repo");
+        .use(command.use)
+        .execSync(command.command);
+    } catch (err) {
+      throw this.log(`Encountered an error while executing command: ${command.command}. The error: ${err}`)
     }
-  } catch(err) {
-    throw("Encountered an error while creating repository: " + err)
-  }
-
-  try {
-    const testResult = await this.prompt({
-      type : "confirm",
-      name : "testAnswer",
-      message : "do you want to run a test "
-    });
-
-    if (testResult.testAnswer) {
-      await vorpal
-      .use(test)
-      .execSync("test");
-
-      projectInfo.executedCommands.push("testi");
-    }
-  } catch(err) {
-    throw(err)
-  }
-
-  projectStorage.projects.push(projectInfo);
-
-  fs.writeFileSync(projStoragePath, JSON.stringify(projectStorage));
+  };
 }
 
 /**
@@ -83,5 +30,5 @@ async function action() {
  * @param vorpal vorpal instance
  */
 export const newProj = (vorpal : Vorpal) => vorpal
-  .command("new-proj", `placeholder description`)
+  .command("new-proj", `Start a new project`)
   .action(action);

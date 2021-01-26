@@ -2,6 +2,7 @@ import Vorpal from "vorpal";
 import dotenv from "dotenv";
 import { newRepo } from "./commands/new-repo";
 import { newProj } from "./commands/new-proj";
+import { continueProj } from "./commands/continue-proj";
 
 dotenv.config();
 
@@ -16,4 +17,5 @@ vorpal
   .delimiter("meta-proj-cli~$:")
   .use(newRepo)
   .use(newProj)
+  .use(continueProj)
   .show();

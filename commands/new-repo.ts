@@ -1,11 +1,12 @@
 import Vorpal from "vorpal";
 import { execSync } from "child_process";
 import * as path from "path";
+import { fixPath } from "../functions/fixPath";
 
 const vorpal = new Vorpal();
 
 const { HOME } = process.env;
-const defaultPath = `${HOME}/.meta-proj-cli/projects`;
+const defaultPath : string = `${HOME}/.meta-proj-cli/projects`;
 
 /**
  * Creates a new github repo with given flags, or activates a wizard to ask for settings
@@ -30,14 +31,18 @@ async function action(args) {
 
   if (!publicity || !repoName) {
     try {
-      if( !repoName) {
+      if (!repoName) {
         const nameResult = await this.prompt({
           type : 'input',
           name : 'name',
-          message : "Give a name for the repository: "
+          message : "Give a name for the project (leave empty to cancel): "
         });
   
-        repoName = nameResult.name;
+        if (nameResult.name || nameResult.name !== "") {
+          repoName = nameResult.name;
+        } else {
+          throw this.log("No name given, cancelling command");
+        }
       }
       
       const publicityResult = await this.prompt({
@@ -72,28 +77,25 @@ async function action(args) {
     }
   }
 
-  givenPath = path.join(...givenPath.split(/\/|\\/));
-
-  givenPath = (givenPath[0] === "~") ? 
-      path.join(HOME, givenPath.slice(1)) :
-      givenPath;
-
-  givenPath = path.sep + givenPath;
+  givenPath = fixPath(givenPath);
   
-  const repoPath : string = path.join(givenPath, repoName);
+  const folderPath : string = path.join(givenPath, repoName);
+  const repoPath : string = path.join(folderPath , repoName + "-git");
 
   execSync(
-    `gh repo create ${repoName} --${publicity} ${description ? `-d="${description}"`: ""} -y`,
+    `gh repo create ${repoName} --${publicity} ${description ? `-d="${description}"` : ""} -y`,
     {cwd : givenPath}
   );
+  execSync(`mkdir ${folderPath}`);
   execSync(`mkdir ${repoPath}`);
   execSync("git init", {cwd : repoPath});
+  execSync(`cp project-config.json ${folderPath}`, {cwd : `.${path.sep}resources`})
   execSync(
     `git remote add origin git@github.com:${process.env.GIT_ORGANIZATION}/${repoName}.git`,
     {cwd : repoPath}
   );
   execSync("git checkout -q -b develop", {cwd : repoPath});
-  execSync(`cp README.md ${repoPath}`, { cwd : "./resources"});
+  execSync(`cp README.md ${repoPath}`, { cwd : `.${path.sep}resources`});
   execSync(`git add README.md`, {cwd : repoPath});
   execSync(`git commit -q -m "first commit"`, {cwd : repoPath});
   execSync(`git push -q origin develop`, {cwd : repoPath});
