@@ -33,7 +33,7 @@ async function action() {
     .use(newRepo)
     .execSync("new-repo");
   } catch(err) {
-    throw("Encountered an error while creating repository: " + err)
+    throw new Error("Encountered an error while creating repository: " + err);
   }
 
   try {
@@ -49,7 +49,7 @@ async function action() {
       .execSync("test");
     }
   } catch(err) {
-    throw(err)
+    throw new Error(err)
   }
 }
 

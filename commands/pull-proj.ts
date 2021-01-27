@@ -2,7 +2,7 @@ import Vorpal from "vorpal";
 import { execSync } from "child_process";
 import * as path from "path";
 import * as fs from "fs";
-import { fixPath } from "../functions/fixPath";
+import { PathUtils } from "../classes/path-utils";
 
 const vorpal = new Vorpal();
 
@@ -25,19 +25,19 @@ async function action() {
       message : "Give the name of the repository: "
     });
 
-    if (repoNameResult.name !== "") {
+    if (repoNameResult.name) {
       repoName = repoNameResult.name;
     } else {
-      throw this.log("No repository name given");
+      throw new Error("No repository name given");
     }
   } catch (err) {
-    throw this.log(`Error while prompting repository name: ${err}`);
+    throw new Error(`Error while prompting repository name: ${err}`);
   }
 
   try {
     execSync(`gh repo view ${repoName}`, {stdio : "ignore"});
   } catch (err) {
-    throw this.log(`Error while searching for repository: ${err}`);
+    throw new Error(`Error while searching for repository: ${err}`);
   }
 
   try { 
@@ -50,7 +50,7 @@ async function action() {
     repoIsLocal = repoIsLocalResult.isLocal;
 
   } catch (err) {
-    throw this.log(`Encountered error while prompting repository locality: ${err}`);
+    throw new Error(`Encountered error while prompting repository locality: ${err}`);
   }
 
   try { 
@@ -63,11 +63,11 @@ async function action() {
     });
 
     repoPathResult.path !== "" ? 
-      givenPath = fixPath(repoPathResult.path):
-      givenPath = fixPath(defaultPath);
+      givenPath = PathUtils.fixPath(repoPathResult.path):
+      givenPath = PathUtils.fixPath(defaultPath);
 
   } catch (err) {
-    throw this.log(`Encountered error while prompting repository path: ${err}`);
+    throw new Error(`Encountered error while prompting repository path: ${err}`);
   }
 
   if (repoIsLocal) {
@@ -76,10 +76,10 @@ async function action() {
       if (fs.existsSync(searchPath + path.sep + ".git")) {
         repoPath = searchPath;
       } else {
-        throw this.log("Inappropriate folder (wrong path or doesn't house git)");
+        throw new Error("Inappropriate folder (wrong path or doesn't house git)");
       }
     } catch (err) {
-      throw this.log(`Encountered error while searching for folder: ${err}`);
+      throw new Error(`Encountered error while searching for folder: ${err}`);
     }
   } else {
     const folderPath : string = path.join(givenPath, repoName);

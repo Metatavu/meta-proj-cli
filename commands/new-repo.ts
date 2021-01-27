@@ -1,7 +1,7 @@
 import Vorpal from "vorpal";
 import { execSync } from "child_process";
 import * as path from "path";
-import { fixPath } from "../functions/fixPath";
+import { PathUtils } from "../classes/path-utils";
 
 const vorpal = new Vorpal();
 
@@ -38,10 +38,10 @@ async function action(args) {
           message : "Give a name for the repository (leave empty to cancel): "
         });
   
-        if (nameResult.name || nameResult.name !== "") {
+        if (nameResult.name) {
           repoName = nameResult.name;
         } else {
-          throw this.log("No name given, cancelling command");
+          throw new Error("No name given, cancelling command");
         }
       }
       
@@ -73,11 +73,11 @@ async function action(args) {
         givenPath = pathResult.path;
       }
     } catch(err) {
-      this.log("encountered error while prompting: " + err);
+      throw new Error("encountered error while prompting: " + err);
     }
   }
 
-  givenPath = fixPath(givenPath);
+  givenPath = PathUtils.fixPath(givenPath);
   
   const folderPath : string = path.join(givenPath, repoName);
   const repoPath : string = path.join(folderPath , repoName + "-git");
