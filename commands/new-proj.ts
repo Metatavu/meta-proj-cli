@@ -19,7 +19,7 @@ async function action() {
       message : "Give a name for the project: "
     });
 
-    if (nameResult.name !== "") {
+    if (nameResult.name) {
       projName= nameResult.name;
     } else {
       throw new Error("ERROR: No name was given for the project");
