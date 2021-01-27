@@ -27,8 +27,7 @@ async function action() {
 
     if (repoNameResult.name !== "") {
       repoName = repoNameResult.name;
-    }
-    else {
+    } else {
       throw this.log("No repository name given");
     }
   } catch (err) {
