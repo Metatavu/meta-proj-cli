@@ -6,7 +6,7 @@ import { fixPath } from "../functions/fixPath";
 const vorpal = new Vorpal();
 
 const { HOME } = process.env;
-const defaultPath : string = `${HOME}/.meta-proj-cli/projects`;
+const defaultPath = `${HOME}/.meta-proj-cli/projects`;
 
 /**
  * Creates a new github repo with given flags, or activates a wizard to ask for settings
