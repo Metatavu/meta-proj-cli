@@ -1,27 +1,56 @@
 import Vorpal from "vorpal";
 import { newRepo } from "./new-repo";
 import { test } from "./test";
-import { CommandSet } from "../interfaces/command-set";
+import fs from "fs";
+
 
 const vorpal = new Vorpal();
-const testOrder : CommandSet[] = [{use : newRepo, command : "new-repo"}, {use : test, command : "test"}];
 
 /**
  * Prompts the user and runs corresponding commands
  */
 async function action() {
+  let projName : string = null;
 
-  const commandOrder = testOrder;
+  try {
+    const nameResult = await this.prompt({
+      type : "input",
+      name : "name",
+      message : "Give a name for the project: "
+    });
 
-  for(const command of commandOrder) {
-    try {
-      await vorpal
-        .use(command.use)
-        .execSync(command.command);
-    } catch (err) {
-      throw this.log(`Encountered an error while executing command: ${command.command}. The error: ${err}`)
+    if (nameResult.name !== "") {
+      projName= nameResult.name;
+    } else {
+      throw new Error("ERROR: No name was given for the project");
     }
-  };
+  } catch (err) {
+    throw(err);
+  }
+
+  try {
+    await vorpal
+    .use(newRepo)
+    .execSync("new-repo");
+  } catch(err) {
+    throw("Encountered an error while creating repository: " + err)
+  }
+
+  try {
+    const testResult = await this.prompt({
+      type : "confirm",
+      name : "testAnswer",
+      message : "do you want to run a test "
+    });
+
+    if (testResult.testAnswer) {
+      await vorpal
+      .use(test)
+      .execSync("test");
+    }
+  } catch(err) {
+    throw(err)
+  }
 }
 
 /**

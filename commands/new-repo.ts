@@ -35,7 +35,7 @@ async function action(args) {
         const nameResult = await this.prompt({
           type : 'input',
           name : 'name',
-          message : "Give a name for the project (leave empty to cancel): "
+          message : "Give a name for the repository (leave empty to cancel): "
         });
   
         if (nameResult.name || nameResult.name !== "") {
