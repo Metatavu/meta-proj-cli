@@ -79,21 +79,17 @@ async function action(args) {
 
   givenPath = PathUtils.fixPath(givenPath);
   
-  const folderPath : string = path.join(givenPath, repoName);
-  const repoPath : string = path.join(folderPath , repoName + "-git");
+  const folderPath : string = PathUtils.outerFolder(givenPath, repoName);
+  const repoPath : string = PathUtils.repoFolder(givenPath, repoName);
 
-  execSync(
-    `gh repo create ${repoName} --${publicity} ${description ? `-d="${description}"` : ""} -y`,
-    {cwd : givenPath}
-  );
   execSync(`mkdir ${folderPath}`);
-  execSync(`mkdir ${repoPath}`);
+  execSync(
+    `gh repo create ${process.env.GIT_ORGANIZATION}/${repoName} --${publicity} ${description ? `-d="${description}"` : ""} -y`,
+    {cwd : folderPath}
+  );
   execSync("git init", {cwd : repoPath});
   execSync(`cp project-config.json ${folderPath}`, {cwd : `.${path.sep}resources`})
-  execSync(
-    `git remote add origin git@github.com:${process.env.GIT_ORGANIZATION}/${repoName}.git`,
-    {cwd : repoPath}
-  );
+
   execSync("git checkout -q -b develop", {cwd : repoPath});
   execSync(`cp README.md ${repoPath}`, { cwd : `.${path.sep}resources`});
   execSync(`git add README.md`, {cwd : repoPath});
