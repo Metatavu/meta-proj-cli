@@ -1,3 +1,4 @@
+import Vorpal, { Command } from "vorpal";
 /**
  * Helps with grouping commands without needing a new .use.execSync for each of them
  * 
@@ -5,6 +6,6 @@
  * command : string used to call the command in question
  */
 export interface CommandSet {
-  use : any,
+  use : (Vorpal) => Command,
   command : string
 }

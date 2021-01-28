@@ -1,8 +1,6 @@
 import Vorpal from "vorpal";
 import { newRepo } from "./new-repo";
 import { test } from "./test";
-import fs from "fs";
-
 
 const vorpal = new Vorpal();
 
