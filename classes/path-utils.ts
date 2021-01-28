@@ -23,6 +23,7 @@ export class PathUtils {
   
     return givenPath;
   }
+
   static outerFolder = (givenPath : string, repoName : string) => {
     return path.join(givenPath, repoName + "-project");
   }
