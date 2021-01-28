@@ -8,21 +8,30 @@ const vorpal = new Vorpal();
  * Prompts the user and runs corresponding commands
  */
 async function action() {
+  let projName : string = null;
 
   try {
-    const repoResult = await this.prompt({
-      type : "confirm",
-      name : "repoAnswer",
-      message : "do you want to make a new repo? "
+    const nameResult = await this.prompt({
+      type : "input",
+      name : "name",
+      message : "Give a name for the project: "
     });
 
-    if (repoResult.repoAnswer) {
-      await this
-      .use(newRepo)
-      .execSync("new-repo");
+    if (nameResult.name) {
+      projName= nameResult.name;
+    } else {
+      throw new Error("ERROR: No name was given for the project");
     }
+  } catch (err) {
+    throw(err);
+  }
+
+  try {
+    await vorpal
+    .use(newRepo)
+    .execSync("new-repo");
   } catch(err) {
-    this.log("Encountered error while creating repository: " + err)
+    throw new Error("Encountered an error while creating repository: " + err);
   }
 
   try {
@@ -33,12 +42,12 @@ async function action() {
     });
 
     if (testResult.testAnswer) {
-      await this
+      await vorpal
       .use(test)
       .execSync("test");
     }
   } catch(err) {
-    this.log(err)
+    throw new Error(err);
   }
 }
 
@@ -48,5 +57,5 @@ async function action() {
  * @param vorpal vorpal instance
  */
 export const newProj = (vorpal : Vorpal) => vorpal
-  .command("new-proj", `placeholder description`)
+  .command("new-proj", `Start a new project`)
   .action(action);
