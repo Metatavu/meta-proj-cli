@@ -72,8 +72,8 @@ async function action() {
 
   if (repoIsLocal) {
     try {
-      const searchPath : string = givenPath + path.sep + repoName + path.sep + repoName + "-git";
-      if (fs.existsSync(searchPath + path.sep + ".git")) {
+      const searchPath : string = PathUtils.repoFolder(givenPath, repoName);
+      if (fs.existsSync(path.join(searchPath, ".git"))) {
         repoPath = searchPath;
       } else {
         throw new Error("Inappropriate folder (wrong path or doesn't house git)");
@@ -82,8 +82,8 @@ async function action() {
       throw new Error(`Encountered error while searching for folder: ${err}`);
     }
   } else {
-    const folderPath : string = path.join(givenPath, repoName);
-    repoPath = path.join(folderPath , repoName + "-git");
+    const folderPath : string = PathUtils.outerFolder(givenPath, repoName);
+    repoPath = PathUtils.repoFolder(givenPath, repoName);
 
     execSync(`mkdir ${folderPath}`);
     execSync(`mkdir ${repoPath}`);
