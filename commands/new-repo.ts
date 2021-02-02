@@ -20,6 +20,7 @@ const defaultPath = `${HOME}/.meta-proj-cli/projects`;
 async function action(args) {
   let repoName : string = args.name;
   let description : string = args.options.description;
+  let template : string = args.options.template;
 
   let publicity : string = args.options.publicity ?
     args.options.publicity :
@@ -44,11 +45,12 @@ async function action(args) {
           throw new Error("No name given, cancelling command");
         }
       }
-      
+
       const publicityResult = await this.prompt({
-        type : 'input',
+        type : 'list',
         name : 'publicity',
-        message : "Set the publicity of the repository [private(default), public, internal]: "
+        choices : ["private", "internal", "public"],
+        message : "Set the publicity of the repository: "
       });
   
       const descriptionResult = await this.prompt({
@@ -65,15 +67,13 @@ async function action(args) {
 
       description = descriptionResult.description;
 
-      if (publicityResult?.publicity) {
-        publicity = publicityResult.publicity;
-      }
+      publicity = publicityResult.publicity;
       
       if (pathResult?.path) {
         givenPath = pathResult.path;
       }
     } catch(err) {
-      throw new Error("encountered error while prompting: " + err);
+      throw new Error(`encountered error while prompting: ${err}`);
     }
   }
 
@@ -84,18 +84,28 @@ async function action(args) {
 
   execSync(`mkdir ${folderPath}`);
   execSync(
-    `gh repo create ${process.env.GIT_ORGANIZATION}/${repoName} --${publicity} ${description ? `-d="${description}"` : ""} -y`,
+    `gh repo create\
+    ${process.env.GIT_ORGANIZATION}/${repoName}\
+    --${publicity}\
+    ${description ? `-d="${description}"` : ""}\
+    ${template ? `--template="${process.env.GIT_ORGANIZATION}/${template}"` : ""}\
+    -y`,
     {cwd : folderPath}
   );
-  execSync("git init", {cwd : repoPath});
-  execSync(`cp project-config.json ${folderPath}`, {cwd : `.${path.sep}resources`})
 
-  execSync("git checkout -q -b develop", {cwd : repoPath});
-  execSync(`cp README.md ${repoPath}`, { cwd : `.${path.sep}resources`});
-  execSync(`git add README.md`, {cwd : repoPath});
-  execSync(`git commit -q -m "first commit"`, {cwd : repoPath});
-  execSync(`git push -q origin develop`, {cwd : repoPath});
-  execSync(`git checkout -q -b master`, {cwd : repoPath});
+  if (template) {
+    execSync(`git pull -q git@github.com:${process.env.GIT_ORGANIZATION}/${template}.git`, {cwd : repoPath});
+    execSync("git branch -m master develop", {cwd : repoPath});
+  } else {
+    execSync("git init", {cwd : repoPath});
+    execSync(`cp project-config.json ${folderPath}`, {cwd : `.${path.sep}resources`})
+    execSync("git checkout -q -b develop", {cwd : repoPath});
+    execSync(`cp README.md ${repoPath}`, {cwd : `.${path.sep}resources`});
+    execSync(`git add README.md`, {cwd : repoPath});
+    execSync(`git commit -q -m "first commit"`, {cwd : repoPath});
+    execSync(`git push -q origin develop`, {cwd : repoPath});
+  }
+  execSync(`git checkout -q -b master`, {cwd : repoPath}); 
   execSync(`git push -q origin master`, {cwd : repoPath, stdio : ["ignore", "ignore", "ignore"]});
   execSync(`git checkout -q develop`, {cwd : repoPath});
 }
@@ -106,7 +116,7 @@ async function action(args) {
  * @param vorpal vorpal instance
  */
 export const newRepo = (vorpal : Vorpal) => vorpal
-  .command("new-repo [name]", `Creates a new github repository, add no flags to enter wizard mode`)
+  .command("new-repo [name]", `Creates a new github repository, run without params or flags to enter wizard mode`)
   .option(
     '-p, --publicity <type>',
     'sets the publicity of the repository (public, private, internal), leave empty to enter wizard',
@@ -119,5 +129,8 @@ export const newRepo = (vorpal : Vorpal) => vorpal
   .option(
     '-d, --description <text>',
     'specify a description for the repository, "use double quotes"'
+  )
+  .option(
+    '-t, --template <text>', 'specify a template (if any) from which to make the repository'
   )
   .action(action);

@@ -35,7 +35,7 @@ async function action() {
   }
 
   try {
-    execSync(`gh repo view ${repoName}`, {stdio : "ignore"});
+    execSync(`gh repo view ${process.env.GIT_ORGANIZATION}/${repoName}`, {stdio : "ignore"});
   } catch (err) {
     throw new Error(`Error while searching for repository: ${err}`);
   }
