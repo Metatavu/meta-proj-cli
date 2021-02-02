@@ -100,7 +100,7 @@ async function action(args) {
     execSync("git init", {cwd : repoPath});
     execSync(`cp project-config.json ${folderPath}`, {cwd : `.${path.sep}resources`})
     execSync("git checkout -q -b develop", {cwd : repoPath});
-    execSync(`cp README.md ${repoPath}`, { cwd : `.${path.sep}resources`});
+    execSync(`cp README.md ${repoPath}`, {cwd : `.${path.sep}resources`});
     execSync(`git add README.md`, {cwd : repoPath});
     execSync(`git commit -q -m "first commit"`, {cwd : repoPath});
     execSync(`git push -q origin develop`, {cwd : repoPath});
