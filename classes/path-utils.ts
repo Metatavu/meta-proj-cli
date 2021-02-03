@@ -5,7 +5,6 @@ import { execSync } from "child_process";
 const { HOME } = process.env;
 const defaultSavePath : string = "~/.meta-proj-cli/";
 const defaultProjectPath : string = "~/.meta-proj-cli/projects";
-const regex = /^([C-Z]:)/;
 
 /**
  * Offers functions that help with paths
@@ -49,9 +48,9 @@ function pathFixer(givenPath : string) : string {
     givenPath = path.join(HOME, givenPath.slice(1))
   }
 
-  if (givenPath.match(regex) != null) {
+  if (givenPath.match(/^([C-Z]:)/)) {
     givenPath = path.join(...givenPath.split(/\/|\\/));
-    
+
   } else {
     givenPath = path.join(...givenPath.split(/\/|\\/));
     givenPath = path.sep + givenPath;
