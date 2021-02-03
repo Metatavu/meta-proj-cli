@@ -50,9 +50,7 @@ function pathFixer(givenPath : string) : string {
 
   if (givenPath[0] === "C" || givenPath[0] === "D" || givenPath[0] === "E") {
     givenPath = path.join(...givenPath.split(/\/|\\/));
-  }
-
-  else {
+  } else {
     givenPath = path.join(...givenPath.split(/\/|\\/));
     givenPath = path.sep + givenPath;
   }
