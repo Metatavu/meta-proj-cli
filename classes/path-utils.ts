@@ -58,4 +58,3 @@ function pathFixer(givenPath : string) : string {
   }
   return givenPath;
 }
-
