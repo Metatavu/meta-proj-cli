@@ -55,5 +55,6 @@ function pathFixer(givenPath : string) : string {
     givenPath = path.join(...givenPath.split(/\/|\\/));
     givenPath = path.sep + givenPath;
   }
+
   return givenPath;
 }
