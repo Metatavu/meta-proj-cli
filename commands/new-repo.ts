@@ -2,6 +2,7 @@ import Vorpal from "vorpal";
 import { execSync } from "child_process";
 import * as path from "path";
 import { PathUtils } from "../classes/path-utils";
+import { OsUtils } from "../classes/os-utils";
 
 const vorpal = new Vorpal();
 
@@ -100,7 +101,7 @@ async function action(args) {
     execSync("git init", {cwd : repoPath});
     execSync(`cp project-config.json ${folderPath}`, {cwd : `.${path.sep}resources`})
     execSync("git checkout -q -b develop", {cwd : repoPath});
-    execSync(`cp README.md ${repoPath}`, {cwd : `.${path.sep}resources`});
+    execSync(`${OsUtils.getActiveCmds.copy} README.md ${repoPath}`, {cwd : `.${path.sep}resources`});
     execSync(`git add README.md`, {cwd : repoPath});
     execSync(`git commit -q -m "first commit"`, {cwd : repoPath});
     execSync(`git push -q origin develop`, {cwd : repoPath});

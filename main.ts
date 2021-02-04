@@ -4,6 +4,7 @@ import { newRepo } from "./commands/new-repo";
 import { newProj } from "./commands/new-proj";
 import { pullProj } from "./commands/pull-proj";
 import { PathUtils } from "./classes/path-utils";
+import { selectOs } from "./commands/select-os";
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ PathUtils.checkExists(PathUtils.projectPath);
  */
 vorpal
   .delimiter("meta-proj-cli~$:")
+  .use(selectOs)
   .use(newRepo)
   .use(newProj)
   .use(pullProj)

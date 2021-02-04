@@ -1,6 +1,7 @@
 import * as path from "path";
 import fs from "fs";
 import { execSync } from "child_process";
+import { OsUtils } from "../classes/os-utils";
 
 const { HOME } = process.env;
 const defaultSavePath : string = "~/.meta-proj-cli/";
@@ -43,17 +44,20 @@ export class PathUtils {
 }
 
 function pathFixer(givenPath : string) : string {
-  
-  if (givenPath[0] === "~") {
-    givenPath = path.join(HOME, givenPath.slice(1))
+
+  if (OsUtils.getOS === "LINUX" || OsUtils.getOS === "MAC OS") {
+    if (givenPath[0] === "~") {
+      givenPath = path.join(HOME, givenPath.slice(1))
+    }
+    if (givenPath[0] === "/") {
+      givenPath = path.join(...givenPath.split(/\/|\\/));
+      givenPath = path.sep + givenPath;
+    }
   }
-
-  if (givenPath.match(/^([C-Z]:)/)) {
-    givenPath = path.join(...givenPath.split(/\/|\\/));
-
-  } else {
-    givenPath = path.join(...givenPath.split(/\/|\\/));
-    givenPath = path.sep + givenPath;
+  if ( OsUtils.getOS === "WINDOWS"){
+    if (givenPath.match(/^([C-Z]:)/)) {
+      givenPath = path.join(...givenPath.split(/\/|\\/));
+    } 
   }
   return givenPath;
 }
