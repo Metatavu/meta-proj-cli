@@ -1,14 +1,14 @@
 import Vorpal from "vorpal";
 import { CheckUtils } from "../classes/check-utils";
-import { CheckSet } from "../interfaces/check-set";
+import { CheckSet } from "../interfaces/types";
 
 /**
  * Shows a debug message
  */
 async function action() {
-  let testi : CheckSet[] = [{checkable : "git", details : {}}]
+  let test : CheckSet[] = [{checkable : "git", details : {}}]
 
-  console.log(await CheckUtils.checkPreq(testi));
+  this.log(await CheckUtils.checkPreq(test));
 
   this.log(`test: successful`);
 }

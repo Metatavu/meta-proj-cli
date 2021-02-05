@@ -1,11 +1,15 @@
-import { CheckSet } from "../interfaces/check-set";
-import { CheckErrorSet } from "../interfaces/check-error-set";
+import { CheckSet, CheckErrorSet  } from "../interfaces/types";
 import { checkGit } from "../functions/checks/checkGit";
 
 /**
  * Class for check utility functions
  */
 export class CheckUtils {
+  /**
+   * Runs given checks and returns their results
+   * 
+   * @param toCheck contains a CheckSet array with prerequisites to check
+   */
   static checkPreq = async (toCheck : CheckSet[]) => {
     let erroList : CheckErrorSet[] = [];
 
@@ -24,6 +28,11 @@ export class CheckUtils {
   }
 }
 
+/**
+ * Routes details to relevant check functions
+ * 
+ * @param currentCheck details of current checkable command
+ */
 const checkRouter = async (currentCheck : CheckSet) => {
   try {
     switch(currentCheck.checkable){

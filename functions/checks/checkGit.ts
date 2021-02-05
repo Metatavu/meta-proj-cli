@@ -1,14 +1,14 @@
 import { execSync } from "child_process";
-import { CheckErrorSet } from "../../interfaces/check-error-set";
+import { CheckErrorSet } from "../../interfaces/types";
 
 /**
- * checks if git is installed on the device
+ * Checks if git is installed on the device
  * 
  * @param details should contain an empty object
  * 
  * @returns {CheckErrorSet} ChekErrorSet.
  */
-export const checkGit = async (details) => {
+export const checkGit = async (details  : Object) => {
 
   let returnSet : CheckErrorSet = {check : "git", error : false, details : ""};
 
@@ -19,7 +19,7 @@ export const checkGit = async (details) => {
     }
   } catch (err) {
     returnSet.error = true;
-    returnSet.details = "Git not installed";
+    returnSet.details = `Error while checking git ${err}`;
   }
   return returnSet;
 }
