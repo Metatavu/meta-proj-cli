@@ -1,4 +1,5 @@
 import Vorpal, { Command } from "vorpal";
+
 /**
  * Helps with grouping commands without needing a new .use.execSync for each of them
  * 

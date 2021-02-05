@@ -5,6 +5,7 @@ import { checkGit } from "../functions/checks/checkGit";
  * Class for check utility functions
  */
 export class CheckUtils {
+
   /**
    * Runs given checks and returns their results
    * 
