@@ -123,7 +123,7 @@ export const newRepo = (vorpal : Vorpal) => vorpal
     ['public', 'private', 'internal']
   )
   .option(
-    '--path <absolute path>',
+    '--path <path>',
     'specify a path where set up the local repository (leave empty for default)'
   )
   .option(

@@ -52,7 +52,7 @@ async function action() {
 }
 
 /**
- * Exports contents of file to be usable by main.ts
+ * Exports contents of file to be usable by other files
  * 
  * @param vorpal vorpal instance
  */
