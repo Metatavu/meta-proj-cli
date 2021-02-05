@@ -18,22 +18,12 @@ const systems : string[]  = ["MAC OS", "WINDOWS", "LINUX"];
  */
 export class OsUtils {
 
-  static getCommand = async (cmd : string) : Promise<string> => {
-    let command : string = null;
-    let os : string = null;
-    await readUserConfig().then((userConfig : UserConfigJson) => {
-      try {
-        os = userConfig.osPref;
-        command = searchCmd(os, cmd);
-        return command;
-      } catch (err) {
-        throw err;
-      };
-    }).catch((err) => {
-      throw new Error("Fetching command failed: " + err);
-    });
-    if (!command) {
-      return null;
+  static getCommand = async (cmd: string): Promise<string> => {
+    try {
+      const userConfig: UserConfigJson = await readUserConfig();
+      return searchCmd(userConfig.osPref, cmd);
+    } catch (err) {
+      return Promise.reject(err);
     };
   };
   
