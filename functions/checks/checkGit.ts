@@ -8,7 +8,7 @@ import { CheckErrorSet } from "../../interfaces/types";
  * 
  * @returns {CheckErrorSet} ChekErrorSet.
  */
-export const checkGit = async (details  : Object) => {
+export const checkGit = async (details  : Object) : Promise<CheckErrorSet> => {
 
   let returnSet : CheckErrorSet = {check : "git", error : false, details : ""};
 
