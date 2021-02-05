@@ -3,9 +3,7 @@ import { CheckErrorSet } from "../interfaces/check-error-set";
 import { checkGit } from "../functions/checks/checkGit";
 
 /**
- * runs relevant check functions for given prerequisites
- * 
- * @param toCheck contains a CheckSet array with prerequisites to check
+ * Class for check utility functions
  */
 export class CheckUtils {
   static checkPreq = async (toCheck : CheckSet[]) => {
