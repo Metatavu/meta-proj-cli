@@ -47,7 +47,7 @@ async function action() {
       .execSync("test");
     }
   } catch(err) {
-    throw new Error(err)
+    throw new Error(err);
   }
 }
 
