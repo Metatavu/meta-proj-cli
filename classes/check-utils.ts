@@ -25,7 +25,7 @@ export class CheckUtils {
 }
 
 const checkRouter = async (currentCheck : CheckSet) => {
-  try{
+  try {
     switch(currentCheck.checkable){
       case "git":
         return await checkGit(currentCheck.details);
