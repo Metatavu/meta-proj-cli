@@ -18,6 +18,7 @@ async function action() {
   let repoPath : string = null;
   let repoIsLocal : boolean = false;
   let givenPath : string = null;
+  let copy = OsUtils.getCommand("copy");
 
   try { 
     const repoNameResult = await this.prompt({
@@ -89,7 +90,7 @@ async function action() {
     execSync(`mkdir ${folderPath}`);
     execSync(`mkdir ${repoPath}`);
     execSync("git init", {cwd : repoPath});
-    execSync(`${OsUtils.getActiveCmds.copy} project-config.json ${folderPath}`, {cwd : `.${path.sep}resources`})
+    execSync(`${copy} project-config.json ${folderPath}`, {cwd : `.${path.sep}resources`})
     execSync(
       `git remote add origin git@github.com:${process.env.GIT_ORGANIZATION}/${repoName}.git`,
       {cwd : repoPath}

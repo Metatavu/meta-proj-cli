@@ -33,31 +33,50 @@ export class PathUtils {
 
   static checkExists = async (givenPath : string) => {
     try {
-      givenPath = pathFixer(givenPath);
+      let activeOs = null;
+      OsUtils.getOS().then((os) => {
+          activeOs = os;
+      }).catch((err) => {
+        if (err) {
+          throw err;
+        }
+      });
+      if(activeOs){
+        givenPath = pathFixer(givenPath, activeOs);
+      } else {
+        givenPath = pathFixer(givenPath);
+      };
       if (!fs.existsSync(givenPath)) {
         execSync(`mkdir ${givenPath}`);
-      }
+      };
     } catch(err) {
       throw new Error(`Error when checking or creating path: ${err}`);
-    }
-  }
-}
+    };
+  };
+};
 
-function pathFixer(givenPath : string) : string {
+/**
+ * Provides cross-platform functionality & tilde expansion when working with paths
+ * @param givenPath path that is to be sanitized
+ */
 
-  if (OsUtils.getOS === "LINUX" || OsUtils.getOS === "MAC OS") {
+function pathFixer(givenPath : string, os? : string) {
+  if (!os) {
+    os = "LINUX";
+  };
+  if (os === "LINUX" || os === "MAC OS") {
     if (givenPath[0] === "~") {
       givenPath = path.join(HOME, givenPath.slice(1))
-    }
+    };
     if (givenPath[0] === "/") {
       givenPath = path.join(...givenPath.split(/\/|\\/));
       givenPath = path.sep + givenPath;
-    }
-  }
-  if ( OsUtils.getOS === "WINDOWS"){
+    };
+  };
+  if ( os === "WINDOWS") {
     if (givenPath.match(/^([C-Z]:)/)) {
       givenPath = path.join(...givenPath.split(/\/|\\/));
-    } 
-  }
+    };
+  };
   return givenPath;
-}
+};

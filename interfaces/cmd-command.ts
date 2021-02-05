@@ -1,4 +1,9 @@
 export interface OsCommand {
   OS : string,
-  copy : string
+  commands : Command[]
+}
+
+export interface Command {
+  name : string
+  command : string
 }

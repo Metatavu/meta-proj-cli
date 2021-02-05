@@ -3,19 +3,25 @@ import { OsCommand } from "../interfaces/cmd-command";
 const cmds : OsCommand[] = [
 {
   OS : "WINDOWS",
-  copy : "copy"
+  commands: [
+    {name : "copy", command : "copy"}
+  ] 
 },
 {
   OS : "LINUX",
-  copy : "cp"
+  commands: [
+    {name : "copy", command : "cp"}
+  ] 
 },
 {
   OS : "MAC OS",
-  copy : "cp"
+  commands: [
+    {name : "copy", command : "cp"}
+  ] 
 }];
 
-export class OsCommads {
+export class OsCommands {
   static getCmds = () : OsCommand[] => {
     return cmds;
   }
-}
+};
