@@ -1,26 +1,29 @@
-import { OsCommand } from "../interfaces/cmd-command";
+import { OsCommand, OperatingSystems, CommandNames } from "../interfaces/types";
 
 const cmds : OsCommand[] = [
   {
-    OS : "WINDOWS",
+    OS : OperatingSystems.WINDOWS,
     commands: [
-      { name : "copy", command : "copy" }
+      { name : CommandNames.copy, command : "copy" }
     ] 
   },
   {
-    OS : "LINUX",
+    OS : OperatingSystems.LINUX,
     commands: [
-      { name : "copy", command : "cp" }
+      { name : CommandNames.copy, command : "cp" }
     ] 
   },
   {
-    OS : "MAC OS",
+    OS : OperatingSystems.MAC,
     commands: [
-      { name : "copy", command : "cp" }
+      { name : CommandNames.copy, command : "cp" }
     ] 
   }
 ];
 
+/**
+ * Provides operation system-specific commands for os-utils
+ */
 export class OsCommands {
   static getCmds = () : OsCommand[] => {
     return cmds;

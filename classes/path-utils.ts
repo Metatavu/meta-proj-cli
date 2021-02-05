@@ -2,6 +2,7 @@ import * as path from "path";
 import fs from "fs";
 import { execSync } from "child_process";
 import { OsUtils } from "../classes/os-utils";
+import { OperatingSystems } from "../interfaces/types";
 
 const { HOME } = process.env;
 const defaultSavePath : string = "~/.meta-proj-cli/";
@@ -15,12 +16,12 @@ const defaultProjectPath : string = "~/.meta-proj-cli/projects";
  * repoFolder : gives the path format to the folder that actually holds the project (contains .git)
  */
 export class PathUtils {
-  static savePath : string = pathFixer(defaultSavePath);
+  static savePath : string = translatePath(defaultSavePath);
 
-  static projectPath : string = pathFixer(defaultProjectPath);
+  static projectPath : string = translatePath(defaultProjectPath);
 
   static fixPath = (givenPath : string) => { 
-    return pathFixer(givenPath);
+    return translatePath(givenPath);
   }
 
   static outerFolder = (givenPath : string, repoName : string) => {
@@ -37,18 +38,22 @@ export class PathUtils {
       OsUtils.getOS().then((os) => {
           activeOs = os;
       }).catch((err) => {
+
         if (err) {
           throw err;
         }
       });
       if(activeOs){
-        givenPath = pathFixer(givenPath, activeOs);
+        givenPath = translatePath(givenPath, activeOs);
+
       } else {
-        givenPath = pathFixer(givenPath);
-      };
+        givenPath = translatePath(givenPath);
+      }
+
       if (!fs.existsSync(givenPath)) {
         execSync(`mkdir ${givenPath}`);
-      };
+      }
+
     } catch(err) {
       throw new Error(`Error when checking or creating path: ${err}`);
     };
@@ -57,15 +62,18 @@ export class PathUtils {
 
 /**
  * Provides cross-platform functionality & tilde expansion when working with paths
+ * 
  * @param givenPath path that is to be sanitized
+ * 
+ * @param os is the OS that is currently being used
  */
 
-function pathFixer(givenPath : string, os? : string) {
+function translatePath(givenPath : string, os? : string) {
   if (!os) {
-    os = "LINUX";
+    os = OperatingSystems.LINUX;
   }
 
-  if (os === "LINUX" || os === "MAC OS") {
+  if (os === OperatingSystems.LINUX || os === OperatingSystems.MAC) {
     if (givenPath[0] === "~") {
       givenPath = path.join(HOME, givenPath.slice(1))
     };
@@ -75,7 +83,7 @@ function pathFixer(givenPath : string, os? : string) {
     };
   }
 
-  if ( os === "WINDOWS") {
+  if ( os === OperatingSystems.WINDOWS) {
     if (givenPath.match(/^([C-Z]:)/)) {
       givenPath = path.join(...givenPath.split(/\/|\\/));
     };

@@ -3,6 +3,7 @@
     "module": "commonjs",
     "resolveJsonModule": true,
     "esModuleInterop": true,
+    "lib": ["es6", "dom", "es2020"],
     "target": "es6",
     "moduleResolution": "node",
     "sourceMap": true,

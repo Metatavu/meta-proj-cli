@@ -34,3 +34,50 @@ export interface CheckSet {
   checkable : string,
   details : {}
 }
+
+/**
+ * OS and its corresponding commands
+ * 
+ * OS : operating system
+ * commands : an array that contains the commands
+ */
+export interface OsCommand {
+  OS : string,
+  commands : CommandObj[]
+}
+
+/**
+ * Command that is used in bash
+ * 
+ * name : command key that is used when searching for command
+ * command : command value that is OS-dependent
+ */
+export interface CommandObj {
+  name : string
+  command : string
+}
+
+/**
+ * Interface for user-config file to not run into errors
+ * 
+ * osPref : user preferred OS
+ */
+export interface UserConfigJson {
+  osPref : string
+}
+
+/**
+ * Global constants for OS names
+ */
+export enum OperatingSystems {
+  LINUX = "LINUX",
+  WINDOWS = "WINDOWS",
+  MAC = "MAC OS"
+}
+
+/**
+ * Global constants for command names
+ */
+export enum CommandNames {
+  copy = "copy"
+}
