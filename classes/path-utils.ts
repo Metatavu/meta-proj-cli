@@ -63,7 +63,8 @@ export class PathUtils {
 function pathFixer(givenPath : string, os? : string) {
   if (!os) {
     os = "LINUX";
-  };
+  }
+
   if (os === "LINUX" || os === "MAC OS") {
     if (givenPath[0] === "~") {
       givenPath = path.join(HOME, givenPath.slice(1))
@@ -72,11 +73,16 @@ function pathFixer(givenPath : string, os? : string) {
       givenPath = path.join(...givenPath.split(/\/|\\/));
       givenPath = path.sep + givenPath;
     };
-  };
+  }
+
   if ( os === "WINDOWS") {
     if (givenPath.match(/^([C-Z]:)/)) {
       givenPath = path.join(...givenPath.split(/\/|\\/));
     };
-  };
+  } else {
+    givenPath = path.join(...givenPath.split(/\/|\\/));
+    givenPath = path.sep + givenPath;
+  }
+
   return givenPath;
 };
