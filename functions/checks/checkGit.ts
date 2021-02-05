@@ -1,5 +1,6 @@
 import { execSync } from "child_process";
 import { CheckErrorSet } from "../../interfaces/check-error-set";
+
 /**
  * checks if git is installed on the device
  * 
