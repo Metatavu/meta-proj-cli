@@ -34,4 +34,4 @@ export class OsCommands {
   static getCmds = () : OsCommand[] => {
     return cmds;
   }
-};
+}
