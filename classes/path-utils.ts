@@ -83,4 +83,4 @@ function translatePath(givenPath : string, os? : string) {
   }
 
   return givenPath;
-};
+}
