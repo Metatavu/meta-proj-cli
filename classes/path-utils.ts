@@ -76,7 +76,7 @@ function translatePath(givenPath : string, os? : string) {
   if (os === OperatingSystems.WINDOWS) {
     if (givenPath.match(/^([C-Z]:)/)) {
       givenPath = path.join(...givenPath.split(/\/|\\/));
-    };
+    }
   } else {
     givenPath = path.join(...givenPath.split(/\/|\\/));
     givenPath = path.sep + givenPath;
