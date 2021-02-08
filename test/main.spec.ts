@@ -24,4 +24,3 @@ it('runs vorpal', () => {
   vorpal.delimiter("meta-proj-cli~$:");
   expect((vorpal.delimiter)).toHaveBeenCalled();
 });
-
