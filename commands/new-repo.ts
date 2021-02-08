@@ -104,7 +104,7 @@ async function action(args) {
     OsUtils.getCommand("copy").then((command : string) => {
       copy = command;
       execSync("git init", {cwd : repoPath});
-      execSync(`${copy} project-config.json ${folderPath}`, {cwd : `.${path.sep}resources`})
+      execSync(`${copy} project-config.json ${folderPath}`, {cwd : `.${path.sep}resources`});
       execSync("git checkout -q -b develop", {cwd : repoPath});
       execSync(`${copy} README.md ${repoPath}`, {cwd : `.${path.sep}resources`});
       execSync(`git add README.md`, {cwd : repoPath});
