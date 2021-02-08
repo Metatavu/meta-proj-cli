@@ -22,7 +22,7 @@ async function action() {
       throw new Error("ERROR: No operating system has been input.");
     }
   } catch (err) {
-    throw(err);
+    throw new Error(err);
   }
 }
 
