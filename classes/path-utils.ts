@@ -44,7 +44,6 @@ export class PathUtils {
       if (!fs.existsSync(givenPath)) {
         execSync(`mkdir ${givenPath}`);
       }
-
     } catch(err) {
       throw new Error(`Error when checking or creating path: ${err}`);
     };
