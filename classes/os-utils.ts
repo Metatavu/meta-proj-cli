@@ -90,8 +90,8 @@ export default class OsUtils {
       return dataJson;
     } catch(err) {
       throw new Error ("User config not found: " + err);
-    };
-  };
+    }
+  }
 
   /**
    * Searches the corresponding command for the corresponding OS
