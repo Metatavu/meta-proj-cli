@@ -35,7 +35,7 @@ export class PathUtils {
   static checkExists = async (givenPath : string) => {
     try {
       const activeOs = await OsUtils.getOS();
-      if(activeOs){
+      if (activeOs) {
         givenPath = translatePath(givenPath, activeOs);
 
       } else {
