@@ -22,8 +22,8 @@ export default class OsUtils {
       return OsUtils.searchCmd(userConfig.osPref, cmd);
     } catch (err) {
       return Promise.reject(err);
-    };
-  };
+    }
+  }
 
   /**
    * Getter for current user selected OS
