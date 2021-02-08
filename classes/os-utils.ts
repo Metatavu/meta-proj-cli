@@ -35,7 +35,6 @@ export default class OsUtils {
         const os : UserConfigJson = await OsUtils.readUserConfig();
       if (!os) {
         return null;
-
       } else {
         return os.osPref;
       }
