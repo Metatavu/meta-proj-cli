@@ -88,7 +88,6 @@ export default class OsUtils {
       let data = fs.readFileSync("./user-config.json", "utf8");
       dataJson = JSON.parse(data.toString());
       return dataJson;
-      
     } catch(err) {
       throw new Error ("User config not found: " + err);
     };
