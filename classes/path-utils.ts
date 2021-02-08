@@ -70,7 +70,7 @@ function translatePath(givenPath : string, os? : string) {
     if (givenPath[0] === "/") {
       givenPath = path.join(...givenPath.split(/\/|\\/));
       givenPath = path.sep + givenPath;
-    };
+    }
   }
 
   if (os === OperatingSystems.WINDOWS) {
