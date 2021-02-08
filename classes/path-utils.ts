@@ -1,7 +1,7 @@
 import * as path from "path";
 import fs from "fs";
 import { execSync } from "child_process";
-import { OsUtils } from "../classes/os-utils";
+import OsUtils from "../classes/os-utils";
 import { OperatingSystems } from "../interfaces/types";
 
 const { HOME } = process.env;

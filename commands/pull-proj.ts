@@ -3,7 +3,7 @@ import { execSync } from "child_process";
 import * as path from "path";
 import * as fs from "fs";
 import { PathUtils } from "../classes/path-utils";
-import { OsUtils } from "../classes/os-utils";
+import OsUtils from "../classes/os-utils";
 
 const vorpal = new Vorpal();
 

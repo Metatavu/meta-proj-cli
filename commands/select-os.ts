@@ -1,5 +1,5 @@
 import Vorpal from "vorpal";
-import { OsUtils } from "../classes/os-utils";
+import OsUtils from "../classes/os-utils";
 
 const vorpal = new Vorpal();
 
