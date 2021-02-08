@@ -41,7 +41,7 @@ export default class OsUtils {
     } catch (err) {
       throw new Error(err);
     }
-  };
+  }
 
   /**
    * Setter for user selected OS
