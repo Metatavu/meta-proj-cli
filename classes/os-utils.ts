@@ -1,8 +1,8 @@
-import { OsCommand, CommandObj, UserConfigJson } from "../interfaces/types";
+import { OsCommand, CommandObj, UserConfigJson, OperatingSystems } from "../interfaces/types";
 import { OsCommands } from "./os-commands";
 import fs from "fs";
 
-const systems : string[]  = ["MAC OS", "WINDOWS", "LINUX"];
+const systems : string[]  = [OperatingSystems.MAC, OperatingSystems.WINDOWS, OperatingSystems.LINUX];
 
 /**
  * Enables cross-platform support
@@ -19,8 +19,8 @@ export class OsUtils {
    */
   static getCommand = async (cmd: string): Promise<string> => {
     try {
-      const userConfig: UserConfigJson = await helperFunctions.readUserConfig();
-      return helperFunctions.searchCmd(userConfig.osPref, cmd);
+      const userConfig: UserConfigJson = await OsUtils.readUserConfig();
+      return OsUtils.searchCmd(userConfig.osPref, cmd);
     } catch (err) {
       return Promise.reject(err);
     };
@@ -32,16 +32,17 @@ export class OsUtils {
    * @returns the selected OS if any
    */
   static getOS = async () : Promise<string> => {
-    let os : string = null;
-    await helperFunctions.readUserConfig().then((userConfig : UserConfigJson) => {
-      os = userConfig.osPref;
-      return os;
-    }).catch((err) => {
-      throw err;
-    });
-    if (!os) {
-      return null;
-    };
+    try{
+        const os : UserConfigJson = await OsUtils.readUserConfig();
+      if (!os) {
+        return null;
+
+      } else {
+        return os.osPref;
+      }
+    } catch (err) {
+      throw new Error(err);
+    }
   };
 
   /**
@@ -51,28 +52,22 @@ export class OsUtils {
    */
   static setOS = async (os : string) => {
     if (systems.includes(os.toUpperCase())) {
-      helperFunctions.swapOs(os);
+      OsUtils.swapOs(os);
 
     } else {
       throw new Error("This operating system is not supported.");
     };
   };
-};
-
-/**
- * Functionalities that are used in the exported class above
- */
-module helperFunctions {
 
     /**
    * Re-writes user config using previous user config as basis
    * 
    * @param os is the OS that is being switched to, if supported
    */
-  export async function swapOs (os : string) {
-    await readUserConfig().then((userConfig) => {
-      userConfig.osPref = os;
-      let data = JSON.stringify(userConfig, null, 2);
+  private static async swapOs (os : string) {
+    const userConfig : UserConfigJson = await OsUtils.readUserConfig();
+    userConfig.osPref = os;
+    let data = JSON.stringify(userConfig, null, 2);
 
     try{
       fs.writeFile("./user-config.json", data, "utf8", (err) => {
@@ -83,7 +78,6 @@ module helperFunctions {
     } catch(err) {
       throw err;
     };
-    });
   };
 
   /**
@@ -91,7 +85,7 @@ module helperFunctions {
    * 
    * @returns user config as a JSON object that has an interface
    */
-  export async function readUserConfig() : Promise<UserConfigJson> {
+  private static async readUserConfig() : Promise<UserConfigJson> {
     let dataJson : UserConfigJson = null;
     try{
       let data = fs.readFileSync("./user-config.json", "utf8");
@@ -110,7 +104,7 @@ module helperFunctions {
    * 
    * @param command is the command's name that is being searched
    */
-  export function searchCmd (os : string, command : string) {
+  private static searchCmd (os : string, command : string) {
     let osCommands : OsCommand[] = OsCommands.getCmds();
     let found : boolean = false;
     for (let i=0; i<osCommands.length; i++) {
