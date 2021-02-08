@@ -30,4 +30,4 @@ yarn-error.log*
 .env
 .vscode/launch.json
 
-/test
+./testing-ground

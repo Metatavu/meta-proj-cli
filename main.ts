@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import { newRepo } from "./commands/new-repo";
 import { newProj } from "./commands/new-proj";
 import { pullProj } from "./commands/pull-proj";
-import { test } from "./commands/test";
+import { test } from "./commands/checkTest";
 import { PathUtils } from "./classes/path-utils";
 
 dotenv.config();
