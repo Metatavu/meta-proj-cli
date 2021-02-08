@@ -37,7 +37,6 @@ export class PathUtils {
       const activeOs = await OsUtils.getOS();
       if (activeOs) {
         givenPath = translatePath(givenPath, activeOs);
-
       } else {
         givenPath = translatePath(givenPath);
       }
