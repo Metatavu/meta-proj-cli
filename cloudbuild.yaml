@@ -1,0 +1,10 @@
+steps:
+- name: 'node:14'
+  entrypoint: 'bash'
+  env:
+    - "DEBIAN_FRONTEND=noninteractive"
+  args:
+  - -c
+  - |
+    npm i
+    npm t
