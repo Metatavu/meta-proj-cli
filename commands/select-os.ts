@@ -17,7 +17,6 @@ async function action() {
 
     if (nameResult.os) {
       OsUtils.setOS(nameResult.os);
-      
     } else {
       throw new Error("ERROR: No operating system has been input.");
     }
