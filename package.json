@@ -6,7 +6,8 @@
   "scripts": {
     "start": "tsc && node dist/main.js",
     "test": "jest --notify --config=jest.config.json",
-    "coveralls": "jest --coverage && coveralls < coverage/lcov.info"
+    "coveralls": "jest --coverage && coveralls < coverage/lcov.info",
+    "lint": "eslint **/*.ts"
   },
   "repository": {
     "type": "git",
