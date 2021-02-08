@@ -46,9 +46,9 @@ export class PathUtils {
       }
     } catch(err) {
       throw new Error(`Error when checking or creating path: ${err}`);
-    };
-  };
-};
+    }
+  }
+}
 
 /**
  * Provides cross-platform functionality & tilde expansion when working with paths
