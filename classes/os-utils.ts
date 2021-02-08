@@ -51,7 +51,6 @@ export default class OsUtils {
   static setOS = async (os : string) => {
     if (systems.includes(os.toUpperCase())) {
       OsUtils.swapOs(os);
-
     } else {
       throw new Error("This operating system is not supported.");
     };
