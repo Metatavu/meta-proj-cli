@@ -79,5 +79,7 @@ export enum OperatingSystems {
  * Global constants for command names
  */
 export enum CommandNames {
-  copy = "copy"
+  copy = "copy",
+  remove = "remove",
+  removeDir = "remove directory"
 }
