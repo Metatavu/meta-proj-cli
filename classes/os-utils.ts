@@ -74,8 +74,8 @@ export default class OsUtils {
       });
     } catch(err) {
       throw err;
-    };
-  };
+    }
+  }
 
   /**
    * Reads user config
