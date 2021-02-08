@@ -53,8 +53,8 @@ export default class OsUtils {
       OsUtils.swapOs(os);
     } else {
       throw new Error("This operating system is not supported.");
-    };
-  };
+    }
+  }
 
     /**
    * Re-writes user config using previous user config as basis
