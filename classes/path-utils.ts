@@ -34,16 +34,8 @@ export class PathUtils {
 
   static checkExists = async (givenPath : string) => {
     try {
-      let activeOs = null;
-      OsUtils.getOS().then((os) => {
-          activeOs = os;
-      }).catch((err) => {
-
-        if (err) {
-          throw err;
-        }
-      });
-      if(activeOs){
+      const activeOs = await OsUtils.getOS();
+      if (activeOs) {
         givenPath = translatePath(givenPath, activeOs);
 
       } else {
@@ -83,7 +75,7 @@ function translatePath(givenPath : string, os? : string) {
     };
   }
 
-  if ( os === OperatingSystems.WINDOWS) {
+  if (os === OperatingSystems.WINDOWS) {
     if (givenPath.match(/^([C-Z]:)/)) {
       givenPath = path.join(...givenPath.split(/\/|\\/));
     };

@@ -8,7 +8,7 @@ const systems : string[]  = [OperatingSystems.MAC, OperatingSystems.WINDOWS, Ope
  * Enables cross-platform support
  * 
  */
-export class OsUtils {
+export default class OsUtils {
 
   /**
    * Getter for commands
