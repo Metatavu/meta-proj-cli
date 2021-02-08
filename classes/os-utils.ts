@@ -6,7 +6,6 @@ const systems : string[]  = [OperatingSystems.MAC, OperatingSystems.WINDOWS, Ope
 
 /**
  * Enables cross-platform support
- * 
  */
 export default class OsUtils {
 
