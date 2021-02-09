@@ -48,7 +48,7 @@ export default class OsUtils {
    * 
    * @param os is the OS that is being switched to, if supported
    */
-  static setOS = async (os : string) => {
+  public static setOS = async (os : string) => {
     if (systems.includes(os.toUpperCase())) {
       OsUtils.swapOs(os);
     } else {
