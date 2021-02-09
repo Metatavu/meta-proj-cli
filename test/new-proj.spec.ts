@@ -1,5 +1,5 @@
 import Vorpal from "vorpal"
-import * as newProj from "../commands/new-proj";
+import * as newProj from "../src/commands/new-proj";
 
 /**
  * Creating a new project mostly uses new-repo.ts

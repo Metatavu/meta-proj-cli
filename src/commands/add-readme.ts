@@ -21,7 +21,7 @@ async function action(args: { options: { path: string; }; }) {
       argPath;
 
     execSync(`mkdir ${path}`);
-    execSync(`cp README.md ${path}`, { cwd : "./resources"});
+    execSync(`cp README.md ${path}`, { cwd : "../resources"});
   }
 
   execSync("git init", {cwd : path});

@@ -78,7 +78,7 @@ async function action() {
       if (fs.existsSync(path.join(searchPath, ".git"))) {
         repoPath = searchPath;
       } else {
-        throw new Error("Inappropriate folder (wrong path or doesn't house git)");
+        throw new Error("Inappropriate folder (wrong path or doesn't house project)");
       }
     } catch (err) {
       throw new Error(`Encountered error while searching for folder: ${err}`);
@@ -90,7 +90,7 @@ async function action() {
     execSync(`mkdir ${folderPath}`);
     execSync(`mkdir ${repoPath}`);
     execSync("git init", {cwd : repoPath});
-    execSync(`${copy} project-config.json ${folderPath}`, {cwd : `.${path.sep}resources`});
+    execSync(`${copy} project-config.json ${folderPath}`, {cwd : `..${path.sep}resources`});
     execSync(
       `git remote add origin git@github.com:${process.env.GIT_ORGANIZATION}/${repoName}.git`,
       {cwd : repoPath}

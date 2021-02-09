@@ -1,6 +1,6 @@
 import Vorpal from "vorpal";
 import dotenv from "dotenv";
-import { PathUtils } from "../classes/path-utils";
+import { PathUtils } from "../src/classes/path-utils";
 
 /**
  * Testing functionalities used in main.ts, as it doesn't export anything that can be accessed directly
