@@ -96,7 +96,7 @@ export default class OsUtils {
    * 
    * @param command is the command's name that is being searched
    */
-  private static searchCmd (os : string, command : string) {
+  private static searchCmd (os: string, command: string) {
     let osCommands : OsCommand[] = OsCommands.getCmds();
     let found : boolean = false;
     for (let i=0; i<osCommands.length; i++) {
