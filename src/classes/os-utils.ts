@@ -69,7 +69,7 @@ export default class OsUtils {
           throw err;
         }
       });
-    } catch(err) {
+    } catch (err) {
       throw new Error("Error when attempting to write file:" + err);
     }
   }
