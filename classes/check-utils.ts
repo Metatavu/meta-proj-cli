@@ -12,11 +12,11 @@ export class CheckUtils {
    * @param toCheck contains a CheckSet array with prerequisites to check
    */
   static checkPreq = async (toCheck : CheckSet[]) => {
-    let erroList : CheckErrorSet[] = [];
+    const erroList : CheckErrorSet[] = [];
 
-    for (let currentCheck of toCheck) {
+    for (const currentCheck of toCheck) {
       try {
-        let checkResult : CheckErrorSet = await checkRouter(currentCheck);
+        const checkResult : CheckErrorSet = await checkRouter(currentCheck);
       
         if(checkResult.error){
           erroList.push(checkResult);
