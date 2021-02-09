@@ -31,8 +31,6 @@ async function action(args) {
     args.options.path :
     defaultPath;
 
-  let copy : string = "";
-
   if (!publicity || !repoName) {
     try {
       if (!repoName) {
