@@ -31,13 +31,9 @@ export default class OsUtils {
    * @returns the selected OS if any
    */
   public static getOS = async () : Promise<string | null> => {
-    try{
-        const os : UserConfigJson = await OsUtils.readUserConfig();
-      if (!os) {
-        return null;
-      } else {
-        return os.osPref;
-      }
+    try {
+      const os : UserConfigJson = await OsUtils.readUserConfig();
+      return os?.osPref || null; 
     } catch (err) {
       throw new Error(err);
     }
