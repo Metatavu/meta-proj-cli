@@ -6,7 +6,7 @@ import { PathUtils } from "../classes/path-utils";
  * Testing functionalities used in main.ts, as it doesn't export anything that can be accessed directly
  */
 it('has config', () => {
-  let x : Object = {};
+  const x : Object = {};
   dotenv.config = jest.fn().mockResolvedValue(x);
   dotenv.config();
   expect((dotenv.config)).toBeTruthy();
@@ -24,4 +24,3 @@ it('runs vorpal', () => {
   vorpal.delimiter("meta-proj-cli~$:");
   expect((vorpal.delimiter)).toHaveBeenCalled();
 });
-
