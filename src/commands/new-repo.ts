@@ -102,9 +102,9 @@ async function action(args) {
     const copy : string = await OsUtils.getCommand("copy");
     try {
       execSync("git init", {cwd : repoPath});
-      execSync(`${copy} project-config.json ${folderPath}`, {cwd : `.${path.sep}resources`});
+      execSync(`${copy} project-config.json ${folderPath}`, {cwd : `..${path.sep}resources`});
       execSync("git checkout -q -b develop", {cwd : repoPath});
-      execSync(`${copy} README.md ${repoPath}`, {cwd : `.${path.sep}resources`});
+      execSync(`${copy} README.md ${repoPath}`, {cwd : `..${path.sep}resources`});
       execSync(`git add README.md`, {cwd : repoPath});
       execSync(`git commit -q -m "first commit"`, {cwd : repoPath});
       execSync(`git push -q origin develop`, {cwd : repoPath});

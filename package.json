@@ -2,7 +2,7 @@
   "name": "meta-proj-cli",
   "version": "0.0.1",
   "description": "Command-line application for managing projects",
-  "main": "main.ts",
+  "main": "src/main.ts",
   "scripts": {
     "start": "tsc && node dist/main.js",
     "test": "jest --notify --config=jest.config.json",
