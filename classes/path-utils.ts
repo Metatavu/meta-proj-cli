@@ -35,11 +35,7 @@ export class PathUtils {
   static checkExists = async (givenPath : string) => {
     try {
       const activeOs = await OsUtils.getOS();
-      if (activeOs) {
-        givenPath = translatePath(givenPath, activeOs);
-      } else {
-        givenPath = translatePath(givenPath);
-      }
+      givenPath = activeOs ? translatePath(givenPath, activeOs) : translatePath(givenPath);
 
       if (!fs.existsSync(givenPath)) {
         execSync(`mkdir ${givenPath}`);

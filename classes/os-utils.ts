@@ -19,7 +19,8 @@ export default class OsUtils {
   static getCommand = async (cmd: string): Promise<string> => {
     try {
       const userConfig: UserConfigJson = await OsUtils.readUserConfig();
-      return OsUtils.searchCmd(userConfig.osPref, cmd);
+      const command : CommandObj = OsUtils.searchCmd(userConfig.osPref, cmd)
+      return command.command;
     } catch (err) {
       return Promise.reject(err);
     }
@@ -60,7 +61,7 @@ export default class OsUtils {
   private static async swapOs (os : string) {
     const userConfig : UserConfigJson = await OsUtils.readUserConfig();
     userConfig.osPref = os;
-    let data = JSON.stringify(userConfig, null, 2);
+    const data = JSON.stringify(userConfig, null, 2);
 
     try {
       fs.writeFile("./user-config.json", data, "utf8", (err) => {
@@ -79,11 +80,9 @@ export default class OsUtils {
    * @returns user config as a JSON object that has an interface
    */
   private static async readUserConfig() : Promise<UserConfigJson> {
-    let dataJson : UserConfigJson = null;
-    try{
-      let data = fs.readFileSync("./user-config.json", "utf8");
-      dataJson = JSON.parse(data.toString());
-      return dataJson;
+    try {
+      const data = fs.readFileSync("./user-config.json", "utf8");
+      return JSON.parse(data.toString());
     } catch(err) {
       throw new Error ("User config not found: " + err);
     }
@@ -95,6 +94,8 @@ export default class OsUtils {
    * @param os is the OS that is currently being used
    * 
    * @param command is the command's name that is being searched
+   * 
+   * @returns Command Object which matches with the user OS and the searched command
    */
   private static searchCmd (os: string, command: string) {
     return OsCommands.getCmds()
