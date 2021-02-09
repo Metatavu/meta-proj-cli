@@ -18,7 +18,7 @@ async function action() {
   let repoPath : string = null;
   let repoIsLocal : boolean = false;
   let givenPath : string = null;
-  let copy = OsUtils.getCommand("copy");
+  const copy : string = await OsUtils.getCommand("copy");
 
   try { 
     const repoNameResult = await this.prompt({

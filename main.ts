@@ -11,8 +11,8 @@ dotenv.config();
 
 const vorpal = new Vorpal();
 
-PathUtils.checkExists(PathUtils.savePath);
-PathUtils.checkExists(PathUtils.projectPath);
+PathUtils.checkExists(PathUtils.savePath());
+PathUtils.checkExists(PathUtils.projectPath());
 
 /**
  * Exposes specified commands to the user

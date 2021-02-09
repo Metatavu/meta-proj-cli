@@ -18,7 +18,7 @@ const defaultProjectPath : string = "~/.meta-proj-cli/projects";
 export class PathUtils {
 
   public static savePath = () : string => {
-    return PathUtils.translatePath(defaultSavePath)
+    return PathUtils.translatePath(defaultSavePath);
   }
 
   public static projectPath = () : string => {
