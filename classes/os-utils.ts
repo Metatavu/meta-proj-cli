@@ -64,7 +64,7 @@ export default class OsUtils {
 
     try {
       fs.writeFile("./user-config.json", data, "utf8", (err) => {
-        if(err){
+        if (err) {
           throw new Error("Error when attempting to write file:" + err);
         }
       });
