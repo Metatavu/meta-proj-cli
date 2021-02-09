@@ -1,0 +1,14 @@
+steps:
+- name: 'node:14'
+  entrypoint: 'bash'
+  env:
+    - "DEBIAN_FRONTEND=noninteractive"
+    - "COVERALLS_REPO_TOKEN=${_COVERALLS_REPO_TOKEN}"
+    - "COVERALLS_SERVICE_NAME=CloudBuild"
+    - "COVERALLS_GIT_BRANCH=$BRANCH_NAME"
+  args:
+  - -c
+  - |
+    set -e
+    npm i
+    npm run coveralls
