@@ -5,8 +5,8 @@ import OsUtils from "../classes/os-utils";
 import { OperatingSystems } from "../interfaces/types";
 
 const { HOME } = process.env;
-const defaultSavePath : string = "~/.meta-proj-cli/";
-const defaultProjectPath : string = "~/.meta-proj-cli/projects";
+const defaultSavePath = "~/.meta-proj-cli/";
+const defaultProjectPath = "~/.meta-proj-cli/projects";
 
 /**
  * Offers functions that help with paths

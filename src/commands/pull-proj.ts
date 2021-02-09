@@ -5,10 +5,8 @@ import * as fs from "fs";
 import { PathUtils } from "../classes/path-utils";
 import OsUtils from "../classes/os-utils";
 
-const vorpal = new Vorpal();
-
 const { HOME } = process.env;
-const defaultPath : string = `${HOME}/.meta-proj-cli/projects`;
+const defaultPath = `${HOME}/.meta-proj-cli/projects`;
 
 /**
  * Prompts the user and pulls given repo to local
@@ -16,7 +14,7 @@ const defaultPath : string = `${HOME}/.meta-proj-cli/projects`;
 async function action() {
   let repoName : string = null;
   let repoPath : string = null;
-  let repoIsLocal : boolean = false;
+  let repoIsLocal = false;
   let givenPath : string = null;
   const copy : string = await OsUtils.getCommand("copy");
 
@@ -105,6 +103,6 @@ async function action() {
  * 
  * @param vorpal vorpal instance
  */
-export const pullProj = (vorpal : Vorpal) => vorpal
+export const pullProj = (vorpal : Vorpal) : Vorpal.Command => vorpal
   .command("pull-proj", `Pulls a project to an existing local repository or creates a new one`)
   .action(action);
