@@ -19,7 +19,7 @@ export default class OsUtils {
   static getCommand = async (cmd: string): Promise<string> => {
     try {
       const userConfig: UserConfigJson = await OsUtils.readUserConfig();
-      const command : CommandObj = OsUtils.searchCmd(userConfig.osPref, cmd)
+      const command : CommandObj = OsUtils.searchCmd(userConfig.osPref, cmd);
       return command.command;
     } catch (err) {
       return Promise.reject(err);

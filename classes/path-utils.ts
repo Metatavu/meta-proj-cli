@@ -16,26 +16,31 @@ const defaultProjectPath : string = "~/.meta-proj-cli/projects";
  * repoFolder : gives the path format to the folder that actually holds the project (contains .git)
  */
 export class PathUtils {
-  static savePath : string = translatePath(defaultSavePath);
 
-  static projectPath : string = translatePath(defaultProjectPath);
-
-  static fixPath = (givenPath : string) => { 
-    return translatePath(givenPath);
+  public static savePath = () : string => {
+    return PathUtils.translatePath(defaultSavePath)
   }
 
-  static outerFolder = (givenPath : string, repoName : string) => {
+  public static projectPath = () : string => {
+    return PathUtils.translatePath(defaultProjectPath);
+  }
+
+  public static fixPath = (givenPath : string) : string => { 
+    return PathUtils.translatePath(givenPath);
+  }
+
+  public static outerFolder = (givenPath : string, repoName : string) : string => {
     return path.join(givenPath, repoName + "-project");
   }
 
-  static repoFolder = (givenPath : string, repoName : string) => {
+  public static repoFolder = (givenPath : string, repoName : string) : string => {
     return path.join(givenPath, repoName + "-project", repoName);
   }
 
-  static checkExists = async (givenPath : string) => {
+  public static checkExists = async (givenPath : string) : Promise<void> => {
     try {
       const activeOs = await OsUtils.getOS();
-      givenPath = activeOs ? translatePath(givenPath, activeOs) : translatePath(givenPath);
+      givenPath = activeOs ? PathUtils.translatePath(givenPath, activeOs) : PathUtils.translatePath(givenPath);
 
       if (!fs.existsSync(givenPath)) {
         execSync(`mkdir ${givenPath}`);
@@ -44,39 +49,38 @@ export class PathUtils {
       throw new Error(`Error when checking or creating path: ${err}`);
     }
   }
-}
 
-/**
+  /**
  * Provides cross-platform functionality & tilde expansion when working with paths
  * 
  * @param givenPath path that is to be sanitized
  * 
  * @param os is the OS that is currently being used
  */
-
-function translatePath(givenPath : string, os? : string) {
-  if (!os) {
-    os = OperatingSystems.LINUX;
-  }
-
-  if (os === OperatingSystems.LINUX || os === OperatingSystems.MAC) {
-    if (givenPath[0] === "~") {
-      givenPath = path.join(HOME, givenPath.slice(1));
+  private static translatePath(givenPath : string, os? : string) {
+    if (!os) {
+      os = OperatingSystems.LINUX;
     }
-    if (givenPath[0] === "/") {
+  
+    if (os === OperatingSystems.LINUX || os === OperatingSystems.MAC) {
+      if (givenPath[0] === "~") {
+        givenPath = path.join(HOME, givenPath.slice(1));
+      }
+      if (givenPath[0] === "/") {
+        givenPath = path.join(...givenPath.split(/\/|\\/));
+        givenPath = path.sep + givenPath;
+      }
+    }
+  
+    if (os === OperatingSystems.WINDOWS) {
+      if (givenPath.match(/^([C-Z]:)/)) {
+        givenPath = path.join(...givenPath.split(/\/|\\/));
+      }
+    } else {
       givenPath = path.join(...givenPath.split(/\/|\\/));
       givenPath = path.sep + givenPath;
     }
+  
+    return givenPath;
   }
-
-  if (os === OperatingSystems.WINDOWS) {
-    if (givenPath.match(/^([C-Z]:)/)) {
-      givenPath = path.join(...givenPath.split(/\/|\\/));
-    }
-  } else {
-    givenPath = path.join(...givenPath.split(/\/|\\/));
-    givenPath = path.sep + givenPath;
-  }
-
-  return givenPath;
 }
