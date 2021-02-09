@@ -1,5 +1,3 @@
 eslint:
   enabled: true
-tslint:
-  enabled: true
-  config_file: tsconfig.json
+  config_file: .eslintrc.json
