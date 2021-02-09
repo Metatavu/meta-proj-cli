@@ -1,9 +1,11 @@
 import Vorpal from "vorpal";
 import * as newRepo from "../commands/new-repo";
 import child_process from "child_process";
+import dotenv from "dotenv";
+import * as path from "path";
 
 /**
- * Testing creating a GitHub repository.
+ * Testing creating a GitHub repository as well as creating a project locally.
  * Note that Jest won't actually create the repository under your GH account.
  */
 
@@ -32,4 +34,28 @@ it('exports itself', async () => {
 
   expect((vorpal.use(newRepo.newRepo).execSync)).toReturn();
   expect((vorpal.execSync)).toReturn();
+});
+
+it('creates project folder', () => {
+  dotenv.config = jest.fn().mockImplementation();
+  child_process.execSync = jest.fn();
+  dotenv.config();
+  const { HOME } = process.env;
+  const defaultPath = `${HOME}/.meta-proj-cli/projects`;
+  child_process.execSync(`mkdir ${defaultPath + path.sep}test`);
+
+  expect((dotenv.config)).toHaveBeenCalled();
+  expect((child_process.execSync)).toReturn();
+});
+
+it('inits a Git project', () => {
+  dotenv.config = jest.fn().mockImplementation();
+  child_process.execSync = jest.fn();
+  dotenv.config();
+  const { HOME } = process.env;
+  const defaultPath = `${HOME}/.meta-proj-cli/projects`;
+  child_process.execSync("git init", {cwd : (defaultPath + path.sep + "test")});
+
+  expect((dotenv.config)).toHaveBeenCalled();
+  expect((child_process.execSync)).toReturn();
 });
