@@ -11,7 +11,7 @@ export class CheckUtils {
    * 
    * @param toCheck contains a CheckSet array with prerequisites to check
    */
-  static checkPreq = async (toCheck : CheckSet[]) => {
+  static checkPreq = async (toCheck : CheckSet[]) : Promise<CheckErrorSet[]> => {
     const erroList : CheckErrorSet[] = [];
 
     for (const currentCheck of toCheck) {
@@ -38,7 +38,7 @@ const checkRouter = async (currentCheck : CheckSet) => {
   try {
     switch(currentCheck.checkable){
       case "git":
-        return await checkGit(currentCheck.details);
+        return await checkGit();
     }
   } catch (err) {
     throw new Error(`Encountered error while checking prerequisite "${currentCheck.checkable}". \nError: ${err}`);

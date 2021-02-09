@@ -23,7 +23,7 @@ async function action() {
       throw new Error("ERROR: No name was given for the project");
     }
   } catch (err) {
-    throw(err);
+    throw new Error(err);
   }
 
   try {
@@ -56,6 +56,6 @@ async function action() {
  * 
  * @param vorpal vorpal instance
  */
-export const newProj = (vorpal : Vorpal) => vorpal
+export const newProj = (vorpal : Vorpal) : Vorpal.Command => vorpal
   .command("new-proj", `Start a new project`)
   .action(action);

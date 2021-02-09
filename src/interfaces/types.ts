@@ -1,4 +1,4 @@
-import Vorpal, { Command } from "vorpal";
+import Vorpal from "vorpal";
 
 /**
  * Helps with grouping commands without needing a new .use.execSync for each of them
@@ -7,7 +7,7 @@ import Vorpal, { Command } from "vorpal";
  * command : string used to call the command in question
  */
 export interface CommandSet {
-  use : (Vorpal) => Command,
+  use : (Vorpal) => Vorpal.Command,
   command : string
 }
 
@@ -32,7 +32,7 @@ export interface CheckErrorSet {
  */
 export interface CheckSet {
   checkable : string,
-  details : {}
+  details : Object
 }
 
 /**

@@ -1,4 +1,4 @@
-import { OsCommand, CommandObj, UserConfigJson, OperatingSystems } from "../interfaces/types";
+import { CommandObj, UserConfigJson, OperatingSystems } from "../interfaces/types";
 import { OsCommands } from "./os-commands";
 import fs from "fs";
 
@@ -31,10 +31,10 @@ export default class OsUtils {
    * 
    * @returns the selected OS if any
    */
-  public static getOS = async () : Promise<string | null> => {
+  public static getOS = async () : Promise<string | null> => {
     try {
       const os : UserConfigJson = await OsUtils.readUserConfig();
-      return os?.osPref || null; 
+      return os?.osPref || null; 
     } catch (err) {
       throw new Error(err);
     }
@@ -45,7 +45,7 @@ export default class OsUtils {
    * 
    * @param os is the OS that is being switched to, if supported
    */
-  public static setOS = async (os : string) => {
+  public static setOS = async (os : string) : Promise<void> => {
     if (systems.includes(os.toUpperCase())) {
       OsUtils.swapOs(os);
     } else {
@@ -66,11 +66,11 @@ export default class OsUtils {
     try {
       fs.writeFile("./user-config.json", data, "utf8", (err) => {
         if (err) {
-          throw new Error("Error when attempting to write file:" + err);
+          throw err;
         }
       });
-    } catch(err) {
-      throw err;
+    } catch (err) {
+      throw new Error("Error when attempting to write file:" + err);
     }
   }
 

@@ -1,8 +1,6 @@
 import Vorpal from "vorpal";
 import OsUtils from "../classes/os-utils";
 
-const vorpal = new Vorpal();
-
 /**
  * Prompts the user to input their OS for running other commands later on
  */
@@ -30,6 +28,6 @@ async function action() {
  * 
  * @param vorpal vorpal instance
  */
-export const selectOs = (vorpal : Vorpal) => vorpal
+export const selectOs = (vorpal : Vorpal) : Vorpal.Command => vorpal
   .command("select-os", `Select OS`)
   .action(action);

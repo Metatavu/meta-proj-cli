@@ -4,8 +4,6 @@ import * as path from "path";
 import { PathUtils } from "../classes/path-utils";
 import OsUtils from "../classes/os-utils";
 
-const vorpal = new Vorpal();
-
 const { HOME } = process.env;
 const defaultPath = `${HOME}/.meta-proj-cli/projects`;
 
@@ -21,7 +19,7 @@ const defaultPath = `${HOME}/.meta-proj-cli/projects`;
 async function action(args) {
   let repoName : string = args.name;
   let description : string = args.options.description;
-  let template : string = args.options.template;
+  const template = args.options.template;
 
   let publicity : string = args.options.publicity ?
     args.options.publicity :
@@ -126,7 +124,7 @@ function finishRepo (repoPath) {
  * 
  * @param vorpal vorpal instance
  */
-export const newRepo = (vorpal : Vorpal) => vorpal
+export const newRepo = (vorpal : Vorpal) : Vorpal.Command => vorpal
   .command("new-repo [name]", `Creates a new github repository, run without params or flags to enter wizard mode`)
   .option(
     '-p, --publicity <type>',

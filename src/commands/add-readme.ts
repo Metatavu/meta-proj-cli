@@ -3,8 +3,6 @@ import { execSync } from "child_process";
 
 const { HOME } = process.env;
 
-const vorpal = new Vorpal();
-
 /**
  * Adds a readme to given repo
  * 
@@ -12,8 +10,8 @@ const vorpal = new Vorpal();
  * Path(string) 
  */
 async function action(args: { options: { path: string; }; }) {
-  let path : string = `${HOME}/.meta-proj-cli/projects/git-container`;
-  let argPath : string = args.options.path;
+  let path = `${HOME}/.meta-proj-cli/projects/git-container`;
+  const argPath  = args.options.path;
 
   if (args.options.path) {
     path = argPath.startsWith("~") ? 
@@ -40,7 +38,7 @@ async function action(args: { options: { path: string; }; }) {
  * 
  * @param vorpal vorpal instance
  */
-export const addReadme = (vorpal : Vorpal) => vorpal
+export const addReadme = (vorpal : Vorpal) : Vorpal.Command => vorpal
   .command("add-readme", `Adds a template README to repo`)
   .option('-p, --path <absolute path>', 'creates a folder to initialize the repository in. !!use only if you want a local copy!!')
   .action(action);

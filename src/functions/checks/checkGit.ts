@@ -8,9 +8,9 @@ import { CheckErrorSet } from "../../interfaces/types";
  * 
  * @returns {CheckErrorSet} ChekErrorSet.
  */
-export const checkGit = async (details  : Object) : Promise<CheckErrorSet> => {
+export const checkGit = async () : Promise<CheckErrorSet> => {
 
-  let returnSet : CheckErrorSet = {check : "git", error : false, details : ""};
+  let returnSet : CheckErrorSet = {check : "git", error : false, details : null};
 
   try {
     if (!execSync("git --version").toString().match(/^(git version)/)) {
