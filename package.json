@@ -4,7 +4,7 @@
   "description": "Command-line application for managing projects",
   "main": "src/main.ts",
   "scripts": {
-    "start": "tsc && node dist/main.js",
+    "start": "tsc && node dist/src/main.js",
     "test": "jest --notify --config=jest.config.json",
     "coveralls": "jest --coverage && coveralls < coverage/lcov.info",
     "lint": "eslint **/*.ts"

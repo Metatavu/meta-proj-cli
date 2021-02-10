@@ -10,9 +10,16 @@ import { selectOs } from "./commands/select-os";
 dotenv.config();
 
 const vorpal = new Vorpal();
-
-PathUtils.checkExists(PathUtils.savePath());
-PathUtils.checkExists(PathUtils.projectPath());
+PathUtils.savePath().then((path) => {
+  PathUtils.checkExists(path);
+}).catch((err) => {
+  throw new Error("Error when finding default paths: " + err);
+});
+PathUtils.projectPath().then((path) => {
+  PathUtils.checkExists(path);
+}).catch((err) => {
+  throw new Error("Error when finding default paths: " + err);
+});
 
 /**
  * Exposes specified commands to the user

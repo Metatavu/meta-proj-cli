@@ -1,4 +1,4 @@
-import { CommandObj, UserConfigJson, OperatingSystems } from "../interfaces/types";
+import { UserConfigJson, OperatingSystems } from "../interfaces/types";
 import { OsCommands } from "./os-commands";
 import fs from "fs";
 
@@ -19,8 +19,8 @@ export default class OsUtils {
   static getCommand = async (cmd: string): Promise<string> => {
     try {
       const userConfig: UserConfigJson = await OsUtils.readUserConfig();
-      const command : CommandObj = OsUtils.searchCmd(userConfig.osPref, cmd);
-      return command.command;
+      const command : string = await OsUtils.searchCmd(userConfig.osPref, cmd);
+      return command;
     } catch (err) {
       return Promise.reject(err);
     }
@@ -97,10 +97,11 @@ export default class OsUtils {
    * 
    * @returns Command Object which matches with the user OS and the searched command
    */
-  private static searchCmd (os: string, command: string) {
-    return OsCommands.getCmds()
+  private static async searchCmd (os: string, command: string) : Promise<string> {
+    const osCommands = await OsCommands.getCmds();
+    return osCommands
       .filter(item => item.OS == os)
       .flatMap(item => item.commands)
-      .find(item => item.name === command);
+      .find(item => item.name == command).command;
   }
 }
