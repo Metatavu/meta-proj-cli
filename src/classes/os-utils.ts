@@ -16,11 +16,15 @@ export default class OsUtils {
    * 
    * @returns either corresponding command or an error
    */
-  static getCommand = async (cmd: string): Promise<string> => {
+  static getCommand = async (cmd: string): Promise<string | null> => {
     try {
       const userConfig: UserConfigJson = await OsUtils.readUserConfig();
       const command : string = await OsUtils.searchCmd(userConfig.osPref, cmd);
-      return command;
+      if(command){
+        return command;
+      } else {
+        return null;
+      }
     } catch (err) {
       return Promise.reject(err);
     }
@@ -97,11 +101,19 @@ export default class OsUtils {
    * 
    * @returns Command Object which matches with the user OS and the searched command
    */
-  private static async searchCmd (os: string, command: string) : Promise<string> {
-    const osCommands = await OsCommands.getCmds();
-    return osCommands
-      .filter(item => item.OS == os)
-      .flatMap(item => item.commands)
-      .find(item => item.name == command).command;
+  private static async searchCmd (os: string, command: string) : Promise<string | null> {
+    try{
+      const osCommands = await OsCommands.getCmds();
+      if(osCommands){
+        return osCommands
+        .filter(item => item.OS == os)
+        .flatMap(item => item.commands)
+        .find(item => item.name == command).command;
+      } else {
+        return null;
+      }
+    } catch (err) {
+      throw new Error("Failing to retrieve command:" + err);
+    }
   }
 }

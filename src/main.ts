@@ -7,28 +7,27 @@ import { test } from "./commands/checkTest";
 import { PathUtils } from "./classes/path-utils";
 import { selectOs } from "./commands/select-os";
 
-dotenv.config();
+wrapper();
 
-const vorpal = new Vorpal();
-PathUtils.savePath().then((path) => {
-  PathUtils.checkExists(path);
-}).catch((err) => {
-  throw new Error("Error when finding default paths: " + err);
-});
-PathUtils.projectPath().then((path) => {
-  PathUtils.checkExists(path);
-}).catch((err) => {
-  throw new Error("Error when finding default paths: " + err);
-});
+async function wrapper(){
+  dotenv.config();
 
-/**
- * Exposes specified commands to the user
- */
-vorpal
-  .delimiter("meta-proj-cli~$:")
-  .use(selectOs)
-  .use(test)
-  .use(newRepo)
-  .use(newProj)
-  .use(pullProj)
-  .show();
+  const vorpal = new Vorpal();
+
+  const savePath : string = await PathUtils.savePath();
+  const projectPath : string = await PathUtils.projectPath();
+  PathUtils.checkExists(savePath);
+  PathUtils.checkExists(projectPath);
+
+  /**
+   * Exposes specified commands to the user
+   */
+  vorpal
+    .delimiter("meta-proj-cli~$:")
+    .use(selectOs)
+    .use(test)
+    .use(newRepo)
+    .use(newProj)
+    .use(pullProj)
+    .show();
+}
