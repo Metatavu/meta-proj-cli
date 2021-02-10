@@ -1,6 +1,6 @@
 import { CommandObj, UserConfigJson, OperatingSystems } from "../interfaces/types";
 import { OsCommands } from "./os-commands";
-import fs from "fs";
+import { userConfigUtils } from "./user-config-utils";
 
 const systems : string[]  = [OperatingSystems.MAC, OperatingSystems.WINDOWS, OperatingSystems.LINUX];
 
@@ -18,7 +18,7 @@ export default class OsUtils {
    */
   static getCommand = async (cmd: string): Promise<string> => {
     try {
-      const userConfig: UserConfigJson = await OsUtils.readUserConfig();
+      const userConfig: UserConfigJson = await userConfigUtils.readUserConfig();
       const command : CommandObj = OsUtils.searchCmd(userConfig.osPref, cmd);
       return command.command;
     } catch (err) {
@@ -33,7 +33,7 @@ export default class OsUtils {
    */
   public static getOS = async () : Promise<string | null> => {
     try {
-      const os : UserConfigJson = await OsUtils.readUserConfig();
+      const os : UserConfigJson = await userConfigUtils.readUserConfig();
       return os?.osPref || null; 
     } catch (err) {
       throw new Error(err);
@@ -53,40 +53,19 @@ export default class OsUtils {
     }
   }
 
-    /**
+  /**
    * Re-writes user config using previous user config as basis
    * 
    * @param os is the OS that is being switched to, if supported
    */
   private static async swapOs (os : string) {
-    const userConfig : UserConfigJson = await OsUtils.readUserConfig();
+    const userConfig : UserConfigJson = await userConfigUtils.readUserConfig();
     userConfig.osPref = os;
     const data = JSON.stringify(userConfig, null, 2);
-
-    try {
-      fs.writeFile("./user-config.json", data, "utf8", (err) => {
-        if (err) {
-          throw err;
-        }
-      });
-    } catch (err) {
-      throw new Error("Error when attempting to write file:" + err);
-    }
+    await userConfigUtils.writeUserConfig(data);
   }
 
-  /**
-   * Reads user config
-   * 
-   * @returns user config as a JSON object that has an interface
-   */
-  private static async readUserConfig() : Promise<UserConfigJson> {
-    try {
-      const data = fs.readFileSync("./user-config.json", "utf8");
-      return JSON.parse(data.toString());
-    } catch(err) {
-      throw new Error ("User config not found: " + err);
-    }
-  }
+
 
   /**
    * Searches the corresponding command for the corresponding OS
