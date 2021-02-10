@@ -88,7 +88,7 @@ async function action() {
     execSync(`mkdir ${folderPath}`);
     execSync(`mkdir ${repoPath}`);
     execSync("git init", {cwd : repoPath});
-    execSync(`${copy} project-config.json ${folderPath}`, {cwd : `..${path.sep}resources`});
+    execSync(`${copy} project-config.json ${folderPath}`, {cwd : `.${path.sep}resources`});
     execSync(
       `git remote add origin git@github.com:${process.env.GIT_ORGANIZATION}/${repoName}.git`,
       {cwd : repoPath}
