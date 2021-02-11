@@ -12,7 +12,7 @@ it('has config', () => {
   expect((dotenv.config)).toBeTruthy();
 });
 
-it('checks path', () => {
+it('checks path', async () => {
   PathUtils.checkExists = jest.fn().mockResolvedValue(true);
   const path = await PathUtils.savePath();
   PathUtils.checkExists(path);
