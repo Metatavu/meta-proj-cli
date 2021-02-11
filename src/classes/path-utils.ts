@@ -18,20 +18,20 @@ const defaultProjectPath = "~/.meta-proj-cli/projects";
 export class PathUtils {
 
   public static savePath = async () : Promise<string> => {
-    let os : string;
-    await OsUtils.getOS() ? os = await OsUtils.getOS() : os = OsUtils.detectOS();
+    let os : string = await OsUtils.getOS();
+    os ? os : os = OsUtils.detectOS();
     return await PathUtils.translatePath(defaultSavePath, os);
   }
 
   public static projectPath = async () : Promise<string> => {
-    let os : string;
-    await OsUtils.getOS() ? os = await OsUtils.getOS() : os = OsUtils.detectOS();
+    let os : string = await OsUtils.getOS();
+    os ? os : os = OsUtils.detectOS();
     return  await PathUtils.translatePath(defaultProjectPath, os);
   }
 
   public static fixPath = async (givenPath : string) : Promise<string> => { 
-    let os : string;
-    await OsUtils.getOS() ? os = await OsUtils.getOS() : os = OsUtils.detectOS();
+    let os : string = await OsUtils.getOS();
+    os ? os : os = OsUtils.detectOS();
     return await PathUtils.translatePath(givenPath, os);
   }
 
