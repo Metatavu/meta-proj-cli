@@ -9,5 +9,11 @@
     "sourceMap": true,
     "outDir": "dist"
   },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "test"
+  ],
   "lib": ["es2020"]
 }
