@@ -58,6 +58,11 @@ export default class OsUtils {
     }
   }
 
+  /**
+   * Enables estimating the used OS on startup and notifies user
+   * 
+   * @returns estimated OS in use
+   */
   public static detectOS = () : string => {
     let detectedOS : string;
     if (windows) {
