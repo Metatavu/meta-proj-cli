@@ -41,10 +41,7 @@ export class PathUtils {
     try {
       const activeOs = await OsUtils.getOS();
       givenPath = await PathUtils.translatePath(givenPath, activeOs);
-
       if (!fs.existsSync(givenPath)) {
-        throw new Error(`Path does not exist: ${givenPath}`);
-      } else {
         execSync(`mkdir ${givenPath}`);
       }
     } catch(err) {
@@ -81,6 +78,9 @@ export class PathUtils {
       }
     
       if (os == OperatingSystems.WINDOWS) {
+        if (givenPath[0] === "~") {
+          givenPath = path.join(HOME, givenPath.slice(1));
+        }
         if (givenPath.match(/^([C-Z]:)/)) {
           givenPath = path.join(...givenPath.split(/\/|\\/));
         }
