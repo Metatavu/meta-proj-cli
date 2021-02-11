@@ -14,7 +14,9 @@ it('has config', () => {
 
 it('checks path', () => {
   PathUtils.checkExists = jest.fn().mockResolvedValue(true);
-  PathUtils.checkExists(PathUtils.savePath());
+  const path = await PathUtils.savePath();
+  PathUtils.checkExists(path);
+  
   expect((PathUtils.checkExists)).toBeTruthy();
 });
 

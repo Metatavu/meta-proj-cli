@@ -63,8 +63,8 @@ async function action() {
     });
 
     repoPathResult.path !== "" ? 
-      givenPath = PathUtils.fixPath(repoPathResult.path):
-      givenPath = PathUtils.fixPath(defaultPath);
+      givenPath = await PathUtils.fixPath(repoPathResult.path):
+      givenPath = await PathUtils.fixPath(defaultPath);
 
   } catch (err) {
     throw new Error(`Encountered error while prompting repository path: ${err}`);

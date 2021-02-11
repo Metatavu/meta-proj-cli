@@ -31,7 +31,7 @@ const cmds : OsCommand[] = [
  * Provides operation system-specific commands for os-utils
  */
 export class OsCommands {
-  static getCmds = () : OsCommand[] => {
+  static getCmds = async () : Promise<OsCommand[]> => {
     return cmds;
   }
 }

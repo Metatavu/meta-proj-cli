@@ -76,7 +76,7 @@ async function action(args) {
     }
   }
 
-  givenPath = PathUtils.fixPath(givenPath);
+  givenPath = await PathUtils.fixPath(givenPath);
   
   const folderPath : string = PathUtils.outerFolder(givenPath, repoName);
   const repoPath : string = PathUtils.repoFolder(givenPath, repoName);
