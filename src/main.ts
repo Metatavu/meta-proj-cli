@@ -7,21 +7,25 @@ import { test } from "./commands/checkTest";
 import { PathUtils } from "./classes/path-utils";
 import { selectOs } from "./commands/select-os";
 
-dotenv.config();
+( async () => {
+  dotenv.config();
 
-const vorpal = new Vorpal();
+  const vorpal = new Vorpal();
 
-PathUtils.checkExists(PathUtils.savePath());
-PathUtils.checkExists(PathUtils.projectPath());
+  const savePath : string = await PathUtils.savePath();
+  const projectPath : string = await PathUtils.projectPath();
+  PathUtils.checkExists(savePath);
+  PathUtils.checkExists(projectPath);
 
-/**
- * Exposes specified commands to the user
- */
-vorpal
-  .delimiter("meta-proj-cli~$:")
-  .use(selectOs)
-  .use(test)
-  .use(newRepo)
-  .use(newProj)
-  .use(pullProj)
-  .show();
+  /**
+   * Exposes specified commands to the user
+   */
+  vorpal
+    .delimiter("meta-proj-cli~$:")
+    .use(selectOs)
+    .use(test)
+    .use(newRepo)
+    .use(newProj)
+    .use(pullProj)
+    .show();
+})();
