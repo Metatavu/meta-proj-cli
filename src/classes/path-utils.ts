@@ -18,15 +18,21 @@ const defaultProjectPath = "~/.meta-proj-cli/projects";
 export class PathUtils {
 
   public static savePath = async () : Promise<string> => {
-    return await PathUtils.translatePath(defaultSavePath);
+    let os : string;
+    await OsUtils.getOS() ? os = await OsUtils.getOS() : os = OsUtils.detectOS();
+    return await PathUtils.translatePath(defaultSavePath, os);
   }
 
   public static projectPath = async () : Promise<string> => {
-    return  await PathUtils.translatePath(defaultProjectPath);
+    let os : string;
+    await OsUtils.getOS() ? os = await OsUtils.getOS() : os = OsUtils.detectOS();
+    return  await PathUtils.translatePath(defaultProjectPath, os);
   }
 
   public static fixPath = async (givenPath : string) : Promise<string> => { 
-    return await PathUtils.translatePath(givenPath);
+    let os : string;
+    await OsUtils.getOS() ? os = await OsUtils.getOS() : os = OsUtils.detectOS();
+    return await PathUtils.translatePath(givenPath, os);
   }
 
   public static outerFolder = (givenPath : string, repoName : string) : string => {
@@ -56,7 +62,7 @@ export class PathUtils {
  * 
  * @param os is the OS that is currently being used
  */
-  private static async translatePath(givenPath : string, os? : string) {
+  private static async translatePath(givenPath : string, os : string) {
     if (!os) {
       try{
         os = await OsUtils.getOS();
@@ -85,7 +91,7 @@ export class PathUtils {
           givenPath = path.join(...givenPath.split(/\/|\\/));
         }
       } else {
-        throw new Error("Operating system wasn't detected!");
+        throw new Error("Operating system isn't supported!");
       }
     } catch (err) {
       throw new Error("Error when translating path: " + err);
