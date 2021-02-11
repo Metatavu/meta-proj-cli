@@ -18,20 +18,17 @@ const defaultProjectPath = "~/.meta-proj-cli/projects";
 export class PathUtils {
 
   public static savePath = async () : Promise<string> => {
-    let os : string = await OsUtils.getOS();
-    os ? os : os = OsUtils.detectOS();
+    const os : string = await PathUtils.osResolver();
     return await PathUtils.translatePath(defaultSavePath, os);
   }
 
   public static projectPath = async () : Promise<string> => {
-    let os : string = await OsUtils.getOS();
-    os ? os : os = OsUtils.detectOS();
+    const os : string = await PathUtils.osResolver();
     return  await PathUtils.translatePath(defaultProjectPath, os);
   }
 
   public static fixPath = async (givenPath : string) : Promise<string> => { 
-    let os : string = await OsUtils.getOS();
-    os ? os : os = OsUtils.detectOS();
+    const os : string = await PathUtils.osResolver();
     return await PathUtils.translatePath(givenPath, os);
   }
 
@@ -97,5 +94,18 @@ export class PathUtils {
       throw new Error("Error when translating path: " + err);
     }
     return givenPath;
+  }
+
+  /**
+   * Helper function for above functions to resolve user OS in question
+   * 
+   * @returns user preferred OS if any, or detected OS
+   */
+  private static async osResolver() : Promise<string> {
+    let os : string = await OsUtils.getOS();
+    if(!os){
+      os = OsUtils.detectOS();
+    }
+    return os;
   }
 }
