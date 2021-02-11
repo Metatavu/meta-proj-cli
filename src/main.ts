@@ -6,12 +6,13 @@ import { pullProj } from "./commands/pull-proj";
 import { test } from "./commands/checkTest";
 import { PathUtils } from "./classes/path-utils";
 import { selectOs } from "./commands/select-os";
+import OsUtils from "./classes/os-utils";
 
 ( async () => {
   dotenv.config();
-
+  
   const vorpal = new Vorpal();
-
+  await OsUtils.setOS(OsUtils.detectOS());
   const savePath : string = await PathUtils.savePath();
   const projectPath : string = await PathUtils.projectPath();
   PathUtils.checkExists(savePath);
