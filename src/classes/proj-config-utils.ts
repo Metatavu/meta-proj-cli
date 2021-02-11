@@ -47,7 +47,7 @@ export class ProjConfigUtils {
    * 
    * @param outerFolder foldern in which project-config.json should be created to
    */
-  static async createProjectConfig(outerFolder : string) : Promise<void> {
+  static async createProjConfig(outerFolder : string) : Promise<void> {
     try {
       const data = fs.readFileSync(projConfigTemplate, "utf8");
       fs.writeFileSync(this.outerToFile(outerFolder), data);
@@ -64,7 +64,7 @@ export class ProjConfigUtils {
   private static async checkProjConfig(outerFolder : string) : Promise<void> {
     try {
       if (!fs.existsSync(this.outerToFile(outerFolder))) {
-        this.createProjectConfig(outerFolder); 
+        this.createProjConfig(outerFolder); 
       }
     } catch (err) {
       throw new Error("Error when attempting to create user-config:" + err);
