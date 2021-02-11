@@ -28,4 +28,4 @@ async function wrapper(){
     .use(newProj)
     .use(pullProj)
     .show();
-}
+}();
