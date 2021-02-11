@@ -60,7 +60,7 @@ export default class OsUtils {
 
   public static detectOS = () : string => {
     let detectedOS : string;
-    if(windows){
+    if (windows) {
       detectedOS = "WINDOWS";
     }
     if(linux){
