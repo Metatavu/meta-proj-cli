@@ -104,7 +104,7 @@ export default class OsUtils {
   private static async searchCmd (os: string, command: string) : Promise<string | null> {
     try{
       const osCommands = await OsCommands.getCmds();
-      if(osCommands){
+      if (osCommands) {
         return osCommands
         .filter(item => item.OS == os)
         .flatMap(item => item.commands)
