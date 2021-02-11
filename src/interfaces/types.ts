@@ -66,6 +66,10 @@ export interface UserConfigJson {
   osPref : string
 }
 
+export interface ProjConfigJson {
+  projectName : string
+}
+
 /**
  * Global constants for OS names
  */

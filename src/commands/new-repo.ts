@@ -3,6 +3,7 @@ import { execSync } from "child_process";
 import * as path from "path";
 import { PathUtils } from "../classes/path-utils";
 import OsUtils from "../classes/os-utils";
+import { ProjConfigUtils } from "../classes/proj-config-utils";
 
 const { HOME } = process.env;
 const defaultPath = `${HOME}/.meta-proj-cli/projects`;
@@ -100,15 +101,18 @@ async function action(args) {
     const copy : string = await OsUtils.getCommand("copy");
     try {
       execSync("git init", {cwd : repoPath});
-      execSync(`${copy} project-config.json ${folderPath}`, {cwd : `..${path.sep}resources`});
+      execSync(`${copy} project-config-template.json ${folderPath}${path.sep}project-config.json`, {cwd : `.${path.sep}resources`});
       execSync("git checkout -q -b develop", {cwd : repoPath});
-      execSync(`${copy} README.md ${repoPath}`, {cwd : `..${path.sep}resources`});
+      execSync(`${copy} README.md ${repoPath}`, {cwd : `.${path.sep}resources`});
       execSync(`git add README.md`, {cwd : repoPath});
       execSync(`git commit -q -m "first commit"`, {cwd : repoPath});
       execSync(`git push -q origin develop`, {cwd : repoPath});
       finishRepo(repoPath);
+      const projConfigData = await ProjConfigUtils.readProjConfig(folderPath);
+      projConfigData.projectName = repoName;
+      await ProjConfigUtils.writeProjConfig(folderPath, JSON.stringify(projConfigData));
     } catch (err) {
-      throw new Error(`Fetching command ${copy} didn't work: ` + err);
+      throw new Error(`Encountered error while creating local repository: ${err}`);
     }
   }
 }
