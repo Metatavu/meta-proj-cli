@@ -1,6 +1,7 @@
 import { UserConfigJson, OperatingSystems } from "../interfaces/types";
 import { OsCommands } from "./os-commands";
 import fs from "fs";
+import {windows, linux, macos} from 'platform-detect';
 
 const systems : string[]  = [OperatingSystems.MAC, OperatingSystems.WINDOWS, OperatingSystems.LINUX];
 
@@ -55,6 +56,21 @@ export default class OsUtils {
     } else {
       throw new Error("This operating system is not supported.");
     }
+  }
+
+  public static detectOS = () : string => {
+    let detectedOS : string;
+    if(windows){
+      detectedOS = "WINDOWS";
+    }
+    if(linux){
+      detectedOS = "LINUX";
+    }
+    if(macos){
+      detectedOS = "MAC OS";
+    }
+    console.log(`It seems like you're using ${detectedOS}. If this is incorrect, please use "select-os" to switch it.`);
+    return detectedOS
   }
 
     /**
