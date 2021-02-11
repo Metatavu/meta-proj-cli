@@ -7,8 +7,6 @@ import { test } from "./commands/checkTest";
 import { PathUtils } from "./classes/path-utils";
 import { selectOs } from "./commands/select-os";
 
-wrapper();
-
 async function wrapper(){
   dotenv.config();
 
