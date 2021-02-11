@@ -7,7 +7,7 @@ import { test } from "./commands/checkTest";
 import { PathUtils } from "./classes/path-utils";
 import { selectOs } from "./commands/select-os";
 
-( async ({
+( async () => {
   dotenv.config();
 
   const vorpal = new Vorpal();
