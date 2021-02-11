@@ -5,14 +5,23 @@ import path from "path";
 const userConfigPath = `.${path.sep}user-config.json`;
 const userConfigTemplate = `.${path.sep}resources${path.sep}user-config-template.json`;
 
-export class userConfigUtils {
+/**
+ * Offers functions to read and write the cli's user config
+ * 
+ * @function readUserConfig runs a check after which it reads and returns the contents of user-config.json
+ * 
+ * @function writeUserConfig takes the edited version of the contents of user-config.json and writes them after a check
+ * 
+ * @function checkUserConfig checks that user-config.json exists and creates it, if it doesn't
+ */
+export class UserConfigUtils {
 
   /**
    * Reads user config
    * 
    * @returns user config as a JSON object that has an interface
    */
-    static async readUserConfig() : Promise<UserConfigJson> {
+  static async readUserConfig() : Promise<UserConfigJson> {
     try {
       await this.checkUserConfig();
 

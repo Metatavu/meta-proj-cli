@@ -1,6 +1,6 @@
 import { CommandObj, UserConfigJson, OperatingSystems } from "../interfaces/types";
 import { OsCommands } from "./os-commands";
-import { userConfigUtils } from "./user-config-utils";
+import { UserConfigUtils } from "./user-config-utils";
 
 const systems : string[]  = [OperatingSystems.MAC, OperatingSystems.WINDOWS, OperatingSystems.LINUX];
 
@@ -18,7 +18,7 @@ export default class OsUtils {
    */
   static getCommand = async (cmd: string): Promise<string> => {
     try {
-      const userConfig: UserConfigJson = await userConfigUtils.readUserConfig();
+      const userConfig: UserConfigJson = await UserConfigUtils.readUserConfig();
       const command : CommandObj = OsUtils.searchCmd(userConfig.osPref, cmd);
       return command.command;
     } catch (err) {
@@ -33,7 +33,7 @@ export default class OsUtils {
    */
   public static getOS = async () : Promise<string | null> => {
     try {
-      const os : UserConfigJson = await userConfigUtils.readUserConfig();
+      const os : UserConfigJson = await UserConfigUtils.readUserConfig();
       return os?.osPref || null; 
     } catch (err) {
       throw new Error(err);
@@ -59,10 +59,10 @@ export default class OsUtils {
    * @param os is the OS that is being switched to, if supported
    */
   private static async swapOs (os : string) {
-    const userConfig : UserConfigJson = await userConfigUtils.readUserConfig();
+    const userConfig : UserConfigJson = await UserConfigUtils.readUserConfig();
     userConfig.osPref = os;
     const data = JSON.stringify(userConfig, null, 2);
-    await userConfigUtils.writeUserConfig(data);
+    await UserConfigUtils.writeUserConfig(data);
   }
 
 
