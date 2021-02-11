@@ -20,11 +20,6 @@ it('is able to switch to desired OS', async () => {
 });
 
 it('recognizes desired OS', async () => {
-  const userSetting = await OsUtils.getOS();
-  await OsUtils.setOS("LINUX");
-  const os = await OsUtils.getOS();
-
-  expect((OsUtils.setOS)).toReturn();
-  expect((os)).toMatch("LINUX");
-  await OsUtils.setOS(userSetting);
+  const userSetting : string = await OsUtils.getOS();
+  expect((userSetting)).toMatch(/^LINUX|^WINDOWS|^MAC/);
 });
