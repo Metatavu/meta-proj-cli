@@ -63,6 +63,7 @@ export default class OsUtils {
     if (windows) {
       detectedOS = "WINDOWS";
     }
+
     if(linux){
       detectedOS = "LINUX";
     }
