@@ -1,12 +1,15 @@
 import { PathUtils } from "../src/classes/path-utils";
 
-it('gets default paths', () => {
-  expect((PathUtils.savePath())).toMatch(/.meta-proj-cli$/);
-  expect((PathUtils.projectPath())).toMatch(/projects$/);
+it('gets default paths', async () => {
+  const savePath : string = await PathUtils.savePath();
+  const projectPath : string = await PathUtils.projectPath();
+  expect((savePath)).toMatch(/.meta-proj-cli$/);
+  expect((projectPath)).toMatch(/projects$/);
 });
 
-it('fixes a path', () => {
-  expect((PathUtils.fixPath("~/.meta-proj-cli/"))).toMatch(/.meta-proj-cli$/);
+it('fixes a path', async () => {
+  const fixedPath = await PathUtils.fixPath("~/.meta-proj-cli/");
+  expect((fixedPath)).toMatch(/.meta-proj-cli$/);
 });
 
 it('is able to create project folder paths', () => {
