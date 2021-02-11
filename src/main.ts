@@ -7,7 +7,7 @@ import { test } from "./commands/checkTest";
 import { PathUtils } from "./classes/path-utils";
 import { selectOs } from "./commands/select-os";
 
-async function wrapper(){
+( async ({
   dotenv.config();
 
   const vorpal = new Vorpal();
@@ -28,4 +28,4 @@ async function wrapper(){
     .use(newProj)
     .use(pullProj)
     .show();
-}();
+})();
