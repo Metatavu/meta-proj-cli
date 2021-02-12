@@ -47,24 +47,15 @@ export class InstallUtils {
       } catch (err) {
         throw new Error(`Error when checking software ${software}: ${err}`);
       }
-      
-      if(result.search(/not found/) == -1) {
-        return true;
-      } else {
-        return false;
-      }
+      return (result.search(/not found/) == -1);
+
     } else {
       try {
         result = execSync(`${software} --version`).toString();
       } catch (err) {
         throw new Error(`Error when checking software ${software}: ${err}`);
       }
-      
-      if(result.search(/is not recognized/) == -1) {
-        return true;
-      } else {
-        return false;
-      }
+      return (result.search(/is not recognized/) == -1);
     }
   }
 }

@@ -13,28 +13,16 @@ export class InstallSwRefs {
 
     switch (software) {
       case Software.NodeJs:
-        if (installUtil == "brew") {
-          return "node";
-        } else {
-          return "nodejs";
-        }
+        return (installUtil == "brew") ? "node" : "nodejs";
 
       case Software.GitHub:
         return "gh";
 
       case Software.GitCLI:
-        if (installUtil == "sudo apt") {
-          return "git-all";
-        } else {
-          return "git";
-        }
+        return (installUtil == "sudo apt") ? "git-all" : "git";
 
       case Software.Maven:
-        if (installUtil == "brew") {
-          return "maven@3.5";
-        } else {
-          return "maven";
-        }
+        return (installUtil == "brew") ? "maven@3.5" : "maven";
 
       case Software.JDK8:
         if (installUtil == "choco") {
