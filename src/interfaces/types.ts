@@ -29,10 +29,12 @@ export interface CheckErrorSet {
  * 
  * checkable : name of the prerequisite to check\
  * details : possible extra details needed for the check
+ * 
+ * <T> type of details
  */
-export interface CheckSet {
+export interface CheckSet<T> {
   checkable : string,
-  details : unknown
+  details : T
 }
 
 /**
