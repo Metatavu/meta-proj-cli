@@ -1,6 +1,6 @@
 import Vorpal from "vorpal";
 import { newRepo } from "./new-repo";
-import { test } from "./test";
+import { test } from "./checkTest";
 
 const vorpal = new Vorpal();
 
@@ -23,7 +23,7 @@ async function action() {
       throw new Error("ERROR: No name was given for the project");
     }
   } catch (err) {
-    throw(err);
+    throw new Error(err);
   }
 
   try {
@@ -47,7 +47,7 @@ async function action() {
       .execSync("test");
     }
   } catch(err) {
-    throw new Error(err)
+    throw new Error(err);
   }
 }
 
@@ -56,6 +56,6 @@ async function action() {
  * 
  * @param vorpal vorpal instance
  */
-export const newProj = (vorpal : Vorpal) => vorpal
+export const newProj = (vorpal : Vorpal) : Vorpal.Command => vorpal
   .command("new-proj", `Start a new project`)
   .action(action);

@@ -1,6 +1,7 @@
 import { execSync } from "child_process";
 import Vorpal from "vorpal";
 import { PathUtils } from "../classes/path-utils";
+import { ReactCleanup } from "./command-functions/clean-react";
 
 const { HOME } = process.env;
 const defaultPath = `${HOME}/.meta-proj-cli/projects`;
@@ -13,11 +14,11 @@ const defaultPath = `${HOME}/.meta-proj-cli/projects`;
  * repoName : name of the repository\
  */
 async function action(args) {
-  let givenRepoName : string = args.repoName;
+  const givenRepoName : string = args.repoName;
   let template = null;
 
-  let givenPath : string = args.path ? 
-    PathUtils.fixPath(args.path) :
+  const givenPath : string = args.path ? 
+    await PathUtils.fixPath(args.path) :
     defaultPath;
 
   const repoPath = PathUtils.repoFolder(givenPath, givenRepoName);
@@ -55,6 +56,9 @@ async function action(args) {
   } catch(err) {
     throw new Error(`Encountered error when adding react: ${err}`);
   }
+
+  await ReactCleanup(repoPath);
+
 }
 
 /**
@@ -62,7 +66,7 @@ async function action(args) {
  * 
  * @param vorpal vorpal instance
  */
-export const addReact = (vorpal : Vorpal) => vorpal
+export const addReact = (vorpal : Vorpal) : Vorpal.Command => vorpal
   .command(
     "add-react <repoName> [path]",
     `Adds react to your project. <repoName> name of the repository. <path>: path where the project resides (leave empty for default).`

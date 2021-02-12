@@ -2,8 +2,7 @@ import Vorpal from "vorpal";
 import { execSync } from "child_process";
 import * as path from "path";
 import { PathUtils } from "../classes/path-utils";
-
-const vorpal = new Vorpal();
+import OsUtils from "../classes/os-utils";
 
 const { HOME } = process.env;
 const defaultPath = `${HOME}/.meta-proj-cli/projects`;
@@ -20,7 +19,7 @@ const defaultPath = `${HOME}/.meta-proj-cli/projects`;
 async function action(args) {
   let repoName : string = args.name;
   let description : string = args.options.description;
-  let template : string = args.options.template;
+  const template = args.options.template;
 
   let publicity : string = args.options.publicity ?
     args.options.publicity :
@@ -77,7 +76,7 @@ async function action(args) {
     }
   }
 
-  givenPath = PathUtils.fixPath(givenPath);
+  givenPath = await PathUtils.fixPath(givenPath);
   
   const folderPath : string = PathUtils.outerFolder(givenPath, repoName);
   const repoPath : string = PathUtils.repoFolder(givenPath, repoName);
@@ -96,15 +95,25 @@ async function action(args) {
   if (template) {
     execSync(`git pull -q git@github.com:${process.env.GIT_ORGANIZATION}/${template}.git`, {cwd : repoPath});
     execSync("git branch -m master develop", {cwd : repoPath});
+    finishRepo(repoPath);
   } else {
-    execSync("git init", {cwd : repoPath});
-    execSync(`cp project-config.json ${folderPath}`, {cwd : `.${path.sep}resources`})
-    execSync("git checkout -q -b develop", {cwd : repoPath});
-    execSync(`cp README.md ${repoPath}`, { cwd : `.${path.sep}resources`});
-    execSync(`git add README.md`, {cwd : repoPath});
-    execSync(`git commit -q -m "first commit"`, {cwd : repoPath});
-    execSync(`git push -q origin develop`, {cwd : repoPath});
+    const copy : string = await OsUtils.getCommand("copy");
+    try {
+      execSync("git init", {cwd : repoPath});
+      execSync(`${copy} project-config.json ${folderPath}`, {cwd : `.${path.sep}resources`});
+      execSync("git checkout -q -b develop", {cwd : repoPath});
+      execSync(`${copy} README.md ${repoPath}`, {cwd : `.${path.sep}resources`});
+      execSync(`git add README.md`, {cwd : repoPath});
+      execSync(`git commit -q -m "first commit"`, {cwd : repoPath});
+      execSync(`git push -q origin develop`, {cwd : repoPath});
+      finishRepo(repoPath);
+    } catch (err) {
+      throw new Error(`Fetching command ${copy} didn't work: ` + err);
+    }
   }
+}
+
+function finishRepo (repoPath) {
   execSync(`git checkout -q -b master`, {cwd : repoPath}); 
   execSync(`git push -q origin master`, {cwd : repoPath, stdio : ["ignore", "ignore", "ignore"]});
   execSync(`git checkout -q develop`, {cwd : repoPath});
@@ -115,7 +124,7 @@ async function action(args) {
  * 
  * @param vorpal vorpal instance
  */
-export const newRepo = (vorpal : Vorpal) => vorpal
+export const newRepo = (vorpal : Vorpal) : Vorpal.Command => vorpal
   .command("new-repo [name]", `Creates a new github repository, run without params or flags to enter wizard mode`)
   .option(
     '-p, --publicity <type>',

@@ -3,11 +3,10 @@ import { execSync } from "child_process";
 import * as path from "path";
 import * as fs from "fs";
 import { PathUtils } from "../classes/path-utils";
-
-const vorpal = new Vorpal();
+import OsUtils from "../classes/os-utils";
 
 const { HOME } = process.env;
-const defaultPath : string = `${HOME}/.meta-proj-cli/projects`;
+const defaultPath = `${HOME}/.meta-proj-cli/projects`;
 
 /**
  * Prompts the user and pulls given repo to local
@@ -15,8 +14,9 @@ const defaultPath : string = `${HOME}/.meta-proj-cli/projects`;
 async function action() {
   let repoName : string = null;
   let repoPath : string = null;
-  let repoIsLocal : boolean = false;
+  let repoIsLocal = false;
   let givenPath : string = null;
+  const copy : string = await OsUtils.getCommand("copy");
 
   try { 
     const repoNameResult = await this.prompt({
@@ -63,8 +63,8 @@ async function action() {
     });
 
     repoPathResult.path !== "" ? 
-      givenPath = PathUtils.fixPath(repoPathResult.path):
-      givenPath = PathUtils.fixPath(defaultPath);
+      givenPath = await PathUtils.fixPath(repoPathResult.path):
+      givenPath = await PathUtils.fixPath(defaultPath);
 
   } catch (err) {
     throw new Error(`Encountered error while prompting repository path: ${err}`);
@@ -76,7 +76,7 @@ async function action() {
       if (fs.existsSync(path.join(searchPath, ".git"))) {
         repoPath = searchPath;
       } else {
-        throw new Error("Inappropriate folder (wrong path or doesn't house git)");
+        throw new Error("Inappropriate folder (wrong path or doesn't house project)");
       }
     } catch (err) {
       throw new Error(`Encountered error while searching for folder: ${err}`);
@@ -88,7 +88,7 @@ async function action() {
     execSync(`mkdir ${folderPath}`);
     execSync(`mkdir ${repoPath}`);
     execSync("git init", {cwd : repoPath});
-    execSync(`cp project-config.json ${folderPath}`, {cwd : `.${path.sep}resources`})
+    execSync(`${copy} project-config.json ${folderPath}`, {cwd : `.${path.sep}resources`});
     execSync(
       `git remote add origin git@github.com:${process.env.GIT_ORGANIZATION}/${repoName}.git`,
       {cwd : repoPath}
@@ -103,6 +103,6 @@ async function action() {
  * 
  * @param vorpal vorpal instance
  */
-export const pullProj = (vorpal : Vorpal) => vorpal
+export const pullProj = (vorpal : Vorpal) : Vorpal.Command => vorpal
   .command("pull-proj", `Pulls a project to an existing local repository or creates a new one`)
   .action(action);
