@@ -6,7 +6,7 @@ const mockProjConfig : ProjConfigJson = {
   "projectName" : ""
 };
 
-it("reads a project-config.json", async () => {
+it("is callable", async () => {
   ProjConfigUtils.readProjConfig = jest.fn();
   await ProjConfigUtils.readProjConfig(mockPath);
 
