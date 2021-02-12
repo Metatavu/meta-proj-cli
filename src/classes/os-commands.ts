@@ -6,7 +6,8 @@ const cmds : OsCommand[] = [
     commands: [
       { name : CommandNames.copy, command : "copy" },
       { name : CommandNames.remove, command : "del /f /q" },
-      { name : CommandNames.removeDir, command : "rmdir /s /q" }
+      { name : CommandNames.removeDir, command : "rmdir /s /q" },
+      { name : CommandNames.installUtil, command : "choco" }
     ] 
   },
   {
@@ -14,7 +15,8 @@ const cmds : OsCommand[] = [
     commands: [
       { name : CommandNames.copy, command : "cp" },
       { name : CommandNames.remove, command : "rm -f" },
-      { name : CommandNames.removeDir, command : "rm -rf" }
+      { name : CommandNames.removeDir, command : "rm -rf" },
+      { name : CommandNames.installUtil, command : "sudo apt" }
     ] 
   },
   {
@@ -22,7 +24,8 @@ const cmds : OsCommand[] = [
     commands: [
       { name : CommandNames.copy, command : "cp" },
       { name : CommandNames.remove, command : "rm -f" },
-      { name : CommandNames.removeDir, command : "rm -rf" }
+      { name : CommandNames.removeDir, command : "rm -rf" },
+      { name : CommandNames.installUtil, command : "brew" }
     ] 
   }
 ];
