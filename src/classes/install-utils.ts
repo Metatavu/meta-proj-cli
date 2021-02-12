@@ -6,38 +6,29 @@ import { InstallSwRefs } from "./install-sw-refs";
 export class InstallUtils {
 
   /**
-   * Installs Homebrew for MAC OS users
+   * Install Homebrew command for MAC OS users
+   * 
+   * @returns Homebrew installation command that is run by the wizard
    */
-  public static async installBrew() : Promise<void> {
+  public static async installBrew() : Promise<string> {
     const os : string = await OsUtils.getOS();
     if (os == OperatingSystems.MAC){
-      try {
-        execSync('/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"');
-      } catch (err) {
-        throw new Error("Error during Homebrew installation: " + err);
-      }
+      return '/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"';
     }
   }
 
   /**
-   * Installs different software using bash and the referred utility
+   * Install software command for bash
    * 
    * @param software is the desired software to be installed
+   * 
+   * @returns software installation command that is run by the wizard
    */
-  public static async installSW(software : string) : Promise<void> {
+  public static async installSW(software : string) : Promise<string> {
     const installUtil : string = await OsUtils.getCommand(CommandNames.installUtil);
     const installRef : string = await InstallSwRefs.getInstallRef(installUtil, software);
-    if (installUtil == "brew") {
-      const status : boolean = await this.isInstalled(installUtil);
-      if (!status) {
-        await this.installBrew();
-      }
-    }
-    try {
-      execSync(`${installUtil} install ${installRef}`);
-    } catch (err) {
-      throw new Error(`Error during ${software} installation: ${err}`);
-    }
+
+    return `${installUtil} install ${installRef}`;
   }
 
   /**
