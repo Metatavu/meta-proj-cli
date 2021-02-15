@@ -43,7 +43,8 @@ export class InstallUtils {
     software = await InstallSwRefs.getBashRef(software);
     if(software == "brew"){
       try {
-        result = execSync(`which ${software}`).toString();
+        const str = `which ${software}`;
+        result = execSync(str).toString();
       } catch (err) {
         throw new Error(`Error when checking software ${software}: ${err}`);
       }
@@ -51,7 +52,8 @@ export class InstallUtils {
 
     } else {
       try {
-        result = execSync(`${software} --version`).toString();
+        const str = `${software} --version`;
+        result = execSync(str).toString();
       } catch (err) {
         throw new Error(`Error when checking software ${software}: ${err}`);
       }
