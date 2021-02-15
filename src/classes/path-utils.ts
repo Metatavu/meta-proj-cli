@@ -61,12 +61,7 @@ export class PathUtils {
  */
   private static async translatePath(givenPath : string, os : string) {
     if (!os) {
-      try{
-        os = await OsUtils.getOS();
-      } catch (err) {
-        os = OperatingSystems.LINUX;
-        throw new Error("Default operating system doesn't exist.");
-      }
+      os = await OsUtils.getOS();
     }
 
     try {
