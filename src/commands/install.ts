@@ -1,5 +1,5 @@
 import Vorpal from "vorpal";
-import { execSync } from "child_process";
+//import { execSync } from "child_process";
 //import { InstallUtils } from "../classes/install-utils";
 
 /**
