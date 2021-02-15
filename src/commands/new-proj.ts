@@ -38,7 +38,7 @@ async function action() {
     const testResult = await this.prompt({
       type : "confirm",
       name : "testAnswer",
-      message : "do you want to run a test "
+      message : `do you want to run a test for ${projName}`
     });
 
     if (testResult.testAnswer) {
