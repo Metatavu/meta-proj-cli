@@ -14,14 +14,12 @@ export const CreateQuarkus = async (projName : string, kotlin : boolean, gradle 
   kotlin ? kotlinS = ", kotlin" : kotlinS = "";
   let gradleS : string = null;
   gradle ? gradleS = "\
-  -DbuildTool=gradle" : gradleS = "";
-
-  const bashCmd = `mvn io.quarkus:quarkus-maven-plugin:1.11.3.Final:create \
+  -DbuildTool=gradle" : gradleS = ""; 
+  
+  return `mvn io.quarkus:quarkus-maven-plugin:1.11.3.Final:create \
   -DprojectGroupId=${orgName} \
   -DprojectArtifactId=${projName} \
   -DclassName="${orgName}.${projName}" \
   -Dpath="/${projName}" \
   -Dextensions="resteasy, resteasy-jackson${kotlinS}" ${gradleS}`;
-  
-  return bashCmd;
 }
