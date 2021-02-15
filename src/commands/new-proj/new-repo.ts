@@ -15,14 +15,16 @@ async function action(args) {
   let repoName : string = args.name;
   let description : string = args.options.description;
   const template = args.options.template;
+  const { HOME } = process.env;
+  const defaultPath = `${HOME}/.meta-proj-cli/projects`;
 
   let publicity : string = args.options.publicity ?
     args.options.publicity :
     "private";
   
-  let givenPath : string =  args.options.path;
+  let givenPath : string = args.options.path ? args.options.path : defaultPath;
   
-  if (!publicity || !repoName || !givenPath) {
+  if (!publicity || !repoName) {
     try {
       if (!repoName) {
         const nameResult = await this.prompt({
@@ -50,20 +52,8 @@ async function action(args) {
         name : 'description',
         message : "Give a description for the repository: "
       });
-      
-      if (!givenPath) {
-        const pathResult = await this.prompt({
-          type : 'input',
-          name : 'path',
-          message : "Set a path where to initiate repository, leave empty for default: "
-        });
 
-        if (pathResult?.path) {
-          givenPath = pathResult.path;
-        }
-      }
       description = descriptionResult.description;
-
       publicity = publicityResult.publicity;
       
     } catch(err) {

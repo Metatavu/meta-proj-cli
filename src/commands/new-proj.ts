@@ -16,7 +16,6 @@ let givenPath = `${HOME}/.meta-proj-cli/projects`;
 async function action() {
   let projName : string = null;
   let projType : string = null;
-  let gh = false;
 
   try {
     const nameResult = await this.prompt({
@@ -38,8 +37,8 @@ async function action() {
       message : "Framework for the project: "
     });
 
-    if (typeResult.name) {
-      projType= typeResult.name;
+    if (typeResult.type) {
+      projType= typeResult.type;
     } else {
       throw new Error("No type was given for the project");
     }
@@ -73,40 +72,25 @@ async function action() {
 
   if (projType == "No framework") {
     this.log("Creating project - please wait...");
-    const cmds : string[] = await CreateDefault(projName, folderPath, repoPath);
-    execSync(cmds[0]);
-    execSync(cmds[1], {cwd : `.${path.sep}resources`});
-    execSync(cmds[2], {cwd : `.${path.sep}resources`});
+    try {
+      const cmds : string[] = await CreateDefault(projName, folderPath, repoPath);
+      execSync(cmds[0]);
+      execSync(cmds[1], {cwd : `.${path.sep}resources`});
+      execSync(cmds[2], {cwd : `.${path.sep}resources`});
+    } catch(err) {
+      throw new Error(err);
+    }
+    
   }
 
   try {
-    const repoResult = await this.prompt({
-      type : 'list',
-      name : 'repo',
-      choices : ["Yes", "No"],
-      message : "Create GitHub repository for the project?: "
-    });
-
-    if (repoResult.name) {
-      if (repoResult.name == "Yes") {
-        gh = true;
-      }
-    } else {
-      throw new Error("Needed information on GitHub wasn't provided.");
-    }
-  } catch (err) {
-    throw new Error("Error: " + err);
+    await vorpal
+    .use(newRepo)
+    .execSync(`new-repo ${projName} --path ${givenPath}`);
+  } catch(err) {
+    throw new Error("Encountered an error while creating repository: " + err);
   }
 
-  if(gh){
-    try {
-      await vorpal
-      .use(newRepo)
-      .execSync(`new-repo ${projName} --path ${givenPath}`);
-    } catch(err) {
-      throw new Error("Encountered an error while creating repository: " + err);
-    }
-  }
   
   try {
     const testResult = await this.prompt({
