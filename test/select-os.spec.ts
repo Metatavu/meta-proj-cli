@@ -23,7 +23,7 @@ it('recognizes desired OS', async () => {
   const userSetting : string = await OsUtils.getOS();
   expect((userSetting)).toMatch(/^LINUX|^WINDOWS|^MAC/);
 });
-
+ 
 it('attempts to estimate OS used', () => {
   expect((OsUtils.detectOS())).toMatch(/^LINUX|^WINDOWS|^MAC/);
 });
