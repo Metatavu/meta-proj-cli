@@ -18,15 +18,18 @@ const defaultProjectPath = "~/.meta-proj-cli/projects";
 export class PathUtils {
 
   public static savePath = async () : Promise<string> => {
-    return await PathUtils.translatePath(defaultSavePath);
+    const os : string = await PathUtils.osResolver();
+    return await PathUtils.translatePath(defaultSavePath, os);
   }
 
   public static projectPath = async () : Promise<string> => {
-    return  await PathUtils.translatePath(defaultProjectPath);
+    const os : string = await PathUtils.osResolver();
+    return  await PathUtils.translatePath(defaultProjectPath, os);
   }
 
   public static fixPath = async (givenPath : string) : Promise<string> => { 
-    return await PathUtils.translatePath(givenPath);
+    const os : string = await PathUtils.osResolver();
+    return await PathUtils.translatePath(givenPath, os);
   }
 
   public static outerFolder = (givenPath : string, repoName : string) : string => {
@@ -56,14 +59,9 @@ export class PathUtils {
  * 
  * @param os is the OS that is currently being used
  */
-  private static async translatePath(givenPath : string, os? : string) {
+  private static async translatePath(givenPath : string, os : string) {
     if (!os) {
-      try{
-        os = await OsUtils.getOS();
-      } catch (err) {
-        os = OperatingSystems.LINUX;
-        throw new Error("Default operating system doesn't exist.");
-      }
+      os = await OsUtils.getOS();
     }
 
     try {
@@ -85,11 +83,31 @@ export class PathUtils {
           givenPath = path.join(...givenPath.split(/\/|\\/));
         }
       } else {
-        throw new Error("Operating system wasn't detected!");
+        console.log("It looks like you aren't running any of the supported platforms. Proceeding with Unix-base as a default...");
+        if (givenPath[0] === "~") {
+          givenPath = path.join(HOME, givenPath.slice(1));
+        }
+        if (givenPath[0] === "/") {
+          givenPath = path.join(...givenPath.split(/\/|\\/));
+          givenPath = path.sep + givenPath;
+        }
       }
     } catch (err) {
       throw new Error("Error when translating path: " + err);
     }
     return givenPath;
+  }
+
+  /**
+   * Helper function for above functions to resolve user OS in question
+   * 
+   * @returns user preferred OS if any, or detected OS
+   */
+  private static async osResolver() : Promise<string> {
+    let os : string = await OsUtils.getOS();
+    if(!os){
+      os = OsUtils.detectOS();
+    }
+    return os;
   }
 }
