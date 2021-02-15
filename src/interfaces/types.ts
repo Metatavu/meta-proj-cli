@@ -32,9 +32,9 @@ export interface CheckErrorSet {
  * 
  * <T> type of details
  */
-export interface CheckSet<T> {
+export interface CheckSet {
   checkable : string,
-  details : T
+  details : unknown
 }
 
 /**
