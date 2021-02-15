@@ -32,7 +32,7 @@ export interface CheckErrorSet {
  */
 export interface CheckSet {
   checkable : string,
-  details : Object
+  details : unknown
 }
 
 /**
