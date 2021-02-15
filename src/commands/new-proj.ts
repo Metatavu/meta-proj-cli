@@ -62,12 +62,12 @@ async function action() {
   const repoPath : string = PathUtils.repoFolder(givenPath, projName);
 
   if (projType == "Quarkus") {
-    //TODO: Add quarkus
+    //To do: Add quarkus
     this.log("Creating Quarkus project - please wait...");
   }
 
   if (projType == "React") {
-    //TODO: Add React
+    //To do: Add React
     this.log("Creating react project - please wait...");
   }
 
