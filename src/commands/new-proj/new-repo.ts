@@ -1,11 +1,6 @@
 import Vorpal from "vorpal";
 import { execSync } from "child_process";
-import * as path from "path";
 import { PathUtils } from "../../classes/path-utils";
-import OsUtils from "../../classes/os-utils";
-
-const { HOME } = process.env;
-const defaultPath = `${HOME}/.meta-proj-cli/projects`;
 
 /**
  * Creates a new github repo with given flags, or activates a wizard to ask for settings
