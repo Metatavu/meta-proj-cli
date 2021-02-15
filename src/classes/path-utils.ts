@@ -88,7 +88,14 @@ export class PathUtils {
           givenPath = path.join(...givenPath.split(/\/|\\/));
         }
       } else {
-        throw new Error("Operating system isn't supported!");
+        console.log("It looks like you aren't running any of the supported platforms. Proceeding with Unix-base as a default...");
+        if (givenPath[0] === "~") {
+          givenPath = path.join(HOME, givenPath.slice(1));
+        }
+        if (givenPath[0] === "/") {
+          givenPath = path.join(...givenPath.split(/\/|\\/));
+          givenPath = path.sep + givenPath;
+        }
       }
     } catch (err) {
       throw new Error("Error when translating path: " + err);
