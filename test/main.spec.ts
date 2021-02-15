@@ -6,7 +6,7 @@ import { PathUtils } from "../src/classes/path-utils";
  * Testing functionalities used in main.ts, as it doesn't export anything that can be accessed directly
  */
 it('has config', () => {
-  const x : Object = {};
+  const x : unknown = {};
   dotenv.config = jest.fn().mockResolvedValue(x);
   dotenv.config();
   expect((dotenv.config)).toBeTruthy();
