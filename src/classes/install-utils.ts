@@ -54,7 +54,6 @@ export class InstallUtils {
       } catch (err) {
         throw new Error(`Error when checking software ${software}: ${err}`);
       }
-      
 
     } else {
       try {
