@@ -14,7 +14,7 @@ export class ProjConfigUtils {
    * 
    * @returns project config as a JSON object that has an interface.
    */
-    static async readProjConfig(outerFolder : string) : Promise<ProjConfigJson> {
+    static async readProjConfig(outerFolder: string): Promise<ProjConfigJson> {
     try {
       await this.checkProjConfig(outerFolder);
 
