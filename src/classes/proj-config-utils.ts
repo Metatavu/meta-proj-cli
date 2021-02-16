@@ -46,7 +46,7 @@ export class ProjConfigUtils {
    * 
    * @param outerFolder foldern in which project-config.json should be created to
    */
-  static async createProjConfig(outerFolder : string) : Promise<void> {
+  static async createProjConfig(outerFolder: string): Promise<void> {
     try {
       const data = fs.readFileSync(projConfigTemplate, "utf8");
       fs.writeFileSync(this.outerToFile(outerFolder), data);
