@@ -29,7 +29,6 @@ export class ProjConfigUtils {
    * Writes to project-config.json
    * 
    * @param path outer folder of the project (check path-utils for more info)
-   * 
    * @param data should receive the edited version of project-config.json 
    */
   static async writeProjConfig(outerFolder: string, data: string): Promise<void> {
