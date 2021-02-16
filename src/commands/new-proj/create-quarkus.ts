@@ -1,14 +1,13 @@
 /**
  * Constructs creation command for Quarkus projects
+ *
  * @param projName desired project name
- * 
  * @param kotlin true/false if using Kotlin
- * 
  * @param gradle true/false if using Gradle
  * 
  * @returns a command that is used to create the Quarkus project
  */
-export const CreateQuarkus = async (projName : string, kotlin : boolean, gradle : boolean) : Promise<string> => {
+export const CreateQuarkus = async (projName: string, kotlin: boolean, gradle: boolean): Promise<string> => {
   const { ORGANIZATION } = process.env;
   const kotlinString: string =  kotlin ? ", kotlin" : "";
   const gradleString: string = gradle ? gradleString = "\
