@@ -60,7 +60,6 @@ export class InstallUtils {
         const str = `${bashRef} --version`;
         const result = execSync(str).toString();
         return (result.search(/is not recognized/) == -1);
-        
       } catch (err) {
         throw new Error(`Error when checking software ${software}: ${err}`);
       }
