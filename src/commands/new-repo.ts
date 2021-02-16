@@ -98,7 +98,7 @@ async function action(args) {
     execSync("git branch -m master develop", {cwd : repoPath});
     finishRepo(repoPath);
   } else {
-    const copy : string = await OsUtils.getCommand("copy");
+    const copy: string = await OsUtils.getCommand("copy");
     try {
       execSync("git init", {cwd : repoPath});
       execSync(`${copy} project-config-template.json ${folderPath}${path.sep}project-config.json`, {cwd : `.${path.sep}resources`});
