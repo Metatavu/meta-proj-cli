@@ -32,7 +32,7 @@ export class ProjConfigUtils {
    * 
    * @param data should receive the edited version of project-config.json 
    */
-  static async writeProjConfig(outerFolder : string, data : string) : Promise<void> {
+  static async writeProjConfig(outerFolder: string, data: string): Promise<void> {
     try {
       await this.checkProjConfig(outerFolder);
 
