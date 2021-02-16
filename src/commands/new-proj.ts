@@ -1,5 +1,5 @@
 import Vorpal from "vorpal";
-import { newRepo } from "./new-proj/new-repo";
+import { newRepo } from "./new-repo";
 import { test } from "./checkTest";
 import { PathUtils } from "../classes/path-utils";
 import { CreateDefault } from "./new-proj/create-default";
@@ -16,6 +16,8 @@ let givenPath = `${HOME}/.meta-proj-cli/projects`;
 async function action() {
   let projName : string = null;
   let projType : string = null;
+  let folderPath : string = null;
+  let repoPath : string = null;
 
   try {
     const nameResult = await this.prompt({
@@ -38,7 +40,7 @@ async function action() {
     });
 
     if (typeResult.type) {
-      projType= typeResult.type;
+      projType = typeResult.type;
     } else {
       throw new Error("No type was given for the project");
     }
@@ -53,12 +55,18 @@ async function action() {
       givenPath = pathResult.path;
     }
   } catch (err) {
-    throw new Error("Error: " + err);
+    throw new Error(`Error while prompting: ${err}`);
   }
 
-  givenPath = await PathUtils.fixPath(givenPath);
-  const folderPath : string = PathUtils.outerFolder(givenPath, projName);
-  const repoPath : string = PathUtils.repoFolder(givenPath, projName);
+  try {
+    givenPath = await PathUtils.fixPath(givenPath);
+    folderPath = PathUtils.outerFolder(givenPath, projName);
+    repoPath = PathUtils.repoFolder(givenPath, projName);
+
+  } catch (err) {
+    throw new Error(`Error when attempting to resolve paths: ${err}`);
+  }
+  
 
   if (projType == "Quarkus") {
     //To do: Add quarkus
@@ -77,8 +85,9 @@ async function action() {
       execSync(cmds[0]);
       execSync(cmds[1], {cwd : `.${path.sep}resources`});
       execSync(cmds[2], {cwd : `.${path.sep}resources`});
+
     } catch(err) {
-      throw new Error(err);
+      throw new Error(`Error when creating project : ${err}`);
     }
     
   }
@@ -87,6 +96,7 @@ async function action() {
     await vorpal
     .use(newRepo)
     .execSync(`new-repo ${projName} --path ${givenPath}`);
+
   } catch(err) {
     throw new Error("Encountered an error while creating repository: " + err);
   }
@@ -105,7 +115,7 @@ async function action() {
       .execSync("test");
     }
   } catch(err) {
-    throw new Error(err);
+    throw new Error(`Error while performing tests: ${err}`);
   }
 }
 

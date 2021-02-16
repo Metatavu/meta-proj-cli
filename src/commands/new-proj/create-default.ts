@@ -13,7 +13,13 @@ import { CommandNames } from "../../interfaces/types";
  * @returns an array of strings which includes the commands to be run on the new-proj thread
  */
 export const CreateDefault = async (projName : string, folderPath : string, repoPath : string) : Promise<string[]> => {
-  const copy = await OsUtils.getCommand(CommandNames.copy);
+  let copy : string = null;
+  try {
+    copy = await OsUtils.getCommand(CommandNames.copy);
+    
+  } catch (err) {
+    throw new Error(`Error when fetching command: ${err}`);
+  }
   const cmdsArray : string[] = [];
   cmdsArray.push(`mkdir ${projName}`);
   cmdsArray.push(`${copy} project-config.json ${folderPath}`);

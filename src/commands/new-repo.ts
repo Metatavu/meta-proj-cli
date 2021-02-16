@@ -1,6 +1,6 @@
 import Vorpal from "vorpal";
 import { execSync } from "child_process";
-import { PathUtils } from "../../classes/path-utils";
+import { PathUtils } from "../classes/path-utils";
 
 /**
  * Creates a new github repo with given flags, or activates a wizard to ask for settings
