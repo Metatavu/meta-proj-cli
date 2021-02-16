@@ -71,7 +71,7 @@ export class ProjConfigUtils {
   }
 
   /**
-   * gives the path to project-config.json inside a project folder
+   * Gives the path to project-config.json inside a project folder
    * 
    * @param outerFolder outer folder of project (check path-utils for more info)
    */
