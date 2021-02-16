@@ -5,6 +5,9 @@ import path from "path";
 const configFileName = "project-config.json";
 const projConfigTemplate = `.${path.sep}resources${path.sep}project-config-template.json`;
 
+/**
+ * Exports functions related to manipulating project-config-jsons (mainly reading and writing)
+ */
 export class ProjConfigUtils {
 
   /**
