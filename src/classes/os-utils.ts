@@ -91,7 +91,6 @@ export default class OsUtils {
     await UserConfigUtils.writeUserConfig(data);
   }
 
-
   /**
    * Searches the corresponding command for the corresponding OS
    * 
