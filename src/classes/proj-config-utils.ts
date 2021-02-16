@@ -42,7 +42,7 @@ export class ProjConfigUtils {
   }
 
   /**
-   * creates project-config.json from template to given folder
+   * Creates project-config.json from template to given folder
    * 
    * @param outerFolder foldern in which project-config.json should be created to
    */
