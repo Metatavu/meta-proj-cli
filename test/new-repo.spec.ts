@@ -1,5 +1,5 @@
 import Vorpal from "vorpal";
-import * as newRepo from "../src/commands/new-proj/new-repo";
+import * as newRepo from "../src/commands/new-repo";
 import child_process from "child_process";
 import dotenv from "dotenv";
 import * as path from "path";
