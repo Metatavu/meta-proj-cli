@@ -1,6 +1,11 @@
 import Vorpal from "vorpal";
 import { execSync } from "child_process";
-import { PathUtils } from "../../classes/path-utils";
+import * as path from "path";
+import { PathUtils } from "../classes/path-utils";
+import OsUtils from "../classes/os-utils";
+
+const { HOME } = process.env;
+const defaultPath = `${HOME}/.meta-proj-cli/projects`;
 
 /**
  * Creates a new github repo with given flags, or activates a wizard to ask for settings
@@ -19,10 +24,12 @@ async function action(args) {
   let publicity : string = args.options.publicity ?
     args.options.publicity :
     "private";
-  
-  let givenPath : string =  args.options.path;
-  
-  if (!publicity || !repoName || !givenPath) {
+
+  let givenPath : string =  args.options.path ?
+    args.options.path :
+    defaultPath;
+
+  if (!publicity || !repoName) {
     try {
       if (!repoName) {
         const nameResult = await this.prompt({
@@ -50,22 +57,20 @@ async function action(args) {
         name : 'description',
         message : "Give a description for the repository: "
       });
-      
-      if (!givenPath) {
-        const pathResult = await this.prompt({
-          type : 'input',
-          name : 'path',
-          message : "Set a path where to initiate repository, leave empty for default: "
-        });
+  
+      const pathResult = await this.prompt({
+        type : 'input',
+        name : 'path',
+        message : "Set a path where to initiate repository, leave empty for default: "
+      });
 
-        if (pathResult?.path) {
-          givenPath = pathResult.path;
-        }
-      }
       description = descriptionResult.description;
 
       publicity = publicityResult.publicity;
       
+      if (pathResult?.path) {
+        givenPath = pathResult.path;
+      }
     } catch(err) {
       throw new Error(`encountered error while prompting: ${err}`);
     }
@@ -76,32 +81,36 @@ async function action(args) {
   const folderPath : string = PathUtils.outerFolder(givenPath, repoName);
   const repoPath : string = PathUtils.repoFolder(givenPath, repoName);
 
-  try {
-    execSync(
-      `gh repo create\
-      ${process.env.GIT_ORGANIZATION}/${repoName}\
-      --${publicity}\
-      ${description ? `-d="${description}"` : ""}\
-      ${template ? `--template="${process.env.GIT_ORGANIZATION}/${template}"` : ""}\
-      -y`,
-      {cwd : folderPath}
-    );
+  execSync(`mkdir ${folderPath}`);
+  execSync(
+    `gh repo create\
+    ${process.env.GIT_ORGANIZATION}/${repoName}\
+    --${publicity}\
+    ${description ? `-d="${description}"` : ""}\
+    ${template ? `--template="${process.env.GIT_ORGANIZATION}/${template}"` : ""}\
+    -y`,
+    {cwd : folderPath}
+  );
 
-    if (template) {
-      execSync(`git pull -q git@github.com:${process.env.GIT_ORGANIZATION}/${template}.git`, {cwd : repoPath});
-      execSync("git branch -m master develop", {cwd : repoPath});
-      finishRepo(repoPath);
-    } else {
+  if (template) {
+    execSync(`git pull -q git@github.com:${process.env.GIT_ORGANIZATION}/${template}.git`, {cwd : repoPath});
+    execSync("git branch -m master develop", {cwd : repoPath});
+    finishRepo(repoPath);
+  } else {
+    const copy : string = await OsUtils.getCommand("copy");
+    try {
       execSync("git init", {cwd : repoPath});
+      execSync(`${copy} project-config.json ${folderPath}`, {cwd : `.${path.sep}resources`});
       execSync("git checkout -q -b develop", {cwd : repoPath});
+      execSync(`${copy} README.md ${repoPath}`, {cwd : `.${path.sep}resources`});
       execSync(`git add README.md`, {cwd : repoPath});
       execSync(`git commit -q -m "first commit"`, {cwd : repoPath});
       execSync(`git push -q origin develop`, {cwd : repoPath});
       finishRepo(repoPath);
+    } catch (err) {
+      throw new Error(`Fetching command ${copy} didn't work: ` + err);
     }
-} catch (err) {
-  throw new Error(`Error when initing a repository: ${err}`);
-}
+  }
 }
 
 function finishRepo (repoPath) {
