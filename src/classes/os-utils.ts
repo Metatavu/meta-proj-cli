@@ -92,7 +92,6 @@ export default class OsUtils {
   }
 
 
-
   /**
    * Searches the corresponding command for the corresponding OS
    * 
