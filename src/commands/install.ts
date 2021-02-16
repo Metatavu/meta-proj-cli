@@ -1,6 +1,4 @@
 import Vorpal from "vorpal";
-//import { execSync } from "child_process";
-//import { InstallUtils } from "../classes/install-utils";
 
 /**
  * Installs software with a given flag, or activates a wizard to give options
