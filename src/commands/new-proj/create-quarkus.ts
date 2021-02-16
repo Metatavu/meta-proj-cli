@@ -17,9 +17,9 @@ export const CreateQuarkus = async (projName : string, kotlin : boolean, gradle 
   -DbuildTool=gradle" : gradleString = "";
 
   return `mvn io.quarkus:quarkus-maven-plugin:1.11.3.Final:create \
-  -DprojectGroupId=${orgName} \
+  -DprojectGroupId=${ORGANIZATION} \
   -DprojectArtifactId=${projName} \
-  -DclassName="${orgName}.${projName}" \
+  -DclassName="${ORGANIZATION}.${projName}" \
   -Dpath="/${projName}" \
   -Dextensions="resteasy, resteasy-jackson${kotlinString}" ${gradleString}`;
 }
