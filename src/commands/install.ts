@@ -44,7 +44,7 @@ async function action(args){
  * 
  * @param vorpal vorpal instance
  */
-export const installWizard = (vorpal : Vorpal) : Vorpal.Command => vorpal
+export const installWizard = (vorpal: Vorpal): Vorpal.Command => vorpal
   .command("install", `Installs required software, run without flags to enter wizard mode`)
   .option(
     '-s, --software <type>',
