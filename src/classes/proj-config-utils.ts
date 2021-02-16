@@ -75,7 +75,7 @@ export class ProjConfigUtils {
    * 
    * @param outerFolder outer folder of project (check path-utils for more info)
    */
-  private static outerToFile(outerFolder : string) : string {
+  private static outerToFile(outerFolder: string): string {
     return path.join(outerFolder, configFileName);
   }
 }
