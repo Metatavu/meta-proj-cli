@@ -60,7 +60,7 @@ export class ProjConfigUtils {
    * 
    * @param outerFolder the path to project-config.json of the project
    */
-  private static async checkProjConfig(outerFolder : string) : Promise<void> {
+  private static async checkProjConfig(outerFolder: string): Promise<void> {
     try {
       if (!fs.existsSync(this.outerToFile(outerFolder))) {
         this.createProjConfig(outerFolder); 
