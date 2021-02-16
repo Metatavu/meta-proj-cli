@@ -85,6 +85,9 @@ export enum CommandNames {
   installUtil = "installation utility"
 }
 
+/**
+ * Global constants for software names
+ */
 export enum Software {
   NodeJs = "NodeJs",
   GitHub = "GitHub",

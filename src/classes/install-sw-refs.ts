@@ -1,15 +1,20 @@
 import { Software } from "../interfaces/types";
 
+/**
+ * Provides bash command parts for the InstallUtils class
+ */
 export class InstallSwRefs {
 
   /**
    * Get Install Reference for Installation Utils class
    * 
+   * @param installUtil is the installation utility which needs its corresponding command
+   * 
    * @param software is the software in question
    * 
    * @returns installation reference used in bash to install the software
    */
-  public static async getInstallRef(installUtil : string, software : string) : Promise<string> {
+  public static async getInstallRef(installUtil: string, software: string): Promise<string> {
 
     switch (software) {
       case Software.NodeJs:
@@ -53,7 +58,7 @@ export class InstallSwRefs {
    * 
    * @returns bash reference for the software
    */
-  public static async getBashRef(software : string) : Promise<string> {
+  public static async getBashRef(software: string): Promise<string> {
     switch (software) {
       case Software.NodeJs:
         return "npm";

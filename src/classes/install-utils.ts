@@ -3,6 +3,9 @@ import OsUtils from "./os-utils"
 import { OperatingSystems, CommandNames } from "../interfaces/types";
 import { InstallSwRefs } from "./install-sw-refs";
 
+/**
+ * Provides installation utilities for installation command
+ */
 export class InstallUtils {
 
   /**
@@ -10,8 +13,9 @@ export class InstallUtils {
    * 
    * @returns Homebrew installation command that is run by the wizard
    */
-  public static async installBrew() : Promise<string> {
+  public static async installBrew(): Promise<string> {
     const os : string = await OsUtils.getOS();
+
     if (os == OperatingSystems.MAC){
       return '/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"';
     }
@@ -24,7 +28,7 @@ export class InstallUtils {
    * 
    * @returns software installation command that is run by the wizard
    */
-  public static async installSW(software : string) : Promise<string> {
+  public static async installSW(software: string): Promise<string> {
     const installUtil : string = await OsUtils.getCommand(CommandNames.installUtil);
     const installRef : string = await InstallSwRefs.getInstallRef(installUtil, software);
 
@@ -39,25 +43,28 @@ export class InstallUtils {
    * @returns a boolean that indicates if a software has already been installed
    */
   public static async isInstalled(software : string) : Promise<boolean> {
-    let result : string;
-    software = await InstallSwRefs.getBashRef(software);
-    if(software == "brew"){
+    const bashRef = await InstallSwRefs.getBashRef(software);
+
+    if(bashRef == "brew"){
       try {
-        const str = `which ${software}`;
-        result = execSync(str).toString();
+        const str = `which ${bashRef}`;
+        const result = execSync(str).toString();
+        return (result.search(/not found/) == -1);
+
       } catch (err) {
         throw new Error(`Error when checking software ${software}: ${err}`);
       }
-      return (result.search(/not found/) == -1);
+      
 
     } else {
       try {
-        const str = `${software} --version`;
-        result = execSync(str).toString();
+        const str = `${bashRef} --version`;
+        const result = execSync(str).toString();
+        return (result.search(/is not recognized/) == -1);
+        
       } catch (err) {
         throw new Error(`Error when checking software ${software}: ${err}`);
       }
-      return (result.search(/is not recognized/) == -1);
     }
   }
 }
