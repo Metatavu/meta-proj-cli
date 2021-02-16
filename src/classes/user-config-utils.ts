@@ -7,17 +7,11 @@ const userConfigTemplate = `.${path.sep}resources${path.sep}user-config-template
 
 /**
  * Offers functions to read and write the cli's user config
- * 
- * @function readUserConfig runs a check after which it reads and returns the contents of user-config.json
- * 
- * @function writeUserConfig takes the edited version of the contents of user-config.json and writes them after a check
- * 
- * @function checkUserConfig checks that user-config.json exists and creates it, if it doesn't
  */
 export class UserConfigUtils {
 
   /**
-   * Reads user config
+   * runs a check after which it reads and returns the contents of user-config.json
    * 
    * @returns user config as a JSON object that has an interface
    */
@@ -33,7 +27,7 @@ export class UserConfigUtils {
   }
 
   /**
-   * Writes to user config
+   * takes the edited version of the contents of user-config.json and writes them after a check
    * 
    * @param data should receive the edited version of user-config.json 
    */
@@ -48,7 +42,7 @@ export class UserConfigUtils {
   }
 
   /**
-   * Checks if user-config.json exists in the root and creates it from template if it doesn't
+   * checks that user-config.json exists and if it doesn't, creates it
    */
   private static async checkUserConfig() : Promise<void> {
     try {
