@@ -21,7 +21,7 @@ export class UserConfigUtils {
    * 
    * @returns user config as a JSON object that has an interface
    */
-  static async readUserConfig() : Promise<UserConfigJson> {
+  static async readUserConfig(): Promise<UserConfigJson> {
     try {
       await this.checkUserConfig();
 
