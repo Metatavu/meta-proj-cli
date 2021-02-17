@@ -3,7 +3,6 @@ import * as newRepo from "../src/commands/new-repo";
 import child_process from "child_process";
 import dotenv from "dotenv";
 import * as path from "path";
-import { cmdFixer } from "../src/classes/exec-sync-utils";
 
 /**
  * Testing creating a GitHub repository as well as creating a project locally.
@@ -16,8 +15,7 @@ it('inits a GitHub repository', () => {
   const description = null;
   const template = null;
   child_process.execSync = jest.fn();
-
-  const fixedGh = cmdFixer(
+  child_process.execSync(
     `gh repo create\
     ${repoName}\
     --${publicity}\
@@ -25,7 +23,6 @@ it('inits a GitHub repository', () => {
     ${template ? `--template="${process.env.GIT_ORGANIZATION}/${template}"` : ""}\
     -y`
   );
-  child_process.execSync(fixedGh);
 
   expect((child_process.execSync)).toReturn();
 });
@@ -48,8 +45,7 @@ it('creates project folder', () => {
   const { HOME } = process.env;
   const defaultPath = `${HOME}/.meta-proj-cli/projects`;
 
-  const fixedMkdir = cmdFixer(`mkdir ${defaultPath + path.sep}test`)
-  child_process.execSync(fixedMkdir);
+  child_process.execSync(`mkdir ${defaultPath + path.sep}test`);
 
   expect((dotenv.config)).toHaveBeenCalled();
   expect((child_process.execSync)).toReturn();
