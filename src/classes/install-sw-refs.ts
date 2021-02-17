@@ -9,9 +9,7 @@ export class InstallSwRefs {
    * Get Install Reference for Installation Utils class
    * 
    * @param installUtil is the installation utility which needs its corresponding command
-   * 
    * @param software is the software in question
-   * 
    * @returns installation reference used in bash to install the software
    */
   public static async getInstallRef(installUtil: string, software: string): Promise<string> {
