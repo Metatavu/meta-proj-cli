@@ -82,30 +82,38 @@ async function action(args) {
   const folderPath : string = PathUtils.outerFolder(givenPath, repoName);
   const repoPath : string = PathUtils.repoFolder(givenPath, repoName);
 
-  execSync(cmdFixer(`mkdir ${folderPath}`));
-  execSync(
-    cmdFixer(
-      `gh repo create\
-      ${process.env.GIT_ORGANIZATION}/${repoName}\
-      --${publicity}\
-      ${description ? `-d="${description}"` : ""}\
-      ${template ? `--template="${process.env.GIT_ORGANIZATION}/${template}"` : ""}\
-      -y`
-    ),
-    {cwd : folderPath}
-  );
+  const fixedMkdir = cmdFixer(`mkdir ${folderPath}`);
+  execSync(fixedMkdir);
+
+  const fixedGh = cmdFixer(
+    `gh repo create\
+    ${process.env.GIT_ORGANIZATION}/${repoName}\
+    --${publicity}\
+    ${description ? `-d="${description}"` : ""}\
+    ${template ? `--template="${process.env.GIT_ORGANIZATION}/${template}"` : ""}\
+    -y`
+  )
+  execSync(fixedGh, {cwd : folderPath});
 
   if (template) {
-    execSync(cmdFixer(`git pull -q git@github.com:${process.env.GIT_ORGANIZATION}/${template}.git`), {cwd : repoPath});
+    const fixedPull = cmdFixer(`git pull -q git@github.com:${process.env.GIT_ORGANIZATION}/${template}.git`);
+    execSync(fixedPull, {cwd : repoPath});
+
     execSync("git branch -m master develop", {cwd : repoPath});
     finishRepo(repoPath);
   } else {
     const copy : string = await OsUtils.getCommand("copy");
     try {
       execSync("git init", {cwd : repoPath});
-      execSync(cmdFixer(`${copy} project-config.json ${folderPath}`), {cwd : `.${path.sep}resources`});
+
+      const fixedProjCopy = cmdFixer(`${copy} project-config.json ${folderPath}`);
+      execSync(fixedProjCopy, {cwd : `.${path.sep}resources`});
+
       execSync("git checkout -q -b develop", {cwd : repoPath});
-      execSync(cmdFixer(`${copy} README.md ${repoPath}`), {cwd : `.${path.sep}resources`});
+
+      const fixedReadmeCopy = cmdFixer(`${copy} README.md ${repoPath}`);
+      execSync(fixedReadmeCopy, {cwd : `.${path.sep}resources`});
+      
       execSync(`git add README.md`, {cwd : repoPath});
       execSync(`git commit -q -m "first commit"`, {cwd : repoPath});
       execSync(`git push -q origin develop`, {cwd : repoPath});

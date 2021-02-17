@@ -46,7 +46,8 @@ export class PathUtils {
       const activeOs = await OsUtils.getOS();
       givenPath = await PathUtils.translatePath(givenPath, activeOs);
       if (!fs.existsSync(givenPath)) {
-        execSync(cmdFixer(`mkdir ${givenPath}`));
+        const fixedMkdir = cmdFixer(`mkdir ${givenPath}`);
+        execSync(fixedMkdir);
       }
     } catch(err) {
       throw new Error(`Error when checking or creating path: ${err}`);

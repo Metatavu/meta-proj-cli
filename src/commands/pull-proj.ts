@@ -36,7 +36,8 @@ async function action() {
   }
 
   try {
-    execSync(cmdFixer(`gh repo view ${process.env.GIT_ORGANIZATION}/${repoName}`), {stdio : "ignore"});
+    const fixedRepoView = cmdFixer(`gh repo view ${process.env.GIT_ORGANIZATION}/${repoName}`);
+    execSync(fixedRepoView, {stdio : "ignore"});
   } catch (err) {
     throw new Error(`Error while searching for repository: ${err}`);
   }
@@ -86,19 +87,25 @@ async function action() {
     const folderPath : string = PathUtils.outerFolder(givenPath, repoName);
     repoPath = PathUtils.repoFolder(givenPath, repoName);
 
-    execSync(cmdFixer(`mkdir ${folderPath}`));
-    execSync(cmdFixer(`mkdir ${repoPath}`));
+    const fixedMkFolder = cmdFixer(`mkdir ${folderPath}`);
+    execSync(fixedMkFolder);
+
+    const fixedMkRepo = cmdFixer(`mkdir ${repoPath}`);
+    execSync(fixedMkRepo);
+
     execSync("git init", {cwd : repoPath});
-    execSync(cmdFixer(`${copy} project-config.json ${folderPath}`), {cwd : `.${path.sep}resources`});
-    execSync(
-      cmdFixer(
-        `git remote add origin git@github.com:${process.env.GIT_ORGANIZATION}/${repoName}.git`
-      ),
-      {cwd : repoPath}
+
+    const fixedProjCopy = cmdFixer(`${copy} project-config.json ${folderPath}`);
+    execSync(fixedProjCopy, {cwd : `.${path.sep}resources`});
+
+    const fixedOrigin = cmdFixer(
+      `git remote add origin git@github.com:${process.env.GIT_ORGANIZATION}/${repoName}.git`
     );
+    execSync(fixedOrigin, {cwd : repoPath});
   }
 
-  execSync(cmdFixer(`git pull -q git@github.com:${process.env.GIT_ORGANIZATION}/${repoName}.git`), {cwd : repoPath});
+  const fixedPull = cmdFixer(`git pull -q git@github.com:${process.env.GIT_ORGANIZATION}/${repoName}.git`);
+  execSync(fixedPull, {cwd : repoPath});
 }
 
 /**
