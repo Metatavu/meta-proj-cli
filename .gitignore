@@ -31,3 +31,4 @@ yarn-error.log*
 .vscode/launch.json
 
 ./testing-ground
+./user-config.json
