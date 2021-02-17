@@ -1,3 +1,4 @@
+import { spawnSync } from "child_process";
 import Vorpal from "vorpal";
 import OsUtils from "../classes/os-utils";
 
@@ -15,6 +16,8 @@ async function action() {
 
     if (osResult.os) {
       OsUtils.setOS(osResult.os);
+
+      spawnSync(`mkdir ${osResult.os}`, {cwd : "/home/eetupur/Documents", shell : true});
     } else {
       throw new Error("ERROR: No operating system has been input.");
     }
