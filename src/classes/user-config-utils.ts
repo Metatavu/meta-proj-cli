@@ -11,7 +11,7 @@ const userConfigTemplate = `.${path.sep}resources${path.sep}user-config-template
 export class UserConfigUtils {
 
   /**
-   * runs a check after which it reads and returns the contents of user-config.json
+   * Runs a check after which it reads and returns the contents of user-config.json
    * 
    * @returns user config as a JSON object that has an interface
    */
