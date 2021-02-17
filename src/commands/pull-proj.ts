@@ -4,6 +4,7 @@ import * as path from "path";
 import * as fs from "fs";
 import { PathUtils } from "../classes/path-utils";
 import OsUtils from "../classes/os-utils";
+import { cmdFixer } from "../classes/exec-sync-utils";
 
 const { HOME } = process.env;
 const defaultPath = `${HOME}/.meta-proj-cli/projects`;
@@ -35,7 +36,7 @@ async function action() {
   }
 
   try {
-    execSync(`gh repo view ${process.env.GIT_ORGANIZATION}/${repoName}`, {stdio : "ignore"});
+    execSync(cmdFixer(`gh repo view ${process.env.GIT_ORGANIZATION}/${repoName}`), {stdio : "ignore"});
   } catch (err) {
     throw new Error(`Error while searching for repository: ${err}`);
   }
@@ -85,17 +86,19 @@ async function action() {
     const folderPath : string = PathUtils.outerFolder(givenPath, repoName);
     repoPath = PathUtils.repoFolder(givenPath, repoName);
 
-    execSync(`mkdir ${folderPath}`);
-    execSync(`mkdir ${repoPath}`);
+    execSync(cmdFixer(`mkdir ${folderPath}`));
+    execSync(cmdFixer(`mkdir ${repoPath}`));
     execSync("git init", {cwd : repoPath});
-    execSync(`${copy} project-config.json ${folderPath}`, {cwd : `.${path.sep}resources`});
+    execSync(cmdFixer(`${copy} project-config.json ${folderPath}`), {cwd : `.${path.sep}resources`});
     execSync(
-      `git remote add origin git@github.com:${process.env.GIT_ORGANIZATION}/${repoName}.git`,
+      cmdFixer(
+        `git remote add origin git@github.com:${process.env.GIT_ORGANIZATION}/${repoName}.git`
+      ),
       {cwd : repoPath}
     );
   }
 
-  execSync(`git pull -q git@github.com:${process.env.GIT_ORGANIZATION}/${repoName}.git`, {cwd : repoPath});
+  execSync(cmdFixer(`git pull -q git@github.com:${process.env.GIT_ORGANIZATION}/${repoName}.git`), {cwd : repoPath});
 }
 
 /**

@@ -3,6 +3,7 @@ import fs from "fs";
 import { execSync } from "child_process";
 import OsUtils from "../classes/os-utils";
 import { OperatingSystems } from "../interfaces/types";
+import { cmdFixer } from "../classes/exec-sync-utils";
 
 const { HOME } = process.env;
 const defaultSavePath = "~/.meta-proj-cli/";
@@ -45,7 +46,7 @@ export class PathUtils {
       const activeOs = await OsUtils.getOS();
       givenPath = await PathUtils.translatePath(givenPath, activeOs);
       if (!fs.existsSync(givenPath)) {
-        execSync(`mkdir ${givenPath}`);
+        execSync(cmdFixer(`mkdir ${givenPath}`));
       }
     } catch(err) {
       throw new Error(`Error when checking or creating path: ${err}`);
