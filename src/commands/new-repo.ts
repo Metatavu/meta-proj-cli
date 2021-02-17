@@ -1,5 +1,5 @@
 import Vorpal from "vorpal";
-import { execSync } from "child_process";
+import { execSync, spawnSync } from "child_process";
 import * as path from "path";
 import { PathUtils } from "../classes/path-utils";
 import OsUtils from "../classes/os-utils";
@@ -81,43 +81,46 @@ async function action(args) {
   const folderPath : string = PathUtils.outerFolder(givenPath, repoName);
   const repoPath : string = PathUtils.repoFolder(givenPath, repoName);
 
-  execSync(`mkdir ${folderPath}`);
-  execSync(
-    `gh repo create\
-    ${process.env.GIT_ORGANIZATION}/${repoName}\
-    --${publicity}\
-    ${description ? `-d="${description}"` : ""}\
-    ${template ? `--template="${process.env.GIT_ORGANIZATION}/${template}"` : ""}\
-    -y`,
-    {cwd : folderPath}
-  );
+  const copy : string = await OsUtils.getCommand("copy");
+  const spawn = spawnSync(`${copy} project-config.json ${folderPath}`, {cwd : `.${path.sep}resources`, shell : false});
 
-  if (template) {
-    execSync(`git pull -q git@github.com:${process.env.GIT_ORGANIZATION}/${template}.git`, {cwd : repoPath});
-    execSync("git branch -m master develop", {cwd : repoPath});
-    finishRepo(repoPath);
-  } else {
-    const copy : string = await OsUtils.getCommand("copy");
-    try {
-      execSync("git init", {cwd : repoPath});
-      execSync(`${copy} project-config.json ${folderPath}`, {cwd : `.${path.sep}resources`});
-      execSync("git checkout -q -b develop", {cwd : repoPath});
-      execSync(`${copy} README.md ${repoPath}`, {cwd : `.${path.sep}resources`});
-      execSync(`git add README.md`, {cwd : repoPath});
-      execSync(`git commit -q -m "first commit"`, {cwd : repoPath});
-      execSync(`git push -q origin develop`, {cwd : repoPath});
-      finishRepo(repoPath);
-    } catch (err) {
-      throw new Error(`Fetching command ${copy} didn't work: ` + err);
-    }
-  }
+  // execSync(`mkdir ${folderPath}`);
+  // execSync(
+  //   `gh repo create\
+  //   ${process.env.GIT_ORGANIZATION}/${repoName}\
+  //   --${publicity}\
+  //   ${description ? `-d="${description}"` : ""}\
+  //   ${template ? `--template="${process.env.GIT_ORGANIZATION}/${template}"` : ""}\
+  //   -y`,
+  //   {cwd : folderPath}
+  // );
+
+  // if (template) {
+  //   execSync(`git pull -q git@github.com:${process.env.GIT_ORGANIZATION}/${template}.git`, {cwd : repoPath});
+  //   execSync("git branch -m master develop", {cwd : repoPath});
+  //   finishRepo(repoPath);
+  // } else {
+  //   const copy : string = await OsUtils.getCommand("copy");
+  //   try {
+  //     execSync("git init", {cwd : repoPath});
+  //     execSync(`${copy} project-config.json ${folderPath}`, {cwd : `.${path.sep}resources`});
+  //     execSync("git checkout -q -b develop", {cwd : repoPath});
+  //     execSync(`${copy} README.md ${repoPath}`, {cwd : `.${path.sep}resources`});
+  //     execSync(`git add README.md`, {cwd : repoPath});
+  //     execSync(`git commit -q -m "first commit"`, {cwd : repoPath});
+  //     execSync(`git push -q origin develop`, {cwd : repoPath});
+  //     finishRepo(repoPath);
+  //   } catch (err) {
+  //     throw new Error(`Fetching command ${copy} didn't work: ` + err);
+  //   }
+  // }
 }
 
-function finishRepo (repoPath) {
-  execSync(`git checkout -q -b master`, {cwd : repoPath}); 
-  execSync(`git push -q origin master`, {cwd : repoPath, stdio : ["ignore", "ignore", "ignore"]});
-  execSync(`git checkout -q develop`, {cwd : repoPath});
-}
+// function finishRepo (repoPath) {
+//   execSync(`git checkout -q -b master`, {cwd : repoPath}); 
+//   execSync(`git push -q origin master`, {cwd : repoPath, stdio : ["ignore", "ignore", "ignore"]});
+//   execSync(`git checkout -q develop`, {cwd : repoPath});
+// }
 
 /**
  * Exports contents of file to be usable by main.ts
