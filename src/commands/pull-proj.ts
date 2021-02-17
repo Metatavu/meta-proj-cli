@@ -1,10 +1,9 @@
 import Vorpal from "vorpal";
-import { execSync } from "child_process";
 import * as path from "path";
 import * as fs from "fs";
 import { PathUtils } from "../classes/path-utils";
 import OsUtils from "../classes/os-utils";
-import { cmdFixer } from "../classes/exec-sync-utils";
+import { runExecSync } from "../classes/exec-sync-utils";
 
 const { HOME } = process.env;
 const defaultPath = `${HOME}/.meta-proj-cli/projects`;
@@ -36,8 +35,7 @@ async function action() {
   }
 
   try {
-    const fixedRepoView = cmdFixer(`gh repo view ${process.env.GIT_ORGANIZATION}/${repoName}`);
-    execSync(fixedRepoView, {stdio : "ignore"});
+    runExecSync(`gh repo view ${process.env.GIT_ORGANIZATION}/${repoName}`, {stdio : "ignore"});
   } catch (err) {
     throw new Error(`Error while searching for repository: ${err}`);
   }
@@ -87,25 +85,19 @@ async function action() {
     const folderPath : string = PathUtils.outerFolder(givenPath, repoName);
     repoPath = PathUtils.repoFolder(givenPath, repoName);
 
-    const fixedMkFolder = cmdFixer(`mkdir ${folderPath}`);
-    execSync(fixedMkFolder);
+    runExecSync(`mkdir ${folderPath}`);
+    runExecSync(`mkdir ${repoPath}`);
+    runExecSync("git init", {cwd : repoPath});
 
-    const fixedMkRepo = cmdFixer(`mkdir ${repoPath}`);
-    execSync(fixedMkRepo);
+    runExecSync(`${copy} project-config.json ${folderPath}`, {cwd : `.${path.sep}resources`});
 
-    execSync("git init", {cwd : repoPath});
-
-    const fixedProjCopy = cmdFixer(`${copy} project-config.json ${folderPath}`);
-    execSync(fixedProjCopy, {cwd : `.${path.sep}resources`});
-
-    const fixedOrigin = cmdFixer(
-      `git remote add origin git@github.com:${process.env.GIT_ORGANIZATION}/${repoName}.git`
+    runExecSync(
+      `git remote add origin git@github.com:${process.env.GIT_ORGANIZATION}/${repoName}.git`,
+      {cwd : repoPath}
     );
-    execSync(fixedOrigin, {cwd : repoPath});
   }
 
-  const fixedPull = cmdFixer(`git pull -q git@github.com:${process.env.GIT_ORGANIZATION}/${repoName}.git`);
-  execSync(fixedPull, {cwd : repoPath});
+  runExecSync(`git pull -q git@github.com:${process.env.GIT_ORGANIZATION}/${repoName}.git`, {cwd : repoPath});
 }
 
 /**

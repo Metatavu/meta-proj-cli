@@ -1,5 +1,5 @@
 import Vorpal from "vorpal";
-import { execSync } from "child_process";
+import { runExecSync } from "../classes/exec-sync-utils";
 
 const { HOME } = process.env;
 
@@ -18,18 +18,18 @@ async function action(args: { options: { path: string; }; }) {
       HOME + argPath.slice(1) :
       argPath;
 
-    execSync(`mkdir ${path}`);
-    execSync(`cp README.md ${path}`, { cwd : "../resources"});
+    runExecSync(`mkdir ${path}`);
+    runExecSync(`cp README.md ${path}`, { cwd : "../resources"});
   }
 
-  execSync("git init", {cwd : path});
-  execSync("git add README.md", {cwd : path});
-  execSync('git commit -m "first commit"', {cwd : path});
-  execSync(`git remote add origin ${process.env.GIT_REPO_BASE_PATH}`, {cwd : path});
-  execSync("git push -u origin master", {cwd : path});
+  runExecSync("git init", {cwd : path});
+  runExecSync("git add README.md", {cwd : path});
+  runExecSync('git commit -m "first commit"', {cwd : path});
+  runExecSync(`git remote add origin ${process.env.GIT_REPO_BASE_PATH}`, {cwd : path});
+  runExecSync("git push -u origin master", {cwd : path});
 
   if (!args.options.path) {
-    execSync("rm -r .git", {cwd : path});
+    runExecSync("rm -r .git", {cwd : path});
   }
 }
 
