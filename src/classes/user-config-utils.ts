@@ -42,7 +42,7 @@ export class UserConfigUtils {
   }
 
   /**
-   * checks that user-config.json exists and if it doesn't, creates it
+   * Checks that user-config.json exists and if it doesn't, creates it
    */
   private static async checkUserConfig() : Promise<void> {
     try {
