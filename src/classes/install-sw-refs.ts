@@ -53,7 +53,6 @@ export class InstallSwRefs {
    * Get bash references for Installation Utils class
    * 
    * @param software is the software in question
-   * 
    * @returns bash reference for the software
    */
   public static async getBashRef(software: string): Promise<string> {
