@@ -45,7 +45,7 @@ export class PathUtils {
       const activeOs = await OsUtils.getOS();
       givenPath = await PathUtils.translatePath(givenPath, activeOs);
       if (!fs.existsSync(givenPath)) {
-        runExecSync(`mkdir ${givenPath}`);
+        await runExecSync(`mkdir ${givenPath}`);
       }
     } catch(err) {
       throw new Error(`Error when checking or creating path: ${err}`);

@@ -18,18 +18,18 @@ async function action(args: { options: { path: string; }; }) {
       HOME + argPath.slice(1) :
       argPath;
 
-    runExecSync(`mkdir ${path}`);
-    runExecSync(`cp README.md ${path}`, { cwd : "../resources"});
+      await runExecSync(`mkdir ${path}`);
+      await runExecSync(`cp README.md ${path}`, { cwd : "../resources"});
   }
 
-  runExecSync("git init", {cwd : path});
-  runExecSync("git add README.md", {cwd : path});
-  runExecSync('git commit -m "first commit"', {cwd : path});
-  runExecSync(`git remote add origin ${process.env.GIT_REPO_BASE_PATH}`, {cwd : path});
-  runExecSync("git push -u origin master", {cwd : path});
+  await runExecSync("git init", {cwd : path});
+  await runExecSync("git add README.md", {cwd : path});
+  await runExecSync('git commit -m "first commit"', {cwd : path});
+  await runExecSync(`git remote add origin ${process.env.GIT_REPO_BASE_PATH}`, {cwd : path});
+  await runExecSync("git push -u origin master", {cwd : path});
 
   if (!args.options.path) {
-    runExecSync("rm -r .git", {cwd : path});
+    await runExecSync("rm -r .git", {cwd : path});
   }
 }
 

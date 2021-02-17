@@ -81,9 +81,9 @@ async function action(args) {
   const folderPath : string = PathUtils.outerFolder(givenPath, repoName);
   const repoPath : string = PathUtils.repoFolder(givenPath, repoName);
 
-  runExecSync(`mkdir ${folderPath}`);
+  await runExecSync(`mkdir ${folderPath}`);
 
-  runExecSync(
+  await runExecSync(
     `gh repo create\
     ${process.env.GIT_ORGANIZATION}/${repoName}\
     --${publicity}\
@@ -94,29 +94,29 @@ async function action(args) {
   );
 
   if (template) {
-    runExecSync(`git pull -q git@github.com:${process.env.GIT_ORGANIZATION}/${template}.git`, {cwd : repoPath});
-    runExecSync("git branch -m master develop", {cwd : repoPath});
+    await runExecSync(`git pull -q git@github.com:${process.env.GIT_ORGANIZATION}/${template}.git`, {cwd : repoPath});
+    await runExecSync("git branch -m master develop", {cwd : repoPath});
   } else {
     const copy : string = await OsUtils.getCommand("copy");
     try {
-      runExecSync("git init", {cwd : repoPath});
-      runExecSync(`${copy} project-config.json ${folderPath}`, {cwd : `.${path.sep}resources`});
-      runExecSync("git checkout -q -b develop", {cwd : repoPath});
-      runExecSync(`${copy} README.md ${repoPath}`, {cwd : `.${path.sep}resources`});
-      runExecSync(`git add README.md`, {cwd : repoPath});
-      runExecSync(`git commit -q -m "first commit"`, {cwd : repoPath});
-      runExecSync(`git push -q origin develop`, {cwd : repoPath});
-      finishRepo(repoPath);
+      await runExecSync("git init", {cwd : repoPath});
+      await runExecSync(`${copy} project-config.json ${folderPath}`, {cwd : `.${path.sep}resources`});
+      await runExecSync("git checkout -q -b develop", {cwd : repoPath});
+      await runExecSync(`${copy} README.md ${repoPath}`, {cwd : `.${path.sep}resources`});
+      await runExecSync(`git add README.md`, {cwd : repoPath});
+      await runExecSync(`git commit -q -m "first commit"`, {cwd : repoPath});
+      await runExecSync(`git push -q origin develop`, {cwd : repoPath});
+      await finishRepo(repoPath);
     } catch (err) {
       throw new Error(`Fetching command ${copy} didn't work: ` + err);
     }
   }
 }
 
-function finishRepo (repoPath) {
-  runExecSync(`git checkout -q -b master`, {cwd : repoPath}); 
-  runExecSync(`git push -q origin master`, {cwd : repoPath, stdio : ["ignore", "ignore", "ignore"]});
-  runExecSync(`git checkout -q develop`, {cwd : repoPath});
+async function finishRepo (repoPath) {
+  await runExecSync(`git checkout -q -b master`, {cwd : repoPath}); 
+  await runExecSync(`git push -q origin master`, {cwd : repoPath, stdio : ["ignore", "ignore", "ignore"]});
+  await runExecSync(`git checkout -q develop`, {cwd : repoPath});
 }
 
 /**

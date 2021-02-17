@@ -35,7 +35,7 @@ async function action() {
   }
 
   try {
-    runExecSync(`gh repo view ${process.env.GIT_ORGANIZATION}/${repoName}`, {stdio : "ignore"});
+    await runExecSync(`gh repo view ${process.env.GIT_ORGANIZATION}/${repoName}`, {stdio : "ignore"});
   } catch (err) {
     throw new Error(`Error while searching for repository: ${err}`);
   }
@@ -85,19 +85,19 @@ async function action() {
     const folderPath : string = PathUtils.outerFolder(givenPath, repoName);
     repoPath = PathUtils.repoFolder(givenPath, repoName);
 
-    runExecSync(`mkdir ${folderPath}`);
-    runExecSync(`mkdir ${repoPath}`);
-    runExecSync("git init", {cwd : repoPath});
+    await runExecSync(`mkdir ${folderPath}`);
+    await runExecSync(`mkdir ${repoPath}`);
+    await runExecSync("git init", {cwd : repoPath});
 
-    runExecSync(`${copy} project-config.json ${folderPath}`, {cwd : `.${path.sep}resources`});
+    await runExecSync(`${copy} project-config.json ${folderPath}`, {cwd : `.${path.sep}resources`});
 
-    runExecSync(
+    await runExecSync(
       `git remote add origin git@github.com:${process.env.GIT_ORGANIZATION}/${repoName}.git`,
       {cwd : repoPath}
     );
   }
 
-  runExecSync(`git pull -q git@github.com:${process.env.GIT_ORGANIZATION}/${repoName}.git`, {cwd : repoPath});
+  await runExecSync(`git pull -q git@github.com:${process.env.GIT_ORGANIZATION}/${repoName}.git`, {cwd : repoPath});
 }
 
 /**
