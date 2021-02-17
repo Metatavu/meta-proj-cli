@@ -31,7 +31,7 @@ export class UserConfigUtils {
    * 
    * @param data should receive the edited version of user-config.json 
    */
-  static async writeUserConfig(data : string): Promise<void> {
+  static async writeUserConfig(data: string): Promise<void> {
     try {
       await this.checkUserConfig();
 
