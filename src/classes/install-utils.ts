@@ -25,12 +25,11 @@ export class InstallUtils {
    * Install software command for bash
    * 
    * @param software is the desired software to be installed
-   * 
    * @returns software installation command that is run by the wizard
    */
   public static async installSW(software: string): Promise<string> {
-    const installUtil : string = await OsUtils.getCommand(CommandNames.installUtil);
-    const installRef : string = await InstallSwRefs.getInstallRef(installUtil, software);
+    const installUtil: string = await OsUtils.getCommand(CommandNames.installUtil);
+    const installRef: string = await InstallSwRefs.getInstallRef(installUtil, software);
 
     return `${installUtil} install ${installRef}`;
   }
