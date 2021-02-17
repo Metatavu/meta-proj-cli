@@ -27,7 +27,7 @@ export class UserConfigUtils {
   }
 
   /**
-   * takes the edited version of the contents of user-config.json and writes them after a check
+   * Takes the edited version of the contents of user-config.json and writes them after a check
    * 
    * @param data should receive the edited version of user-config.json 
    */
