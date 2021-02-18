@@ -8,7 +8,7 @@ import { execSync, ExecSyncOptionsWithBufferEncoding } from "child_process";
  */
 export const runExecSync = async (command: string, options?: ExecSyncOptionsWithBufferEncoding): Promise<string | void> => {
   try {
-    return execSync(command, options)?.toString();
+    return execSync(command, options)?.toString(); //NOSONAR
   } catch (err) {
     throw new Error(`Error while executing command ${command}, with options ${options}. Error: ${err}`);
   }
