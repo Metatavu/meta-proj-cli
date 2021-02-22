@@ -93,7 +93,7 @@ export default class YamlUtils {
    */
   private static setupService = (args: any, file: any): any => {
     if (args.ports) {
-      file.spec.ports = []
+      file.spec.ports = [];
       for (let port in args.ports) file.spec.ports.push(port);
     }
     file.spec.selector.app = args.name;
