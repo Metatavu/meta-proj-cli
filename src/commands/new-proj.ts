@@ -16,6 +16,7 @@ let givenPath = `${HOME}/.meta-proj-cli/projects`;
 async function action() {
   let projName : string = null;
   let projType : string = null;
+  let projVm : string = null;
   let folderPath : string = null;
   let repoPath : string = null;
 
@@ -43,6 +44,20 @@ async function action() {
       projType = typeResult.type;
     } else {
       throw new Error("No type was given for the project");
+    }
+
+    const vmResult = await this.prompt({
+      type : 'list',
+      name : 'vm',
+      choices : ["None", "Docker", "Minikube"],
+      message : "Add virtual environment for the project: "
+    });
+
+    if (typeResult.vm) {
+      projVm = typeResult.vm;
+
+    } else {
+      throw new Error("No environment option was given for the project");
     }
 
     const pathResult = await this.prompt({
@@ -90,6 +105,17 @@ async function action() {
       throw new Error(`Error when creating project : ${err}`);
     }
     
+  }
+
+  if (projVm != "None") {
+    if (projVm == "Docker") execSync(`docker build -t ${projName} ${repoPath}`);
+    if (projVm == "Minikube") {
+      try {
+        // Add yaml files and crate resources in another issue
+      } catch (err) {
+        throw new Error(`Error when attempting to init project into Minicube: ${err}`);
+      }
+    } 
   }
 
   try {
