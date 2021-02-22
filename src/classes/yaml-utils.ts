@@ -17,7 +17,7 @@ export default class YamlUtils {
    * @param type Type of Kubernetes component, either pod, service or deployment
    * @param repoPath Repository path where to init .yaml files
    */
-  public static setupYaml = async (args: any, type: string, repoPath: string): Promise<void> => {
+  public static createYaml = async (args: any, type: string, repoPath: string): Promise<void> => {
 
     let file : any = fs.readFileSync(`./resources/${type}.json`);
     file.metadata.name = args.name;
@@ -31,34 +31,15 @@ export default class YamlUtils {
     switch (type) {
 
       case "pod":
-        file.spec.containers[0].name = args.name;
-        if (args.image) file.spec.containers[0].image = args.image;
-        if (args.port) file.spec.containers[0].ports[0].containerport = args.port;
+        file = YamlUtils.setupPod(args, file);
         break;
 
       case "service":
-        if (args.ports) {
-          file.spec.ports = []
-          for (let port in args.ports) file.spec.ports.push(port);
-        }
-        file.spec.selector.app = args.name;
-        if (args.portType) file.spec.type = args.portType;
+        file = YamlUtils.setupService(args, file);
         break;
       
       case "deployment":
-        file.spec.selector.app = args.name;
-        file.spec.template.metadata.app = args.name;
-        file.spec.template.spec.containers[0].name = args.name;
-
-        if (args.image) file.spec.template.spec.containers[0].image = args.image;
-        if (args.ports) {
-          file.spec.template.spec.containers[0].ports = []
-          for (let port in args.ports) file.spec.template.spec.containers[0].ports.push(port);
-        }
-        if (args.env) {
-          for (let env in args.env) file.spec.template.spec.containers[1].env.push(env);
-        }
-        if (args.replicas) file.spec.replicas = args.replicas;
+        file = YamlUtils.setupDeployment(args, file);
         break;
     }
 
@@ -89,5 +70,57 @@ export default class YamlUtils {
   public static deleteYaml = async (type: string, repoPath: string): Promise<string> => {
     const del = await OsUtils.getCommand("delete");
     return `${del} ${repoPath + path.sep + type}.yaml`;
+  }
+
+  /**
+   * Setup pod.yaml
+   * 
+   * @param args Object that includes needed values for setting up the .yaml files
+   * @param file The JSON file that is being edited to create a .yaml file
+   */
+  private static setupPod = (args: any, file: any): any => {
+    file.spec.containers[0].name = args.name;
+    if (args.image) file.spec.containers[0].image = args.image;
+    if (args.port) file.spec.containers[0].ports[0].containerport = args.port;
+    return file;
+  }
+
+  /**
+   * Setup service.yaml
+   * 
+   * @param args Object that includes needed values for setting up the .yaml files
+   * @param file The JSON file that is being edited to create a .yaml file
+   */
+  private static setupService = (args: any, file: any): any => {
+    if (args.ports) {
+      file.spec.ports = []
+      for (let port in args.ports) file.spec.ports.push(port);
+    }
+    file.spec.selector.app = args.name;
+    if (args.portType) file.spec.type = args.portType;
+    return file;
+  }
+
+  /**
+   * Setup deployment.yaml
+   * 
+   * @param args Object that includes needed values for setting up the .yaml files
+   * @param file The JSON file that is being edited to create a .yaml file
+   */
+  private static setupDeployment = (args: any, file: any): any => {
+    file.spec.selector.app = args.name;
+    file.spec.template.metadata.app = args.name;
+    file.spec.template.spec.containers[0].name = args.name;
+
+    if (args.image) file.spec.template.spec.containers[0].image = args.image;
+    if (args.ports) {
+      file.spec.template.spec.containers[0].ports = []
+      for (let port in args.ports) file.spec.template.spec.containers[0].ports.push(port);
+    }
+    if (args.env) {
+      for (let env in args.env) file.spec.template.spec.containers[1].env.push(env);
+    }
+    if (args.replicas) file.spec.replicas = args.replicas;
+    return file;
   }
 }
