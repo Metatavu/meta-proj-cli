@@ -47,6 +47,22 @@ export class InstallSwRefs {
           return "openjdk@11";
         }
 
+      case Software.Docker:
+        if (installUtil == "choco") {
+          return "docker-desktop";
+        }
+        if (installUtil == "sudo apt") {
+          return "docker.io";
+        } else {
+          return "--cask docker";
+        }
+
+      case Software.Minikube:
+        return "minikube";
+
+      case Software.KubernetesCLI:
+        return "kubernetes-cli";
+
       case Software.Kustomize:
         return (installUtil == "sudo apt") ? 'curl -s "https://raw.githubusercontent.com/\
         kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash' : 'kustomize';
@@ -81,6 +97,15 @@ export class InstallSwRefs {
 
       case Software.Homebrew:
         return "brew";
+
+      case Software.Docker:
+        return "docker";
+
+      case Software.Minikube:
+        return "minikube";
+
+      case Software.KubernetesCLI:
+        return "kubectl";
 
       case Software.Kustomize:
         return "kustomize";

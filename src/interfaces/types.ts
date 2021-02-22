@@ -96,5 +96,8 @@ export enum Software {
   JDK8 = "Java Development Kit 8",
   JDK11 = "Java Development Kit 11",
   Homebrew = "Homebrew",
+  Docker = "Docker",
+  Minikube = "Minikube",
+  KubernetesCLI = "Kubernetes CLI",
   Kustomize = "Kustomize"
 }

@@ -22,6 +22,46 @@ export class InstallUtils {
   }
 
   /**
+   * Install Minikube command
+   * 
+   * @returns Array of installation commands that are run by the wizard
+   */
+  public static async installKube(): Promise<string[]> {
+    const installUtil: string = await OsUtils.getCommand(CommandNames.installUtil);
+    const installRef: string = await InstallSwRefs.getInstallRef(installUtil, Software.Minikube);
+    const cmds : string[] = [];
+
+    if (installUtil == "sudo apt") {
+      cmds.push("wget https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64");
+      cmds.push("sudo cp minikube-linux-amd64 /usr/local/bin/minikube");
+      cmds.push("sudo chmod 755 /usr/local/bin/minikube");
+    } else {
+      cmds.push(`${installUtil} install ${installRef}`);
+    }
+    return cmds;
+  }
+
+  /**
+   * Install Kubernetes CLI command
+   * 
+   * @returns Array of installation commands that are run by the wizard
+   */
+  public static async installKubeCtl(): Promise<string[]> {
+    const installUtil: string = await OsUtils.getCommand(CommandNames.installUtil);
+    const installRef: string = await InstallSwRefs.getInstallRef(installUtil, Software.Minikube);
+    const cmds : string[] = [];
+
+    if (installUtil == "sudo apt") {
+      cmds.push("curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl");
+      cmds.push("chmod +x ./kubectl");
+      cmds.push("sudo mv ./kubectl /usr/local/bin/kubectl");
+    } else {
+      cmds.push(`${installUtil} install ${installRef}`);
+    }
+    return cmds;
+  }
+
+  /**
    * Install software command for bash
    * 
    * @param software is the desired software to be installed
