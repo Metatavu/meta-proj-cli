@@ -15,7 +15,7 @@ async function action(args){
       const softwareResult = await this.prompt({
         type : 'list',
         name : 'software',
-        choices : ['NodeJs', 'GitHub', 'Git CLI', 'Maven', 'Java Development Kit 8', 'Java Development Kit 11', 'Homebrew'],
+        choices : ['NodeJs', 'GitHub', 'Git CLI', 'Maven', 'Java Development Kit 8', 'Java Development Kit 11', 'Homebrew', 'Kustomize'],
         message : "Software to be installed: "
       });
       if (softwareResult.name) {
@@ -48,6 +48,6 @@ export const installWizard = (vorpal: Vorpal): Vorpal.Command => vorpal
   .option(
     '-s, --software <type>',
     'specify the software to install, leave empty to enter wizard',
-    ['NodeJs', 'GitHub', 'Git CLI', 'Maven', 'Java Development Kit 8', 'Java Development Kit 11', 'Homebrew']
+    ['NodeJs', 'GitHub', 'Git CLI', 'Maven', 'Java Development Kit 8', 'Java Development Kit 11', 'Homebrew', 'Kustomize']
   )
   .action(action);
