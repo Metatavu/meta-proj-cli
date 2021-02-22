@@ -1,6 +1,6 @@
 import { execSync } from "child_process";
 import OsUtils from "./os-utils"
-import { OperatingSystems, CommandNames } from "../interfaces/types";
+import { OperatingSystems, CommandNames, Software } from "../interfaces/types";
 import { InstallSwRefs } from "./install-sw-refs";
 
 /**
@@ -31,7 +31,7 @@ export class InstallUtils {
     const installUtil: string = await OsUtils.getCommand(CommandNames.installUtil);
     const installRef: string = await InstallSwRefs.getInstallRef(installUtil, software);
 
-    return `${installUtil} install ${installRef}`;
+    return (software == Software.Kustomize) ? installRef : `${installUtil} install ${installRef}`;
   }
 
   /**

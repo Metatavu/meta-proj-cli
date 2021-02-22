@@ -46,6 +46,10 @@ export class InstallSwRefs {
         } else {
           return "openjdk@11";
         }
+
+      case Software.Kustomize:
+        return (installUtil == "sudo apt") ? 'curl -s "https://raw.githubusercontent.com/\
+        kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash' : 'kustomize';
     }
   }
 
@@ -77,6 +81,9 @@ export class InstallSwRefs {
 
       case Software.Homebrew:
         return "brew";
+
+      case Software.Kustomize:
+        return "kustomize";
     }
   }
 }

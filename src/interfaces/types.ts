@@ -95,5 +95,6 @@ export enum Software {
   Maven = "Maven",
   JDK8 = "Java Development Kit 8",
   JDK11 = "Java Development Kit 11",
-  Homebrew = "Homebrew"
+  Homebrew = "Homebrew",
+  Kustomize = "Kustomize"
 }
