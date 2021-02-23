@@ -1,5 +1,8 @@
 import { execSync, ExecSyncOptionsWithBufferEncoding } from "child_process";
 
+/**
+ * An array of file extensions and other parts of string that are not supposed to be found in executable strings
+ */
 const fileExtensions : RegExp[] = [
   /;/, /\.exe$/, /\.com$/, /\.dll$/, /\.vbs$/, /\.vb$/, /\.vbe$/, /\.pif$/, /\.application$/, /\.gadget$/, /\.ws$/, /\.wsf$/,/\.reg$/,
   /\.msi$/, /\.msp$/, /\.scr$/, /\.hta$/, /\.cpl$/, /\.msc$/, /\.jar$/, /\.bat$/, /\.cmd$/, /\.js$/, /\.jse$/, /\.wsc$/, /\.wsh$/,
@@ -29,8 +32,12 @@ export const runExecSync = async (command: string, options?: ExecSyncOptionsWith
       }
     }
 
+    /**
+     * Run safe commands in the shell only
+     */
     if (!harmful) {
       return execSync(command, options)?.toString(); //NOSONAR
+
     } else {
       if (foundExt == ";") {
         throw new Error(`There was an attempt to execute extra commands.`);
@@ -39,7 +46,6 @@ export const runExecSync = async (command: string, options?: ExecSyncOptionsWith
       }
     }
     
-
   } catch (err) {
     throw new Error(`Error while executing command ${command}, with options ${options}. Error: ${err}`);
   }
