@@ -4,21 +4,22 @@ import { test } from "./checkTest";
 import { PathUtils } from "../classes/path-utils";
 import { CreateDefault } from "./new-proj/create-default";
 import * as path from "path";
-import { execSync } from "child_process";
+import { runExecSync } from "../classes/exec-sync-utils";
 
 const vorpal = new Vorpal();
 const { HOME } = process.env;
 let givenPath = `${HOME}/.meta-proj-cli/projects`;
+let projName : string = null;
+let projType : string = null;
+let projVm : string = null;
+let folderPath : string = null;
+let repoPath : string = null;
 
 /**
  * Prompts the user and runs corresponding commands
  */
 async function action() {
-  let projName : string = null;
-  let projType : string = null;
-  let projVm : string = null;
-  let folderPath : string = null;
-  let repoPath : string = null;
+  
 
   try {
     const nameResult = await this.prompt({
@@ -73,16 +74,8 @@ async function action() {
     throw new Error(`Error while prompting: ${err}`);
   }
 
-  try {
-    givenPath = await PathUtils.fixPath(givenPath);
-    folderPath = PathUtils.outerFolder(givenPath, projName);
-    repoPath = PathUtils.repoFolder(givenPath, projName);
-
-  } catch (err) {
-    throw new Error(`Error when attempting to resolve paths: ${err}`);
-  }
+  resolvePaths();
   
-
   if (projType == "Quarkus") {
     //To do: Add quarkus
     this.log("Creating Quarkus project - please wait...");
@@ -95,20 +88,11 @@ async function action() {
 
   if (projType == "No framework") {
     this.log("Creating project - please wait...");
-    try {
-      const cmds : string[] = await CreateDefault(projName, folderPath, repoPath);
-      execSync(cmds[0]);
-      execSync(cmds[1], {cwd : `.${path.sep}resources`});
-      execSync(cmds[2], {cwd : `.${path.sep}resources`});
-
-    } catch(err) {
-      throw new Error(`Error when creating project : ${err}`);
-    }
-    
+    initDefaultProject();
   }
 
   if (projVm != "None") {
-    if (projVm == "Docker") execSync(`docker build -t ${projName} ${repoPath}`);
+    if (projVm == "Docker") runExecSync(`docker build -t ${projName} ${repoPath}`);
     if (projVm == "Minikube") {
       try {
         // Add yaml files and crate resources in another issue
@@ -118,16 +102,8 @@ async function action() {
     } 
   }
 
-  try {
-    await vorpal
-    .use(newRepo)
-    .execSync(`new-repo ${projName} --path ${givenPath}`);
+  repoViaVorpal();
 
-  } catch(err) {
-    throw new Error("Encountered an error while creating repository: " + err);
-  }
-
-  
   try {
     const testResult = await this.prompt({
       type : "confirm",
@@ -142,6 +118,40 @@ async function action() {
     }
   } catch(err) {
     throw new Error(`Error while performing tests: ${err}`);
+  }
+}
+
+async function resolvePaths() {
+  try {
+    givenPath = await PathUtils.fixPath(givenPath);
+    folderPath = PathUtils.outerFolder(givenPath, projName);
+    repoPath = PathUtils.repoFolder(givenPath, projName);
+
+  } catch (err) {
+    throw new Error(`Error when attempting to resolve paths: ${err}`);
+  }
+}
+
+async function initDefaultProject() {
+  try {
+    const cmds : string[] = await CreateDefault(projName, folderPath, repoPath);
+    await runExecSync(cmds[0]);
+    await runExecSync(cmds[1], {cwd : `.${path.sep}resources`});
+    await runExecSync(cmds[2], {cwd : `.${path.sep}resources`});
+
+  } catch(err) {
+    throw new Error(`Error when creating project : ${err}`);
+  }
+}
+
+async function repoViaVorpal() {
+  try {
+    await vorpal
+    .use(newRepo)
+    .execSync(`new-repo ${projName} --path ${givenPath}`);
+
+  } catch(err) {
+    throw new Error("Encountered an error while creating repository: " + err);
   }
 }
 

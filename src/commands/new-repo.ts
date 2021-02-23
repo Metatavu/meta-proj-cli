@@ -2,6 +2,16 @@ import Vorpal from "vorpal";
 import { PathUtils } from "../classes/path-utils";
 import { runExecSync } from "../classes/exec-sync-utils";
 
+const { HOME } = process.env;
+const defaultPath = `${HOME}/.meta-proj-cli/projects`;
+let repoName : string = null;
+let description : string = null;
+let template : string = null;
+let publicity : string = null;
+let givenPath : string = null;
+let folderPath : string = null;
+let repoPath : string = null;
+
 /**
  * Creates a new github repo with given flags, or activates a wizard to ask for settings
  * 
@@ -10,19 +20,14 @@ import { runExecSync } from "../classes/exec-sync-utils";
  * publicity(string)
  * path(string)
  * description(string)
+ * template(string)
  */
 async function action(args) {
-  let repoName : string = args.name;
-  let description : string = args.options.description;
-  const template = args.options.template;
-  const { HOME } = process.env;
-  const defaultPath = `${HOME}/.meta-proj-cli/projects`;
-
-  let publicity : string = args.options.publicity ?
-    args.options.publicity :
-    "private";
-  
-  let givenPath : string = args.options.path ? args.options.path : defaultPath;
+  repoName = args.name;
+  description = args.options.description;
+  template = args.options.template;
+  publicity = args.options.publicity ? args.options.publicity : "private";
+  givenPath = args.options.path ? args.options.path : defaultPath;
   
   if (!publicity || !repoName) {
     try {
@@ -62,12 +67,15 @@ async function action(args) {
   }
 
   givenPath = await PathUtils.fixPath(givenPath);
-  
-  const folderPath : string = PathUtils.outerFolder(givenPath, repoName);
-  const repoPath : string = PathUtils.repoFolder(givenPath, repoName);
+  folderPath = PathUtils.outerFolder(givenPath, repoName);
+  repoPath = PathUtils.repoFolder(givenPath, repoName);
 
+  finishRepo();
+}
+
+async function finishRepo() {
   try {
-    runExecSync(
+    await runExecSync(
       `gh repo create\
       ${process.env.GIT_ORGANIZATION}/${repoName}\
       --${publicity}\
@@ -78,23 +86,23 @@ async function action(args) {
     );
 
     if (template) {
-      runExecSync(`git pull -q git@github.com:${process.env.GIT_ORGANIZATION}/${template}.git`, {cwd : repoPath});
-      runExecSync("git branch -m master develop", {cwd : repoPath});
-      finishRepo(repoPath);
+      await runExecSync(`git pull -q git@github.com:${process.env.GIT_ORGANIZATION}/${template}.git`, {cwd : repoPath});
+      await runExecSync("git branch -m master develop", {cwd : repoPath});
+      checkout(repoPath);
     } else {
-      runExecSync("git init", {cwd : repoPath});
-      runExecSync("git checkout -q -b develop", {cwd : repoPath});
-      runExecSync(`git add README.md`, {cwd : repoPath});
-      runExecSync(`git commit -q -m "first commit"`, {cwd : repoPath});
-      runExecSync(`git push -q origin develop`, {cwd : repoPath});
-      finishRepo(repoPath);
+      await runExecSync("git init", {cwd : repoPath});
+      await runExecSync("git checkout -q -b develop", {cwd : repoPath});
+      await runExecSync(`git add README.md`, {cwd : repoPath});
+      await runExecSync(`git commit -q -m "first commit"`, {cwd : repoPath});
+      await runExecSync(`git push -q origin develop`, {cwd : repoPath});
+      checkout(repoPath);
     }
-} catch (err) {
-  throw new Error(`Error when initing a repository: ${err}`);
-}
+  } catch (err) {
+    throw new Error(`Error when initing a repository: ${err}`);
+  }
 }
 
-async function finishRepo (repoPath) {
+async function checkout(repoPath) {
   await runExecSync(`git checkout -q -b master`, {cwd : repoPath}); 
   await runExecSync(`git push -q origin master`, {cwd : repoPath, stdio : ["ignore", "ignore", "ignore"]});
   await runExecSync(`git checkout -q develop`, {cwd : repoPath});
