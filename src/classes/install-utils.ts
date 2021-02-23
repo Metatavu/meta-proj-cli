@@ -13,12 +13,13 @@ export class InstallUtils {
    * 
    * @returns Homebrew installation command that is run by the wizard
    */
-  public static async installBrew(): Promise<string> {
+  public static async installBrew(): Promise<string | null> {
     const os: string = await OsUtils.getOS();
 
     if (os == OperatingSystems.MAC){
       return '/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"';
-    }
+    } else {
+      return null;
   }
 
   /**
