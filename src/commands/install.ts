@@ -7,7 +7,7 @@ import Vorpal from "vorpal";
  * options include:
  * software(string)
  */
-async function action(args){
+async function action(args) {
   let software: string = args.options.software;
 
   if (!software) {
