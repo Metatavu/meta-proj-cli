@@ -15,7 +15,7 @@ async function action(args){
       const softwareResult = await this.prompt({
         type : 'list',
         name : 'software',
-        choices : ['NodeJs', 'GitHub', 'Git CLI', 'Maven', 'Java Development Kit 8', 'Java Development Kit 11', 'Homebrew', 'Docker', 'Minikube', 'Kubernetes CLI', 'Kustomize'],
+        choices : [ 'NodeJs', 'GitHub', 'Git CLI', 'Maven', 'Java Development Kit 8', 'Java Development Kit 11', 'Homebrew', 'Docker', 'Minikube', 'Kubernetes CLI', 'Kustomize' ],
         message : "Software to be installed: "
       });
       if (softwareResult.name) {
