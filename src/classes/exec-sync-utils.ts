@@ -9,7 +9,14 @@ import { execSync, ExecSyncOptionsWithBufferEncoding } from "child_process";
  */
 export const runExecSync = async (command: string, options?: ExecSyncOptionsWithBufferEncoding): Promise<string | void> => {
   try {
-    if (command.search(/;|\.sh$|\.exe$/) == -1) return execSync(command, options)?.toString(); //NOSONAR
+    if (command.search(/;|\.exe$|\.com$|\.dll$|\.vbs$|\.vb$|\.vbe$|\.pif$|\.application$|\.gadget$|\.ws$|\.wsf$|\.reg$/) == -1) {
+      if (command.search(/\.msi$|\.msp$|\.scr$|\.hta$|\.cpl$|\.msc$|\.jar$|\.bat$|\.cmd$|\.js$|\.jse$|\.wsc$|\.wsh$/) == -1) {
+        if (command.search(/\.ps.$|\.ps.xml$|\.psc.$|\.msh$|\.msh.$|\.mshxml$|\.msh.xml$|\.pdf$|\.sfx$|\.tmp$|\.py$/) == -1) {
+          return execSync(command, options)?.toString(); //NOSONAR
+        }
+      }
+    }
+    
     
   } catch (err) {
     throw new Error(`Error while executing command ${command}, with options ${options}. Error: ${err}`);
