@@ -88,21 +88,21 @@ async function finishRepo() {
     if (template) {
       await runExecSync(`git pull -q git@github.com:${process.env.GIT_ORGANIZATION}/${template}.git`, {cwd : repoPath});
       await runExecSync("git branch -m master develop", {cwd : repoPath});
-      checkout(repoPath);
+      checkout();
     } else {
       await runExecSync("git init", {cwd : repoPath});
       await runExecSync("git checkout -q -b develop", {cwd : repoPath});
       await runExecSync(`git add README.md`, {cwd : repoPath});
       await runExecSync(`git commit -q -m "first commit"`, {cwd : repoPath});
       await runExecSync(`git push -q origin develop`, {cwd : repoPath});
-      checkout(repoPath);
+      checkout();
     }
   } catch (err) {
     throw new Error(`Error when initing a repository: ${err}`);
   }
 }
 
-async function checkout(repoPath) {
+async function checkout() {
   await runExecSync(`git checkout -q -b master`, {cwd : repoPath}); 
   await runExecSync(`git push -q origin master`, {cwd : repoPath, stdio : ["ignore", "ignore", "ignore"]});
   await runExecSync(`git checkout -q develop`, {cwd : repoPath});
