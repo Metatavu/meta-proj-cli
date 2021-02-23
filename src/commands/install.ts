@@ -8,7 +8,7 @@ import Vorpal from "vorpal";
  * software(string)
  */
 async function action(args){
-  let software : string = args.options.software;
+  let software: string = args.options.software;
 
   if(!software){
     try {
