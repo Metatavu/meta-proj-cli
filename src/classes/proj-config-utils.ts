@@ -14,7 +14,6 @@ export class ProjConfigUtils {
    * Reads project-config.json from given path
    * 
    * @param outerFolder outer folder of the project (check path-utils for more info)
-   * 
    * @returns project config as a JSON object that has an interface.
    */
     static async readProjConfig(outerFolder: string): Promise<ProjConfigJson> {
