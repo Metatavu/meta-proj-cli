@@ -10,9 +10,8 @@
 export const CreateQuarkus = async (projName: string, kotlin: boolean, gradle: boolean): Promise<string> => {
   const { ORGANIZATION } = process.env;
   const kotlinString: string =  kotlin ? ", kotlin" : "";
-  const gradleString: string = gradle ? gradleString = "\
+  const gradleString: string = gradle ? "\
   -DbuildTool=gradle" : "";
-  -DbuildTool=gradle" : gradleString = "";
 
   return `mvn io.quarkus:quarkus-maven-plugin:1.11.3.Final:create \
   -DprojectGroupId=${ORGANIZATION} \
