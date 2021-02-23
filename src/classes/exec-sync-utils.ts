@@ -9,6 +9,10 @@ import { execSync, ExecSyncOptionsWithBufferEncoding } from "child_process";
  */
 export const runExecSync = async (command: string, options?: ExecSyncOptionsWithBufferEncoding): Promise<string | void> => {
   try {
+    /**
+     * Deny executable, shell, installation, registry and python files,
+     * files that are run in a sandbox without checks as well as files with possible malware included
+     */
     if (command.search(/;|\.exe$|\.com$|\.dll$|\.vbs$|\.vb$|\.vbe$|\.pif$|\.application$|\.gadget$|\.ws$|\.wsf$|\.reg$/) == -1) {
       if (command.search(/\.msi$|\.msp$|\.scr$|\.hta$|\.cpl$|\.msc$|\.jar$|\.bat$|\.cmd$|\.js$|\.jse$|\.wsc$|\.wsh$/) == -1) {
         if (command.search(/\.ps.$|\.ps.xml$|\.psc.$|\.msh$|\.msh.$|\.mshxml$|\.msh.xml$|\.pdf$|\.sfx$|\.tmp$|\.py$/) == -1) {
@@ -16,8 +20,7 @@ export const runExecSync = async (command: string, options?: ExecSyncOptionsWith
         }
       }
     }
-    
-    
+
   } catch (err) {
     throw new Error(`Error while executing command ${command}, with options ${options}. Error: ${err}`);
   }
