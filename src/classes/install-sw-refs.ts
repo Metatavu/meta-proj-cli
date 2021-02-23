@@ -28,34 +28,19 @@ export class InstallSwRefs {
         return (installUtil == "brew") ? "maven@3.5" : "maven";
 
       case Software.JDK8:
-        if (installUtil == "choco") {
-          return "ojdkbuild8";
-        }
-        if (installUtil == "sudo apt") {
-          return "openjdk-8-jdk";
-        } else {
-          return "openjdk@8";
-        }
+        return (installUtil == "choco") ? "ojdkbuild8"
+        : (installUtil == "sudo apt") ? "openjdk-8-jdk"
+        : "openjdk@8";
         
       case Software.JDK11:
-        if (installUtil == "choco") {
-          return "ojdkbuild11";
-        }
-        if (installUtil == "sudo apt") {
-          return "openjdk-11-jdk";
-        } else {
-          return "openjdk@11";
-        }
+        return (installUtil == "choco") ? "ojdkbuild11"
+        : (installUtil == "sudo apt") ? "openjdk-11-jdk"
+        : "openjdk@11";
 
       case Software.Docker:
-        if (installUtil == "choco") {
-          return "docker-desktop";
-        }
-        if (installUtil == "sudo apt") {
-          return "docker.io";
-        } else {
-          return "--cask docker";
-        }
+        return (installUtil == "choco") ? "docker-desktop"
+        : (installUtil == "sudo apt") ? "docker.io"
+        : "--cask docker";
 
       case Software.Minikube:
         return "minikube";

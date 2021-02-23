@@ -1,7 +1,7 @@
-import { execSync } from "child_process";
 import OsUtils from "./os-utils"
 import { OperatingSystems, CommandNames, Software } from "../interfaces/types";
 import { InstallSwRefs } from "./install-sw-refs";
+import { runExecSync } from "../classes/exec-sync-utils";
 
 /**
  * Provides installation utilities for installation command
@@ -86,7 +86,7 @@ export class InstallUtils {
     if(bashRef == "brew"){
       try {
         const str = `which ${bashRef}`;
-        const result = execSync(str).toString();
+        const result = runExecSync(str).toString();
         return (result.search(/not found/) == -1);
 
       } catch (err) {
@@ -96,7 +96,7 @@ export class InstallUtils {
     } else {
       try {
         const str = `${bashRef} --version`;
-        const result = execSync(str).toString();
+        const result = runExecSync(str).toString();
         return (result.search(/is not recognized/) == -1);
       } catch (err) {
         throw new Error(`Error when checking software ${software}: ${err}`);
