@@ -10,7 +10,7 @@ import Vorpal from "vorpal";
 async function action(args){
   let software: string = args.options.software;
 
-  if(!software){
+  if (!software) {
     try {
       const softwareResult = await this.prompt({
         type : 'list',
