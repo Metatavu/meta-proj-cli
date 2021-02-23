@@ -74,8 +74,7 @@ export class PathUtils {
           givenPath = path.sep + givenPath;
         }
       }
-    
-      if (os == OperatingSystems.WINDOWS) {
+      else if (os == OperatingSystems.WINDOWS) {
         if (givenPath[0] === "~") {
           givenPath = path.join(HOME, givenPath.slice(1));
         }
@@ -83,7 +82,6 @@ export class PathUtils {
           givenPath = path.join(...givenPath.split(/\/|\\/));
         }
       } else {
-        console.log("It looks like you aren't running any of the supported platforms. Proceeding with Unix-base as a default...");
         if (givenPath[0] === "~") {
           givenPath = path.join(HOME, givenPath.slice(1));
         }
