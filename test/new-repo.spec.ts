@@ -15,12 +15,14 @@ it('inits a GitHub repository', () => {
   const description = null;
   const template = null;
   child_process.execSync = jest.fn();
-  child_process.execSync(`gh repo create\
-  ${repoName}\
-  --${publicity}\
-  ${description ? `-d="${description}"` : ""}\
-  ${template ? `--template="${process.env.GIT_ORGANIZATION}/${template}"` : ""}\
-  -y`);
+  child_process.execSync(
+    `gh repo create\
+    ${repoName}\
+    --${publicity}\
+    ${description ? `-d="${description}"` : ""}\
+    ${template ? `--template="${process.env.GIT_ORGANIZATION}/${template}"` : ""}\
+    -y`
+  );
 
   expect((child_process.execSync)).toReturn();
 });
@@ -42,6 +44,7 @@ it('creates project folder', () => {
   dotenv.config();
   const { HOME } = process.env;
   const defaultPath = `${HOME}/.meta-proj-cli/projects`;
+  
   child_process.execSync(`mkdir ${defaultPath + path.sep}test`);
 
   expect((dotenv.config)).toHaveBeenCalled();

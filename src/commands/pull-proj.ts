@@ -1,9 +1,9 @@
 import Vorpal from "vorpal";
-import { execSync } from "child_process";
 import * as path from "path";
 import * as fs from "fs";
 import { PathUtils } from "../classes/path-utils";
 import OsUtils from "../classes/os-utils";
+import { runExecSync } from "../classes/exec-sync-utils";
 
 const { HOME } = process.env;
 const defaultPath = `${HOME}/.meta-proj-cli/projects`;
@@ -35,7 +35,7 @@ async function action() {
   }
 
   try {
-    execSync(`gh repo view ${process.env.GIT_ORGANIZATION}/${repoName}`, {stdio : "ignore"});
+    await runExecSync(`gh repo view ${process.env.GIT_ORGANIZATION}/${repoName}`, {stdio : "ignore"});
   } catch (err) {
     throw new Error(`Error while searching for repository: ${err}`);
   }
@@ -85,17 +85,19 @@ async function action() {
     const folderPath : string = PathUtils.outerFolder(givenPath, repoName);
     repoPath = PathUtils.repoFolder(givenPath, repoName);
 
-    execSync(`mkdir ${folderPath}`);
-    execSync(`mkdir ${repoPath}`);
-    execSync("git init", {cwd : repoPath});
-    execSync(`${copy} project-config.json ${folderPath}`, {cwd : `.${path.sep}resources`});
-    execSync(
+    await runExecSync(`mkdir ${folderPath}`);
+    await runExecSync(`mkdir ${repoPath}`);
+    await runExecSync("git init", {cwd : repoPath});
+
+    await runExecSync(`${copy} project-config.json ${folderPath}`, {cwd : `.${path.sep}resources`});
+
+    await runExecSync(
       `git remote add origin git@github.com:${process.env.GIT_ORGANIZATION}/${repoName}.git`,
       {cwd : repoPath}
     );
   }
 
-  execSync(`git pull -q git@github.com:${process.env.GIT_ORGANIZATION}/${repoName}.git`, {cwd : repoPath});
+  await runExecSync(`git pull -q git@github.com:${process.env.GIT_ORGANIZATION}/${repoName}.git`, {cwd : repoPath});
 }
 
 /**

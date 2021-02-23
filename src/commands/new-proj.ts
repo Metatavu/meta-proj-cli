@@ -53,8 +53,8 @@ async function action() {
       message : "Add virtual environment for the project: "
     });
 
-    if (typeResult.vm) {
-      projVm = typeResult.vm;
+    if (vmResult.vm) {
+      projVm = vmResult.vm;
 
     } else {
       throw new Error("No environment option was given for the project");
