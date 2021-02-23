@@ -16,10 +16,8 @@ export class InstallUtils {
   public static async installBrew(): Promise<string | null> {
     const os: string = await OsUtils.getOS();
 
-    if (os == OperatingSystems.MAC){
-      return '/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"';
-    } else {
-      return null;
+    return (os == OperatingSystems.MAC) ? '/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'
+    : null;
   }
 
   /**
