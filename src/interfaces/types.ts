@@ -72,7 +72,7 @@ export interface UserConfigJson {
  * @property projectName name of the project
  */
 export interface ProjConfigJson {
-  projectName : string
+  projectName: string
 }
 
 /**
