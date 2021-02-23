@@ -22,7 +22,7 @@ export class ProjConfigUtils {
       await this.checkProjConfig(outerFolder);
 
       const data = fs.readFileSync(this.outerToFile(outerFolder), "utf8");
-      return await JSON.parse(data.toString());
+      return await JSON.parse(data);
     } catch(err) {
       throw new Error ("Error while reading project-config: " + err);
     }
