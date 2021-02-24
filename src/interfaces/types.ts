@@ -90,5 +90,23 @@ export enum OperatingSystems {
 export enum CommandNames {
   copy = "copy",
   remove = "remove",
-  removeDir = "remove directory"
+  removeDir = "remove directory",
+  installUtil = "installation utility"
+}
+
+/**
+ * Global constants for software names
+ */
+export enum Software {
+  NodeJs = "NodeJs",
+  GitHub = "GitHub",
+  GitCLI = "Git CLI",
+  Maven = "Maven",
+  JDK8 = "Java Development Kit 8",
+  JDK11 = "Java Development Kit 11",
+  Homebrew = "Homebrew",
+  Docker = "Docker",
+  Minikube = "Minikube",
+  KubernetesCLI = "Kubernetes CLI",
+  Kustomize = "Kustomize"
 }
