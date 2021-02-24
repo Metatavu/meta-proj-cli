@@ -3,16 +3,13 @@ import { CommandNames } from "../../interfaces/types";
 
 /**
  * Constructs creation command for default projects
- * 
+ *
  * @param projName desired project name
- * 
  * @param folderPath outer folder
- * 
  * @param repoPath inner folder, for GitHub etc
- * 
  * @returns an array of strings which includes the commands to be run on the new-proj thread
  */
-export const CreateDefault = async (projName : string, folderPath : string, repoPath : string) : Promise<string[]> => {
+export const CreateDefault = async (projName: string, folderPath: string, repoPath: string): Promise<string[]> => {
   let copy : string = null;
   try {
     copy = await OsUtils.getCommand(CommandNames.copy);
