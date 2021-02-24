@@ -10,7 +10,6 @@ export const CreateReact = async (projName: string): Promise<string> => {
   return `npx create-react-app ${projName} --template typescript`;
 }
 
-
 /**
  * Clean unnecessary files from React project folder
  * 
