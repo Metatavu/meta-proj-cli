@@ -59,7 +59,6 @@ export default class YamlUtils {
    * @param repoPath Repository path where .yaml files are located
    */
   public static printYaml = async (type: string, repoPath: string): Promise<void> => {
-
     let file = YAML.parse(fs.readFileSync(`${repoPath + path.sep + type}.yaml`, "utf8"));
     console.log(file);
   }
