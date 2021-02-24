@@ -48,7 +48,7 @@ export class InstallUtils {
   public static async installKubeCtl(): Promise<string[]> {
     const installUtil: string = await OsUtils.getCommand(CommandNames.installUtil);
     const installRef: string = await InstallSwRefs.getInstallRef(installUtil, Software.Minikube);
-    const cmds : string[] = [];
+    const cmds: string[] = [];
 
     if (installUtil == "sudo apt") {
       cmds.push("curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl");
