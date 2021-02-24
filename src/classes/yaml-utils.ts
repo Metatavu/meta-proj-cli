@@ -84,8 +84,13 @@ export default class YamlUtils {
    */
   private static setupPod = (args: any, file: any): any => {
     file.spec.containers[0].name = args.name;
-    if (args.image) file.spec.containers[0].image = args.image;
-    if (args.port) file.spec.containers[0].ports[0].containerport = args.port;
+    if (args.image) {
+      file.spec.containers[0].image = args.image;
+    }
+
+    if (args.port) {
+      file.spec.containers[0].ports[0].containerport = args.port;
+    }
     return file;
   }
 
