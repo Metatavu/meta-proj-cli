@@ -29,7 +29,7 @@ async function action() {
     });
 
     if (nameResult.name) {
-      projName= nameResult.name;
+      projName = nameResult.name;
     } else {
       throw new Error("No name was given for the project");
     }
