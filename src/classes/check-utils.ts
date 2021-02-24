@@ -39,12 +39,11 @@ const checkHandler = async (currentCheck: CheckSet) => {
   try {
     const installed: boolean = await InstallUtils.isInstalled(currentCheck.checkable);
 
-    const returnSet: CheckErrorSet = {
+    return {
       check : currentCheck.checkable,
       error : installed ? false : true,
       details : installed ? null : `${currentCheck.checkable} not installed!`
     };
-    return returnSet;
 
   } catch (err) {
     throw new Error(`Encountered error while checking prerequisite "${currentCheck.checkable}". \nError: ${err}`);
