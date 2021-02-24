@@ -5,7 +5,7 @@ it('returns a create react app command string', async () => {
 });
 
 it('returns clean react app command strings', async () => {
-  const strArr : string[] = await CleanReact('', '');
+  const strArr: string[] = await CleanReact('', '');
 
   expect((strArr[0])).toMatch(/README.md/);
   expect((strArr[strArr.length - 1])).toMatch(/README.md/);
