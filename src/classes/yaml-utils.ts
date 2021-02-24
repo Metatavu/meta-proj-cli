@@ -24,8 +24,13 @@ export default class YamlUtils {
 
     if (file.metadata.labels) {
 
-      if (file.metadata.labels.app) file.metadata.labels.app = args.name;
-      if (file.metadata.labels.run) file.metadata.labels.run = args.name;
+      if (file.metadata.labels.app) {
+        file.metadata.labels.app = args.name;
+      }
+
+      if (file.metadata.labels.run) {
+        file.metadata.labels.run = args.name;
+      }
     }
 
     switch (type) {
