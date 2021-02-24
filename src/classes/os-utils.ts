@@ -1,7 +1,7 @@
 import { UserConfigJson, OperatingSystems } from "../interfaces/types";
 import { OsCommands } from "./os-commands";
 import { UserConfigUtils } from "./user-config-utils";
-import { windows, linux, macos } from "platform-detect";
+import { windows, linux, linuxBased, macos } from "platform-detect";
 
 const systems : string[]  = [OperatingSystems.MAC, OperatingSystems.WINDOWS, OperatingSystems.LINUX];
 
@@ -68,12 +68,13 @@ export default class OsUtils {
     if (windows) {
       detectedOS = "WINDOWS";
     }
-
-    if(linux){
-      detectedOS = "LINUX";
-    }
-    if(macos){
+    else if (macos) {
       detectedOS = "MAC OS";
+    }
+    else if (linux || linuxBased) {
+      detectedOS = "LINUX";
+    } else {
+      console.log("It looks like you aren't running any of the supported platforms. Proceeding with selected OS...");
     }
     console.log(`It seems like you're using ${detectedOS}. If this is incorrect, please use "select-os" to switch it.`);
     return detectedOS
