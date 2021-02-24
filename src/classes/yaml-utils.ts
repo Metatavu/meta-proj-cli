@@ -108,7 +108,9 @@ export default class YamlUtils {
       }
     }
     file.spec.selector.app = args.name;
-    if (args.portType) file.spec.type = args.portType;
+    if (args.portType) {
+      file.spec.type = args.portType;
+    }
     return file;
   }
 
