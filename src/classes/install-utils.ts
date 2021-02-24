@@ -28,7 +28,7 @@ export class InstallUtils {
   public static async installKube(): Promise<string[]> {
     const installUtil: string = await OsUtils.getCommand(CommandNames.installUtil);
     const installRef: string = await InstallSwRefs.getInstallRef(installUtil, Software.Minikube);
-    const cmds : string[] = [];
+    const cmds: string[] = [];
 
     if (installUtil == "sudo apt") {
       cmds.push("wget https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64");
