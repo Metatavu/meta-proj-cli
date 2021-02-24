@@ -79,7 +79,7 @@ export class InstallUtils {
    * @param software is the software that is being checked
    * @returns a boolean that indicates if a software has already been installed
    */
-  public static async isInstalled(software : string) : Promise<boolean> {
+  public static async isInstalled(software: string): Promise<boolean> {
     const bashRef = await InstallSwRefs.getBashRef(software);
 
     if(bashRef == "brew"){
