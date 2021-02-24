@@ -59,7 +59,7 @@ export default class YamlUtils {
    * @param repoPath Repository path where .yaml files are located
    */
   public static printYaml = async (type: string, repoPath: string): Promise<void> => {
-    let file = YAML.parse(fs.readFileSync(`${repoPath + path.sep + type}.yaml`, "utf8"));
+    const file = YAML.parse(fs.readFileSync(`${repoPath + path.sep + type}.yaml`, "utf8"));
     console.log(file);
   }
 
@@ -83,14 +83,17 @@ export default class YamlUtils {
    * @param file The JSON file that is being edited to create a .yaml file
    */
   private static setupPod = (args: any, file: any): any => {
-    file.spec.containers[0].name = args.name;
-    if (args.image) {
-      file.spec.containers[0].image = args.image;
-    }
+    if (file.spec.containers[0]){
 
-    if (args.port) {
-      file.spec.containers[0].ports[0].containerport = args.port;
+      file.spec.containers[0].name = args.name;
+      if (args.image) {
+        file.spec.containers[0].image = args.image;
+      }
+      if (args.port && file.spec.containers[0].ports[0]) {
+        file.spec.containers[0].ports[0].containerport = args.port;
+      }
     }
+    
     return file;
   }
 
@@ -103,7 +106,7 @@ export default class YamlUtils {
   private static setupService = (args: any, file: any): any => {
     if (args.ports) {
       file.spec.ports = [];
-      for (let port in args.ports) {
+      for (const port in args.ports) {
         file.spec.ports.push(port);
       }
     }
@@ -123,17 +126,29 @@ export default class YamlUtils {
   private static setupDeployment = (args: any, file: any): any => {
     file.spec.selector.app = args.name;
     file.spec.template.metadata.app = args.name;
-    file.spec.template.spec.containers[0].name = args.name;
 
-    if (args.image) file.spec.template.spec.containers[0].image = args.image;
-    if (args.ports) {
-      file.spec.template.spec.containers[0].ports = []
-      for (let port in args.ports) file.spec.template.spec.containers[0].ports.push(port);
+    if (file.spec.template.spec.containers[0]) {
+      file.spec.template.spec.containers[0].name = args.name;
+
+      if (args.image) {
+        file.spec.template.spec.containers[0].image = args.image;
+      }
+      if (args.ports && file.spec.template.spec.containers[0]) {
+        file.spec.template.spec.containers[0].ports = [];
+        for (const port in args.ports) {
+          file.spec.template.spec.containers[0].ports.push(port);
+        }
+      }
     }
-    if (args.env) {
-      for (let env in args.env) file.spec.template.spec.containers[1].env.push(env);
+    
+    if (args.env && file.spec.template.spec.containers[1]) {
+      for (const env in args.env) {
+        file.spec.template.spec.containers[1].env.push(env);
+      }
     }
-    if (args.replicas) file.spec.replicas = args.replicas;
+    if (args.replicas) {
+      file.spec.replicas = args.replicas;
+    }
     return file;
   }
 }
