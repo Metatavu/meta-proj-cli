@@ -15,8 +15,8 @@ async function action(args: { options: { path: string; }; }) {
 
   if (args.options.path) {
     path = argPath.startsWith("~") ? 
-      HOME + argPath.slice(1)
-      : argPath;
+      HOME + argPath.slice(1) :
+      argPath;
 
       await runExecSync(`mkdir ${path}`);
       await runExecSync(`cp README.md ${path}`, { cwd: "../resources"});
