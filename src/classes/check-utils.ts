@@ -38,36 +38,46 @@ const checkRouter = async (currentCheck : CheckSet) => {
   try {
     switch(currentCheck.checkable){
       case Software.NodeJs:
+        console.log(`Should add check for ${Software.NodeJs}`);
         return await checkGit();
 
       case Software.GitHub:
+        console.log(`Should add check for ${Software.GitHub}`);
         return await checkGit();
 
       case Software.GitCLI:
         return await checkGit();
 
       case Software.Maven:
+        console.log(`Should add check for ${Software.Maven}`);
         return await checkGit();
 
       case Software.JDK8:
+        console.log(`Should add check for ${Software.JDK8}`);
         return await checkGit();
         
       case Software.JDK11:
+        console.log(`Should add check for ${Software.JDK11}`);
         return await checkGit();
 
       case Software.Homebrew:
+        console.log(`Should add check for ${Software.Homebrew}`);
         return await checkGit();
 
       case Software.Docker:
+        console.log(`Should add check for ${Software.Docker}`);
         return await checkGit();
 
       case Software.Minikube:
+        console.log(`Should add check for ${Software.Minikube}`);
         return await checkGit();
 
       case Software.KubernetesCLI:
+        console.log(`Should add check for ${Software.KubernetesCLI}`);
         return await checkGit();
 
       case Software.Kustomize:
+        console.log(`Should add check for ${Software.Kustomize}`);
         return await checkGit();
     }
   } catch (err) {
