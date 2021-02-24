@@ -1,5 +1,7 @@
 import Vorpal from "vorpal";
 import { PathUtils } from "../classes/path-utils";
+import OsUtils from "../classes/os-utils";
+import { ProjConfigUtils } from "../classes/proj-config-utils";
 import { runExecSync } from "../classes/exec-sync-utils";
 
 const { HOME } = process.env;
@@ -88,14 +90,17 @@ async function finishRepo() {
     if (template) {
       await runExecSync(`git pull -q git@github.com:${process.env.GIT_ORGANIZATION}/${template}.git`, {cwd : repoPath});
       await runExecSync("git branch -m master develop", {cwd : repoPath});
-      checkout();
+      await checkout();
     } else {
       await runExecSync("git init", {cwd : repoPath});
       await runExecSync("git checkout -q -b develop", {cwd : repoPath});
       await runExecSync(`git add README.md`, {cwd : repoPath});
       await runExecSync(`git commit -q -m "first commit"`, {cwd : repoPath});
       await runExecSync(`git push -q origin develop`, {cwd : repoPath});
-      checkout();
+      await checkout();
+      const projConfigData = await ProjConfigUtils.readProjConfig(folderPath);
+      projConfigData.projectName = repoName;
+      await ProjConfigUtils.writeProjConfig(folderPath, JSON.stringify(projConfigData));
     }
   } catch (err) {
     throw new Error(`Error when initing a repository: ${err}`);
