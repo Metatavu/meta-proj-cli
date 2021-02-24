@@ -1,4 +1,3 @@
-
 it('returns a Maven command string', async () => {
   const str: string = await CreateQuarkus('test', false, false);
 
