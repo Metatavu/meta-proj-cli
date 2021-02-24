@@ -4,11 +4,9 @@ import { CommandNames } from "../../interfaces/types";
  * Create React project
  * 
  * @param projName desired project name
- * 
  * @returns a creation command to be run on the new-proj thread
  */
-export const CreateReact = async (projName : string) : Promise<string> => {
-  
+export const CreateReact = async (projName: string): Promise<string> => {
   return `npx create-react-app ${projName} --template typescript`;
 }
 
