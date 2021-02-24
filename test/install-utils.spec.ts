@@ -1,15 +1,15 @@
 import { InstallUtils } from "../src/classes/install-utils";
-import * as refs from "../src/classes/install-sw-refs";
+import { InstallSwRefs } from "../src/classes/install-sw-refs";
 import { Software } from "../src/interfaces/types";
 
 it("gets an install reference", async () => {
-  const installRef: string = await refs.getInstallRef("sudo apt", Software.GitHub);
+  const installRef: string = await InstallSwRefs.getInstallRef("sudo apt", Software.GitHub);
 
   expect(installRef).toMatch("gh");
 });
 
 it("gets an bash reference", async () => {
-  const bashRef: string = await refs.getBashRef(Software.GitHub);
+  const bashRef: string = await InstallSwRefs.getBashRef(Software.GitHub);
 
   expect(bashRef).toMatch("gh");
 });
