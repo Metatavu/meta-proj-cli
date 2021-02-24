@@ -44,7 +44,6 @@ it('creates project folder', () => {
   dotenv.config();
   const { HOME } = process.env;
   const defaultPath = `${HOME}/.meta-proj-cli/projects`;
-  
   child_process.execSync(`mkdir ${defaultPath + path.sep}test`);
 
   expect((dotenv.config)).toHaveBeenCalled();
