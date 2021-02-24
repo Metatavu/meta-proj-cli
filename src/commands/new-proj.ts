@@ -9,11 +9,11 @@ import { runExecSync } from "../classes/exec-sync-utils";
 const vorpal = new Vorpal();
 const { HOME } = process.env;
 let givenPath = `${HOME}/.meta-proj-cli/projects`;
-let projName : string = null;
-let projType : string = null;
-let projVm : string = null;
-let folderPath : string = null;
-let repoPath : string = null;
+let projName: string = null;
+let projType: string = null;
+let projVm: string = null;
+let folderPath: string = null;
+let repoPath: string = null;
 
 /**
  * Prompts the user and runs corresponding commands
