@@ -1,16 +1,76 @@
 import Vorpal from "vorpal";
 import { CheckUtils } from "../classes/check-utils";
-import { CheckSet } from "../interfaces/types";
+import { CheckSet, Software } from "../interfaces/types";
+
+const choices = [{
+                    name : Software.NodeJs,
+                    checked : true
+                  },
+                  {
+                    name : Software.GitHub,
+                    checked: true
+                  },
+                  {
+                    name: Software.GitCLI,
+                    checked: true
+                  },
+                  {
+                    name: Software.Maven,
+                    checked: true
+                  },
+                  {
+                    name: Software.JDK8,
+                    checked: true
+                  },
+                  {
+                    name : Software.JDK11,
+                    checked: false
+                  },
+                  {
+                    name: Software.Homebrew,
+                    checked: true
+                  },
+                  {
+                    name: Software.Docker,
+                    checked: true
+                  },
+                  {
+                    name: Software.Minikube,
+                    checked: true
+                  },
+                  {
+                    name: Software.KubernetesCLI,
+                    checked:true
+                  },
+                  {
+                    name: Software.Kustomize,
+                    checked: true
+                  }];
 
 /**
  * Shows a debug message
  */
 async function action() {
-  const test : CheckSet[] = [{checkable : "git", details : {}}]
+  try {
+    const tests : CheckSet[] = [];
+    const checkBoxResult = await this.prompt({
+      type : 'checkbox',
+      name : 'software',
+      choices : choices,
+      message : "Check if installed: "
+    });
 
-  this.log(await CheckUtils.checkPreq(test));
+    if(checkBoxResult.software) {
 
-  this.log(`test: successful`);
+      for (let i = 0; i < checkBoxResult.software.length; i++) {
+        tests.push({checkable : checkBoxResult.software[i], details : {}})
+      }
+    }
+    this.log(await CheckUtils.checkPreq(tests));
+    this.log(`test: successful`);
+  } catch (err) {
+    throw new Error(`Error when performing tests: ${err}`);
+  }
 }
 
 /**

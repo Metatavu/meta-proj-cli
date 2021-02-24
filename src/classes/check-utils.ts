@@ -1,4 +1,4 @@
-import { CheckSet, CheckErrorSet  } from "../interfaces/types";
+import { CheckSet, CheckErrorSet, Software  } from "../interfaces/types";
 import { checkGit } from "../functions/checks/checkGit";
 
 /**
@@ -37,7 +37,37 @@ export class CheckUtils {
 const checkRouter = async (currentCheck : CheckSet) => {
   try {
     switch(currentCheck.checkable){
-      case "git":
+      case Software.NodeJs:
+        return await checkGit();
+
+      case Software.GitHub:
+        return await checkGit();
+
+      case Software.GitCLI:
+        return await checkGit();
+
+      case Software.Maven:
+        return await checkGit();
+
+      case Software.JDK8:
+        return await checkGit();
+        
+      case Software.JDK11:
+        return await checkGit();
+
+      case Software.Homebrew:
+        return await checkGit();
+
+      case Software.Docker:
+        return await checkGit();
+
+      case Software.Minikube:
+        return await checkGit();
+
+      case Software.KubernetesCLI:
+        return await checkGit();
+
+      case Software.Kustomize:
         return await checkGit();
     }
   } catch (err) {
