@@ -17,8 +17,8 @@ const fileExtensions : RegExp[] = [
  * @returns {Promise<string | void>} if command outputs, will provide it as string
  */
 export const runExecSync = async (command: string, options?: ExecSyncOptionsWithBufferEncoding): Promise<string | void> => {
-  let harmful = false;
-  let foundExt : string = null;
+  let harmful: boolean = false;
+  let foundExt: string = null;
 
   try {
     /**
