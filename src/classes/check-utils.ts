@@ -1,5 +1,5 @@
 import { CheckSet, CheckErrorSet  } from "../interfaces/types";
-import { checkGit } from "../functions/checks/checkGit";
+import { InstallUtils } from "./install-utils";
 
 /**
  * Class for check utility functions
@@ -11,18 +11,18 @@ export class CheckUtils {
    * 
    * @param toCheck contains a CheckSet array with prerequisites to check
    */
-  static checkPreq = async (toCheck : CheckSet[]) : Promise<CheckErrorSet[]> => {
+  static checkPreq = async (toCheck: CheckSet[]): Promise<CheckErrorSet[]> => {
     const erroList : CheckErrorSet[] = [];
 
     for (const currentCheck of toCheck) {
       try {
-        const checkResult : CheckErrorSet = await checkRouter(currentCheck);
+        const checkResult : CheckErrorSet = await checkHandler(currentCheck);
       
         if(checkResult.error){
           erroList.push(checkResult);
         } 
       } catch (err) {
-        throw new Error(`Encountered error while checking prerequisite "${currentCheck.checkable}". \nError: ${err}`);
+        return Promise.reject(`Encountered error while checking prerequisite "${currentCheck.checkable}". \nError: ${err}`)
       }
     }
     return erroList;
@@ -30,16 +30,22 @@ export class CheckUtils {
 }
 
 /**
- * Routes details to relevant check functions
+ * Handles runned checks one at a time
  * 
  * @param currentCheck details of current checkable command
+ * @returns {CheckErrorSet} that contains software name, error and possible details
  */
-const checkRouter = async (currentCheck : CheckSet) => {
+const checkHandler = async (currentCheck: CheckSet) => {
   try {
-    switch(currentCheck.checkable){
-      case "git":
-        return await checkGit();
-    }
+    const installed: boolean = await InstallUtils.isInstalled(currentCheck.checkable);
+
+    const returnSet: CheckErrorSet = {
+      check : currentCheck.checkable,
+      error : installed ? false : true,
+      details : installed ? null : `${currentCheck.checkable} not installed!`
+    };
+    return returnSet;
+
   } catch (err) {
     throw new Error(`Encountered error while checking prerequisite "${currentCheck.checkable}". \nError: ${err}`);
   }
