@@ -121,6 +121,9 @@ async function action() {
   }
 }
 
+/**
+ * Gets OS-spevific version of path and resolves it into the outer and inner folder
+ */
 async function resolvePaths() {
   try {
     givenPath = await PathUtils.fixPath(givenPath);
@@ -132,6 +135,9 @@ async function resolvePaths() {
   }
 }
 
+/**
+ * Inits a default project with no framework attached
+ */
 async function initDefaultProject() {
   try {
     const cmds: string[] = await CreateDefault(projName, folderPath, repoPath);
@@ -144,6 +150,9 @@ async function initDefaultProject() {
   }
 }
 
+/**
+ * Runs command new-repo with user given parameters
+ */
 async function repoViaVorpal() {
   try {
     await vorpal

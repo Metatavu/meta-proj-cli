@@ -74,6 +74,9 @@ async function action(args) {
   finishRepo();
 }
 
+/**
+ * Runs repository creation commands based on user given parameters
+ */
 async function finishRepo() {
   try {
     await runExecSync(
