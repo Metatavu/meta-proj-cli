@@ -110,4 +110,3 @@ export enum Software {
   KubernetesCLI = "Kubernetes CLI",
   Kustomize = "Kustomize"
 }
-
