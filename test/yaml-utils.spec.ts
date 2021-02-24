@@ -1,9 +1,11 @@
 import YamlUtils from "../src/classes/yaml-utils";
 
 it('provides create yaml function', async () => {
-  const args = {name:"test",
-                image:'test',
-                port:8088};
+  const args = {
+    name:"test",
+    image:'test',
+    port:8088
+  };
   YamlUtils.createYaml = jest.fn();
   await YamlUtils.createYaml(args, 'pod', '');
 
