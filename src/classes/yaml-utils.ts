@@ -19,7 +19,7 @@ export default class YamlUtils {
    */
   public static createYaml = async (args: any, type: string, repoPath: string): Promise<void> => {
 
-    let file : any = fs.readFileSync(`./resources/${type}.json`);
+    let file: any = fs.readFileSync(`./resources/${type}.json`);
     file.metadata.name = args.name;
 
     if (file.metadata.labels) {
