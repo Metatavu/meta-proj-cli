@@ -15,12 +15,10 @@ export const CreateReact = async (projName: string): Promise<string> => {
  * Clean unnecessary files from React project folder
  * 
  * @param folderPath outer folder
- * 
  * @param repoPath inner folder, for GitHub etc
- * 
  * @returns an array of strings which includes the commands to be run on the new-proj thread
  */
-export const CleanReact = async (folderPath : string, repoPath : string) : Promise<string[]> => {
+export const CleanReact = async (folderPath: string, repoPath: string): Promise<string[]> => {
   let remove : string = null;
   let copy : string = null;
   try {
