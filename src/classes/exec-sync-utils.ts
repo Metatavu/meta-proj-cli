@@ -10,7 +10,7 @@ const fileExtensions : RegExp[] = [
 ];
 
 /**
- * runs the given command in a shell, denies attempts of injection
+ * Runs the given command in a shell, denies attempts of injection
  * 
  * @param {string} command command to be run in shell
  * @param {ExecSyncOptionsWithBufferEncoding} options options to be provided to the shell
