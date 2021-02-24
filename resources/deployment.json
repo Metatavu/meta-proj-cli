@@ -18,34 +18,28 @@
 	"strategy": {},
 	"template": {
 		"metadata": {
-				"creationTimestamp": null,
-				"labels": {
-					"app": "default"
-				}
+			"creationTimestamp": null,
+			"labels": {
+				"app": "default"
+			}
 		},
 		"spec": {
-			"containers": [
-			{
+			"containers": [{
 				"name": "default",
 				"image": "metatavu",
 				"resources": {},
-				"ports": [
-					{
-						"name": "tcp",
-						"containerPort": 3000,
-						"protocol": "TCP"
-					}
-				]
+				"ports": [{
+					"name": "tcp",
+					"containerPort": 3000,
+					"protocol": "TCP"
+				}]
 			},
 			{
 				"env": [
 
 				]
-			}
-			]
-				
-		}
-					
+			}]		
+		}				
 	}
 },
 "status": {}
