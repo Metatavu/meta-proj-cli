@@ -67,6 +67,15 @@ export interface UserConfigJson {
 }
 
 /**
+ * Format for project-config.jsons
+ * 
+ * @property projectName name of the project
+ */
+export interface ProjConfigJson {
+  projectName: string
+}
+
+/**
  * Global constants for OS names
  */
 export enum OperatingSystems {
@@ -101,3 +110,4 @@ export enum Software {
   KubernetesCLI = "Kubernetes CLI",
   Kustomize = "Kustomize"
 }
+
