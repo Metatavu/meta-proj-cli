@@ -1,10 +1,5 @@
 import OsUtils from "../../classes/os-utils";
 import { CommandNames } from "../../interfaces/types";
-
-/**
- * Constructs creation and cleaning commands for React projects
- */
-
 /**
  * Create React project
  * 
