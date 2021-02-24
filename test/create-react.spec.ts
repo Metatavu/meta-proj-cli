@@ -1,5 +1,5 @@
 it('returns a create react app command string', async () => {
-  const str : string = await CreateReact('test');
+  const str: string = await CreateReact('test');
 
   expect((str)).toMatch(/^npx create-react-app/);
 });
