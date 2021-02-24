@@ -23,9 +23,9 @@ async function action() {
 
   try {
     const nameResult = await this.prompt({
-      type : "input",
-      name : "name",
-      message : "Give a name for the project: "
+      type: "input",
+      name: "name",
+      message: "Give a name for the project: "
     });
 
     if (nameResult.name) {
@@ -35,10 +35,10 @@ async function action() {
     }
 
     const typeResult = await this.prompt({
-      type : 'list',
-      name : 'type',
-      choices : ["Quarkus", "React", "No framework"],
-      message : "Framework for the project: "
+      type: 'list',
+      name: 'type',
+      choices: ["Quarkus", "React", "No framework"],
+      message: "Framework for the project: "
     });
 
     if (typeResult.type) {
@@ -48,10 +48,10 @@ async function action() {
     }
 
     const vmResult = await this.prompt({
-      type : 'list',
-      name : 'vm',
-      choices : ["None", "Docker", "Minikube"],
-      message : "Add virtual environment for the project: "
+      type: 'list',
+      name: 'vm',
+      choices: ["None", "Docker", "Minikube"],
+      message: "Add virtual environment for the project: "
     });
 
     if (vmResult.vm) {
@@ -62,9 +62,9 @@ async function action() {
     }
 
     const pathResult = await this.prompt({
-      type : 'input',
-      name : 'path',
-      message : "Set a path where to initiate repository, leave empty for default: "
+      type: 'input',
+      name: 'path',
+      message: "Set a path where to initiate repository, leave empty for default: "
     });
 
     if (pathResult?.path) {
@@ -106,9 +106,9 @@ async function action() {
 
   try {
     const testResult = await this.prompt({
-      type : "confirm",
-      name : "testAnswer",
-      message : `do you want to run a test for ${projName}`
+      type: "confirm",
+      name: "testAnswer",
+      message: `do you want to run a test for ${projName}`
     });
 
     if (testResult.testAnswer) {
@@ -134,13 +134,13 @@ async function resolvePaths() {
 
 async function initDefaultProject() {
   try {
-    const cmds : string[] = await CreateDefault(projName, folderPath, repoPath);
+    const cmds: string[] = await CreateDefault(projName, folderPath, repoPath);
     await runExecSync(cmds[0]);
-    await runExecSync(cmds[1], {cwd : `.${path.sep}resources`});
-    await runExecSync(cmds[2], {cwd : `.${path.sep}resources`});
+    await runExecSync(cmds[1], {cwd: `.${path.sep}resources`});
+    await runExecSync(cmds[2], {cwd: `.${path.sep}resources`});
 
   } catch(err) {
-    throw new Error(`Error when creating project : ${err}`);
+    throw new Error(`Error when creating project: ${err}`);
   }
 }
 
@@ -160,6 +160,6 @@ async function repoViaVorpal() {
  * 
  * @param vorpal vorpal instance
  */
-export const newProj = (vorpal : Vorpal) : Vorpal.Command => vorpal
+export const newProj = (vorpal: Vorpal): Vorpal.Command => vorpal
   .command("new-proj", `Start a new project`)
   .action(action);

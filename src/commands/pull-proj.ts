@@ -12,17 +12,17 @@ const defaultPath = `${HOME}/.meta-proj-cli/projects`;
  * Prompts the user and pulls given repo to local
  */
 async function action() {
-  let repoName : string = null;
-  let repoPath : string = null;
+  let repoName: string = null;
+  let repoPath: string = null;
   let repoIsLocal = false;
-  let givenPath : string = null;
-  const copy : string = await OsUtils.getCommand("copy");
+  let givenPath: string = null;
+  const copy: string = await OsUtils.getCommand("copy");
 
   try { 
     const repoNameResult = await this.prompt({
-      type : 'input',
-      name : 'name',
-      message : "Give the name of the repository: "
+      type: 'input',
+      name: 'name',
+      message: "Give the name of the repository: "
     });
 
     if (repoNameResult.name) {
@@ -35,16 +35,16 @@ async function action() {
   }
 
   try {
-    await runExecSync(`gh repo view ${process.env.GIT_ORGANIZATION}/${repoName}`, {stdio : "ignore"});
+    await runExecSync(`gh repo view ${process.env.GIT_ORGANIZATION}/${repoName}`, {stdio: "ignore"});
   } catch (err) {
     throw new Error(`Error while searching for repository: ${err}`);
   }
 
   try { 
     const repoIsLocalResult = await this.prompt({
-      type : 'confirm',
-      name : 'isLocal',
-      message : "Is the repository installed locally? "
+      type: 'confirm',
+      name: 'isLocal',
+      message: "Is the repository installed locally? "
     });
 
     repoIsLocal = repoIsLocalResult.isLocal;
@@ -55,9 +55,9 @@ async function action() {
 
   try { 
     const repoPathResult = await this.prompt({
-      type : 'input',
-      name : 'path',
-      message : repoIsLocal ?
+      type: 'input',
+      name: 'path',
+      message: repoIsLocal ?
         "Give a directory where to search for the repository (leave empty for default): " :
         "Give a directory where to open the repository folder (leave empty for default): "
     });
@@ -72,7 +72,7 @@ async function action() {
 
   if (repoIsLocal) {
     try {
-      const searchPath : string = PathUtils.repoFolder(givenPath, repoName);
+      const searchPath: string = PathUtils.repoFolder(givenPath, repoName);
       if (fs.existsSync(path.join(searchPath, ".git"))) {
         repoPath = searchPath;
       } else {
@@ -82,22 +82,22 @@ async function action() {
       throw new Error(`Encountered error while searching for folder: ${err}`);
     }
   } else {
-    const folderPath : string = PathUtils.outerFolder(givenPath, repoName);
+    const folderPath: string = PathUtils.outerFolder(givenPath, repoName);
     repoPath = PathUtils.repoFolder(givenPath, repoName);
 
     await runExecSync(`mkdir ${folderPath}`);
     await runExecSync(`mkdir ${repoPath}`);
-    await runExecSync("git init", {cwd : repoPath});
+    await runExecSync("git init", {cwd: repoPath});
 
-    await runExecSync(`${copy} project-config.json ${folderPath}`, {cwd : `.${path.sep}resources`});
+    await runExecSync(`${copy} project-config.json ${folderPath}`, {cwd: `.${path.sep}resources`});
 
     await runExecSync(
       `git remote add origin git@github.com:${process.env.GIT_ORGANIZATION}/${repoName}.git`,
-      {cwd : repoPath}
+      {cwd: repoPath}
     );
   }
 
-  await runExecSync(`git pull -q git@github.com:${process.env.GIT_ORGANIZATION}/${repoName}.git`, {cwd : repoPath});
+  await runExecSync(`git pull -q git@github.com:${process.env.GIT_ORGANIZATION}/${repoName}.git`, {cwd: repoPath});
 }
 
 /**
@@ -105,6 +105,6 @@ async function action() {
  * 
  * @param vorpal vorpal instance
  */
-export const pullProj = (vorpal : Vorpal) : Vorpal.Command => vorpal
+export const pullProj = (vorpal: Vorpal): Vorpal.Command => vorpal
   .command("pull-proj", `Pulls a project to an existing local repository or creates a new one`)
   .action(action);

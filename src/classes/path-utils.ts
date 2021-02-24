@@ -11,36 +11,36 @@ const defaultProjectPath = "~/.meta-proj-cli/projects";
 /**
  * Offers functions that help with paths
  * 
- * fixPath : changes file separators to platform specific ones and expands tilde(~) paths
- * outerFolder : gives the path format to the outer folder of a project
- * repoFolder : gives the path format to the folder that actually holds the project (contains .git)
+ * fixPath: changes file separators to platform specific ones and expands tilde(~) paths
+ * outerFolder: gives the path format to the outer folder of a project
+ * repoFolder: gives the path format to the folder that actually holds the project (contains .git)
  */
 export class PathUtils {
 
-  public static savePath = async () : Promise<string> => {
-    const os : string = await PathUtils.osResolver();
+  public static savePath = async (): Promise<string> => {
+    const os: string = await PathUtils.osResolver();
     return await PathUtils.translatePath(defaultSavePath, os);
   }
 
-  public static projectPath = async () : Promise<string> => {
-    const os : string = await PathUtils.osResolver();
+  public static projectPath = async (): Promise<string> => {
+    const os: string = await PathUtils.osResolver();
     return  await PathUtils.translatePath(defaultProjectPath, os);
   }
 
-  public static fixPath = async (givenPath : string) : Promise<string> => { 
-    const os : string = await PathUtils.osResolver();
+  public static fixPath = async (givenPath: string): Promise<string> => { 
+    const os: string = await PathUtils.osResolver();
     return await PathUtils.translatePath(givenPath, os);
   }
 
-  public static outerFolder = (givenPath : string, repoName : string) : string => {
+  public static outerFolder = (givenPath: string, repoName: string): string => {
     return path.join(givenPath, repoName + "-project");
   }
 
-  public static repoFolder = (givenPath : string, repoName : string) : string => {
+  public static repoFolder = (givenPath: string, repoName: string): string => {
     return path.join(givenPath, repoName + "-project", repoName);
   }
 
-  public static checkExists = async (givenPath : string) : Promise<void> => {
+  public static checkExists = async (givenPath: string): Promise<void> => {
     try {
       const activeOs = await OsUtils.getOS();
       givenPath = await PathUtils.translatePath(givenPath, activeOs);
@@ -59,7 +59,7 @@ export class PathUtils {
  * 
  * @param os is the OS that is currently being used
  */
-  private static async translatePath(givenPath : string, os : string) {
+  private static async translatePath(givenPath: string, os: string) {
     if (!os) {
       os = await OsUtils.getOS();
     }
@@ -103,8 +103,8 @@ export class PathUtils {
    * 
    * @returns user preferred OS if any, or detected OS
    */
-  private static async osResolver() : Promise<string> {
-    let os : string = await OsUtils.getOS();
+  private static async osResolver(): Promise<string> {
+    let os: string = await OsUtils.getOS();
     if(!os){
       os = OsUtils.detectOS();
     }
