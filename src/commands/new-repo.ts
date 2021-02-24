@@ -2,6 +2,7 @@ import Vorpal from "vorpal";
 import * as path from "path";
 import { PathUtils } from "../classes/path-utils";
 import OsUtils from "../classes/os-utils";
+import { ProjConfigUtils } from "../classes/proj-config-utils";
 import { runExecSync } from "../classes/exec-sync-utils";
 
 const { HOME } = process.env;
@@ -97,7 +98,7 @@ async function action(args) {
     await runExecSync(`git pull -q git@github.com:${process.env.GIT_ORGANIZATION}/${template}.git`, {cwd : repoPath});
     await runExecSync("git branch -m master develop", {cwd : repoPath});
   } else {
-    const copy : string = await OsUtils.getCommand("copy");
+    const copy: string = await OsUtils.getCommand("copy");
     try {
       await runExecSync("git init", {cwd : repoPath});
       await runExecSync(`${copy} project-config.json ${folderPath}`, {cwd : `.${path.sep}resources`});
@@ -107,8 +108,11 @@ async function action(args) {
       await runExecSync(`git commit -q -m "first commit"`, {cwd : repoPath});
       await runExecSync(`git push -q origin develop`, {cwd : repoPath});
       await finishRepo(repoPath);
+      const projConfigData = await ProjConfigUtils.readProjConfig(folderPath);
+      projConfigData.projectName = repoName;
+      await ProjConfigUtils.writeProjConfig(folderPath, JSON.stringify(projConfigData));
     } catch (err) {
-      throw new Error(`Fetching command ${copy} didn't work: ` + err);
+      throw new Error(`Encountered error while creating local repository: ${err}`);
     }
   }
 }
