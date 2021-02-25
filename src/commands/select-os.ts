@@ -9,7 +9,7 @@ async function action() {
     const osResult = await this.prompt({
       type: "list",
       name: "os",
-      choices: ["LINUX", "WINDOWS", "MAC OS"],
+      choices: [ "LINUX", "WINDOWS", "MAC OS" ],
       message: "Which operating system are you using? "
     });
 
