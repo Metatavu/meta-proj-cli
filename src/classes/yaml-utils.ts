@@ -81,6 +81,7 @@ export default class YamlUtils {
    * 
    * @param args Object that includes needed values for setting up the .yaml files
    * @param file The JSON file that is being edited to create a .yaml file
+   * @returns the edited JSON file for pod
    */
   private static setupPod = (args: any, file: any): any => {
     if (file.spec.containers[0]){
@@ -102,6 +103,7 @@ export default class YamlUtils {
    * 
    * @param args Object that includes needed values for setting up the .yaml files
    * @param file The JSON file that is being edited to create a .yaml file
+   * @returns the edited JSON file for service
    */
   private static setupService = (args: any, file: any): any => {
     if (args.ports) {
@@ -122,23 +124,26 @@ export default class YamlUtils {
    * 
    * @param args Object that includes needed values for setting up the .yaml files
    * @param file The JSON file that is being edited to create a .yaml file
+   * @returns the edited JSON file for deployment
    */
   private static setupDeployment = (args: any, file: any): any => {
     file.spec.selector.app = args.name;
     file.spec.template.metadata.app = args.name;
+    const containerObj = file.spec.template.spec.containers[0];
 
-    if (file.spec.template.spec.containers[0]) {
-      file.spec.template.spec.containers[0].name = args.name;
+    if (containerObj) {
+      containerObj.name = args.name;
 
       if (args.image) {
-        file.spec.template.spec.containers[0].image = args.image;
+        containerObj.image = args.image;
       }
-      if (args.ports && file.spec.template.spec.containers[0]) {
-        file.spec.template.spec.containers[0].ports = [];
+      if (args.ports && containerObj) {
+        containerObj.ports = [];
         for (const port in args.ports) {
-          file.spec.template.spec.containers[0].ports.push(port);
+          containerObj.ports.push(port);
         }
       }
+      file.spec.template.spec.containers[0] = containerObj;
     }
     
     if (args.env && file.spec.template.spec.containers[1]) {
