@@ -6,7 +6,7 @@ import { CheckSet } from "../interfaces/types";
  * Shows a debug message
  */
 async function action() {
-  const test: CheckSet[] = [{checkable: "git", details: {}}]
+  const test: CheckSet[] = [{ checkable: "git", details: {} }]
 
   this.log(await CheckUtils.checkPreq(test));
 
