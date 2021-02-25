@@ -2,17 +2,19 @@ import Vorpal from "vorpal";
 import { CheckUtils } from "../classes/check-utils";
 import { CheckSet, Software } from "../interfaces/types";
 
-const choices = [ { name: Software.NodeJs, checked: true },
-                  { name: Software.GitHub, checked: true },
-                  { name: Software.GitCLI, checked: true },
-                  { name: Software.Maven, checked: true }, 
-                  { name: Software.JDK8, checked: true },
-                  { name: Software.JDK11, checked: false },
-                  { name: Software.Homebrew, checked: true },
-                  { name: Software.Docker, checked: true },
-                  { name: Software.Minikube, checked: true },
-                  { name: Software.KubernetesCLI, checked: true },
-                  { name: Software.Kustomize, checked: true} ];
+const choices = [
+  { name: Software.NodeJs, checked: true },
+  { name: Software.GitHub, checked: true },
+  { name: Software.GitCLI, checked: true },
+  { name: Software.Maven, checked: true }, 
+  { name: Software.JDK8, checked: true },
+  { name: Software.JDK11, checked: false },
+  { name: Software.Homebrew, checked: true },
+  { name: Software.Docker, checked: true },
+  { name: Software.Minikube, checked: true },
+  { name: Software.KubernetesCLI, checked: true },
+  { name: Software.Kustomize, checked: true }
+];
 
 /**
  * Shows a debug message
