@@ -18,7 +18,6 @@ export default class YamlUtils {
    * @param repoPath Repository path where to init .yaml files
    */
   public static createYaml = async (args: any, type: string, repoPath: string): Promise<void> => {
-
     let file: any = fs.readFileSync(`./resources/${type}.json`);
     file.metadata.name = args.name;
 
