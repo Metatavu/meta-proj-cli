@@ -3,7 +3,7 @@ import { OsCommands } from "./os-commands";
 import { UserConfigUtils } from "./user-config-utils";
 import { windows, linux, macos } from "platform-detect";
 
-const systems: string[]  = [OperatingSystems.MAC, OperatingSystems.WINDOWS, OperatingSystems.LINUX];
+const systems: string[]  = [ OperatingSystems.MAC, OperatingSystems.WINDOWS, OperatingSystems.LINUX ];
 
 /**
  * Enables cross-platform support
