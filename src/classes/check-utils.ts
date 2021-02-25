@@ -12,11 +12,11 @@ export class CheckUtils {
    * @param toCheck contains a CheckSet array with prerequisites to check
    */
   static checkPreq = async (toCheck: CheckSet[]): Promise<CheckErrorSet[]> => {
-    const erroList : CheckErrorSet[] = [];
+    const erroList: CheckErrorSet[] = [];
 
     for (const currentCheck of toCheck) {
       try {
-        const checkResult : CheckErrorSet = await checkHandler(currentCheck);
+        const checkResult: CheckErrorSet = await checkHandler(currentCheck);
       
         if(checkResult.error){
           erroList.push(checkResult);
@@ -40,9 +40,9 @@ const checkHandler = async (currentCheck: CheckSet) => {
     const installed: boolean = await InstallUtils.isInstalled(currentCheck.checkable);
 
     return {
-      check : currentCheck.checkable,
-      error : installed ? false : true,
-      details : installed ? null : `${currentCheck.checkable} not installed!`
+      check: currentCheck.checkable,
+      error: installed ? false : true,
+      details: installed ? null : `${currentCheck.checkable} not installed!`
     };
 
   } catch (err) {
