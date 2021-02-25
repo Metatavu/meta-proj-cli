@@ -40,9 +40,9 @@ const checkHandler = async (currentCheck: CheckSet) => {
     const installed: boolean = await InstallUtils.isInstalled(currentCheck.checkable);
 
     return {
-      check : currentCheck.checkable,
-      error : installed ? false : true,
-      details : installed ? null : `${currentCheck.checkable} not installed!`
+      check: currentCheck.checkable,
+      error: installed ? false : true,
+      details: installed ? null : `${currentCheck.checkable} not installed!`
     };
 
   } catch (err) {
