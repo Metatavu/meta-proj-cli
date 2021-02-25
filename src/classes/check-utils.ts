@@ -32,7 +32,7 @@ export class CheckUtils {
 /**
  * Handles runned checks one at a time
  * 
- * @param currentCheck details of current checkable command
+ * @param {CheckSet} currentCheck  details of current checkable command
  * @returns {CheckErrorSet} that contains software name, error and possible details
  */
 const checkHandler = async (currentCheck: CheckSet) => {
