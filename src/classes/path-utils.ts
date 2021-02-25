@@ -1,8 +1,8 @@
 import * as path from "path";
 import fs from "fs";
-import { execSync } from "child_process";
 import OsUtils from "../classes/os-utils";
 import { OperatingSystems } from "../interfaces/types";
+import { runExecSync } from "../classes/exec-sync-utils";
 
 const { HOME } = process.env;
 const defaultSavePath = "~/.meta-proj-cli/";
@@ -10,42 +10,73 @@ const defaultProjectPath = "~/.meta-proj-cli/projects";
 
 /**
  * Offers functions that help with paths
- * 
- * fixPath : changes file separators to platform specific ones and expands tilde(~) paths
- * outerFolder : gives the path format to the outer folder of a project
- * repoFolder : gives the path format to the folder that actually holds the project (contains .git)
  */
 export class PathUtils {
 
-  public static savePath = async () : Promise<string> => {
-    const os : string = await PathUtils.osResolver();
+  /**
+   * Provides platform specific root folder for projects
+   * 
+   * @returns root folder path for new projects
+   */
+  public static savePath = async (): Promise<string> => {
+    const os: string = await PathUtils.osResolver();
     return await PathUtils.translatePath(defaultSavePath, os);
   }
 
-  public static projectPath = async () : Promise<string> => {
-    const os : string = await PathUtils.osResolver();
-    return  await PathUtils.translatePath(defaultProjectPath, os);
+  /**
+   * Provides platform specific path where to init new projects
+   * 
+   * @returns default projects folder path where to init new projects
+   */
+  public static projectPath = async (): Promise<string> => {
+    const os: string = await PathUtils.osResolver();
+    return await PathUtils.translatePath(defaultProjectPath, os);
   }
 
-  public static fixPath = async (givenPath : string) : Promise<string> => { 
-    const os : string = await PathUtils.osResolver();
+/**
+ * Changes file separators to platform specific ones and expands tilde(~) paths
+ * 
+ * @param givenPath path that is being fixed
+ * @returns platform specific path
+ */
+  public static fixPath = async (givenPath: string): Promise<string> => { 
+    const os: string = await PathUtils.osResolver();
     return await PathUtils.translatePath(givenPath, os);
   }
 
-  public static outerFolder = (givenPath : string, repoName : string) : string => {
+  /**
+   * Gives the path format to the outer folder of a project
+   * 
+   * @param givenPath path where project is being initialised to
+   * @param repoName project folder name
+   * @returns path to outer folder of the project
+   */
+  public static outerFolder = (givenPath: string, repoName: string): string => {
     return path.join(givenPath, repoName + "-project");
   }
 
-  public static repoFolder = (givenPath : string, repoName : string) : string => {
+  /**
+   * Gives the path format to the folder that actually holds the project (contains .git)
+   * 
+   * @param givenPath path where project is being initialised to
+   * @param repoName project folder name
+   * @returns path to inner folder of the project
+   */
+  public static repoFolder = (givenPath: string, repoName: string): string => {
     return path.join(givenPath, repoName + "-project", repoName);
   }
 
-  public static checkExists = async (givenPath : string) : Promise<void> => {
+  /**
+   * Checks is a folder path in question exists or not and creates it in case it doesn't exist
+   * 
+   * @param givenPath the path whose existence is being checked
+   */
+  public static checkExists = async (givenPath: string): Promise<void> => {
     try {
       const activeOs = await OsUtils.getOS();
       givenPath = await PathUtils.translatePath(givenPath, activeOs);
       if (!fs.existsSync(givenPath)) {
-        execSync(`mkdir ${givenPath}`);
+        await runExecSync(`mkdir ${givenPath}`);
       }
     } catch(err) {
       throw new Error(`Error when checking or creating path: ${err}`);
@@ -56,25 +87,15 @@ export class PathUtils {
  * Provides cross-platform functionality & tilde expansion when working with paths
  * 
  * @param givenPath path that is to be sanitized
- * 
  * @param os is the OS that is currently being used
+ * @returns translated platform specific path
  */
-  private static async translatePath(givenPath : string, os : string) {
+  private static async translatePath(givenPath: string, os: string) {
     if (!os) {
       os = await OsUtils.getOS();
     }
 
     try {
-      if (os == OperatingSystems.LINUX || os == OperatingSystems.MAC) {
-        if (givenPath[0] === "~") {
-          givenPath = path.join(HOME, givenPath.slice(1));
-        }
-        if (givenPath[0] === "/") {
-          givenPath = path.join(...givenPath.split(/\/|\\/));
-          givenPath = path.sep + givenPath;
-        }
-      }
-    
       if (os == OperatingSystems.WINDOWS) {
         if (givenPath[0] === "~") {
           givenPath = path.join(HOME, givenPath.slice(1));
@@ -83,7 +104,6 @@ export class PathUtils {
           givenPath = path.join(...givenPath.split(/\/|\\/));
         }
       } else {
-        console.log("It looks like you aren't running any of the supported platforms. Proceeding with Unix-base as a default...");
         if (givenPath[0] === "~") {
           givenPath = path.join(HOME, givenPath.slice(1));
         }
@@ -103,8 +123,8 @@ export class PathUtils {
    * 
    * @returns user preferred OS if any, or detected OS
    */
-  private static async osResolver() : Promise<string> {
-    let os : string = await OsUtils.getOS();
+  private static async osResolver(): Promise<string> {
+    let os: string = await OsUtils.getOS();
     if(!os){
       os = OsUtils.detectOS();
     }

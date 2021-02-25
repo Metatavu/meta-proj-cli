@@ -1,4 +1,4 @@
-import { execSync } from "child_process";
+import { runExecSync } from "../../classes/exec-sync-utils";
 import { CheckErrorSet } from "../../interfaces/types";
 
 /**
@@ -8,16 +8,16 @@ import { CheckErrorSet } from "../../interfaces/types";
  * 
  * @returns {CheckErrorSet} ChekErrorSet.
  */
-export const checkGit = async () : Promise<CheckErrorSet> => {
+export const checkGit = async (): Promise<CheckErrorSet> => {
 
-  const returnSet : CheckErrorSet = {
-    check : "git",
-    error : false,
-    details : null
+  const returnSet: CheckErrorSet = {
+    check: "git",
+    error: false,
+    details: null
   };
 
   try {
-    if (!execSync("git --version").toString().match(/^(git version)/)) {
+    if (!runExecSync("git --version").toString().match(/^(git version)/)) {
       returnSet.error = true;
       returnSet.details = "Git not installed";
     }
