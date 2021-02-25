@@ -15,7 +15,7 @@ it('exports itself', () => {
 });
 
 it('checks for prequisites', async () => {
-  const test: CheckSet[] = [{checkable: "git", details: {}}]
+  const test: CheckSet[] = [{ checkable: "git", details: {} }]
   CheckUtils.checkPreq = jest.fn().mockImplementation();
   await CheckUtils.checkPreq(test);
 
