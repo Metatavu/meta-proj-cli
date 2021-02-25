@@ -29,7 +29,7 @@ async function action(args: { options: { path: string; }; }) {
   await runExecSync("git push -u origin master", { cwd: path });
 
   if (!args.options.path) {
-    await runExecSync("rm -r .git", {cwd: path});
+    await runExecSync("rm -r .git", { cwd: path });
   }
 }
 
