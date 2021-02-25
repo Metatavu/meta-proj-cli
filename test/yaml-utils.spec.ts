@@ -7,7 +7,7 @@ it('provides create yaml function', async () => {
     port:8088
   };
   YamlUtils.createYaml = jest.fn();
-  await YamlUtils.createYaml(args, 'pod', '');
+  await YamlUtils.createYaml(args, "pod", '');
 
   expect((YamlUtils.createYaml)).toReturn();
 });
