@@ -22,11 +22,11 @@ async function action(args: { options: { path: string; }; }) {
       await runExecSync(`cp README.md ${path}`, { cwd: "../resources"});
   }
 
-  await runExecSync("git init", {cwd: path});
-  await runExecSync("git add README.md", {cwd: path});
-  await runExecSync('git commit -m "first commit"', {cwd: path});
-  await runExecSync(`git remote add origin ${process.env.GIT_REPO_BASE_PATH}`, {cwd: path});
-  await runExecSync("git push -u origin master", {cwd: path});
+  await runExecSync("git init", { cwd: path });
+  await runExecSync("git add README.md", { cwd: path });
+  await runExecSync('git commit -m "first commit"', { cwd: path });
+  await runExecSync(`git remote add origin ${process.env.GIT_REPO_BASE_PATH}`, { cwd: path} );
+  await runExecSync("git push -u origin master", { cwd: path });
 
   if (!args.options.path) {
     await runExecSync("rm -r .git", {cwd: path});
