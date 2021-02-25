@@ -16,7 +16,7 @@ export class CheckUtils {
 
     for (const currentCheck of toCheck) {
       try {
-        const checkResult : CheckErrorSet = await checkHandler(currentCheck);
+        const checkResult: CheckErrorSet = await checkHandler(currentCheck);
       
         if(checkResult.error){
           erroList.push(checkResult);
