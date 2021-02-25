@@ -1,7 +1,7 @@
 import Vorpal from "vorpal";
 import * as checkTest from "../src/commands/checkTest";
 import { CheckUtils } from "../src/classes/check-utils";
-import { CheckSet } from "../src/interfaces/types";
+import { CheckSet, Software } from "../src/interfaces/types";
 
 it('exports itself', () => {
   const vorpal = new Vorpal();
@@ -15,9 +15,11 @@ it('exports itself', () => {
 });
 
 it('checks for prequisites', async () => {
-  const test : CheckSet[] = [{checkable : "git", details : {}}]
-  CheckUtils.checkPreq = jest.fn().mockImplementation();
-  await CheckUtils.checkPreq(test);
+  const testSet: CheckSet[] = [ { checkable: Software.NodeJs, details: {} },
+                                { checkable: Software.GitCLI, details: {} },
+                                { checkable: Software.GitHub, details: {} },
+                                { checkable: Software.Maven, details: {} } ];
 
-  expect((CheckUtils.checkPreq)).toReturn();
+  const returnSet = await CheckUtils.checkPreq(testSet);
+  expect((returnSet)).toBe([]);
 });
