@@ -13,14 +13,24 @@ const defaultProjectPath = "~/.meta-proj-cli/projects";
  */
 export class PathUtils {
 
+  /**
+   * Provides platform specific root folder for projects
+   * 
+   * @returns root folder path for new projects
+   */
   public static savePath = async (): Promise<string> => {
     const os: string = await PathUtils.osResolver();
     return await PathUtils.translatePath(defaultSavePath, os);
   }
 
+  /**
+   * Provides platform specific path where to init new projects
+   * 
+   * @returns default projects folder path where to init new projects
+   */
   public static projectPath = async (): Promise<string> => {
     const os: string = await PathUtils.osResolver();
-    return  await PathUtils.translatePath(defaultProjectPath, os);
+    return await PathUtils.translatePath(defaultProjectPath, os);
   }
 
 /**
