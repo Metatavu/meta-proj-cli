@@ -11,12 +11,12 @@ export class CheckUtils {
    * 
    * @param toCheck contains a CheckSet array with prerequisites to check
    */
-  static checkPreq = async (toCheck : CheckSet[]) : Promise<CheckErrorSet[]> => {
-    const erroList : CheckErrorSet[] = [];
+  static checkPreq = async (toCheck: CheckSet[]): Promise<CheckErrorSet[]> => {
+    const erroList: CheckErrorSet[] = [];
 
     for (const currentCheck of toCheck) {
       try {
-        const checkResult : CheckErrorSet = await checkRouter(currentCheck);
+        const checkResult: CheckErrorSet = await checkRouter(currentCheck);
       
         if(checkResult.error){
           erroList.push(checkResult);
@@ -34,7 +34,7 @@ export class CheckUtils {
  * 
  * @param currentCheck details of current checkable command
  */
-const checkRouter = async (currentCheck : CheckSet) => {
+const checkRouter = async (currentCheck: CheckSet) => {
   try {
     switch(currentCheck.checkable){
       case Software.NodeJs:

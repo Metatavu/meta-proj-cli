@@ -1,11 +1,11 @@
 {
-  "preset" : "ts-jest",
+  "preset": "ts-jest",
   "testEnvironment": "node",
   "collectCoverage": true,
   "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],
   "transform": {
     "^.+\\.ts$": "ts-jest"
   },
- 
+
   "testRegex": "((\\.|/*.)(spec))\\.ts?$"
 }

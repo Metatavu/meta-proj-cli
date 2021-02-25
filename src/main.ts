@@ -13,8 +13,8 @@ import OsUtils from "./classes/os-utils";
   
   const vorpal = new Vorpal();
   await OsUtils.setOS(OsUtils.detectOS());
-  const savePath : string = await PathUtils.savePath();
-  const projectPath : string = await PathUtils.projectPath();
+  const savePath: string = await PathUtils.savePath();
+  const projectPath: string = await PathUtils.projectPath();
   PathUtils.checkExists(savePath);
   PathUtils.checkExists(projectPath);
 

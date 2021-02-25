@@ -78,6 +78,6 @@ async function action() {
  * 
  * @param vorpal vorpal instance
  */
-export const test = (vorpal : Vorpal) : Vorpal.Command => vorpal
+export const test = (vorpal: Vorpal): Vorpal.Command => vorpal
   .command("test", `Outputs a debug message`)
   .action(action);

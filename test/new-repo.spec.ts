@@ -44,7 +44,6 @@ it('creates project folder', () => {
   dotenv.config();
   const { HOME } = process.env;
   const defaultPath = `${HOME}/.meta-proj-cli/projects`;
-
   child_process.execSync(`mkdir ${defaultPath + path.sep}test`);
 
   expect((dotenv.config)).toHaveBeenCalled();
@@ -57,7 +56,7 @@ it('inits a Git project', () => {
   dotenv.config();
   const { HOME } = process.env;
   const defaultPath = `${HOME}/.meta-proj-cli/projects`;
-  child_process.execSync("git init", {cwd : (defaultPath + path.sep + "test")});
+  child_process.execSync("git init", { cwd: (defaultPath + path.sep + "test") });
 
   expect((dotenv.config)).toHaveBeenCalled();
   expect((child_process.execSync)).toReturn();

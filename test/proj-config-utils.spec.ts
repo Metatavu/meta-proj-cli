@@ -2,7 +2,7 @@ import { ProjConfigUtils } from "../src/classes/proj-config-utils";
 import { ProjConfigJson } from "../src/interfaces/types";
 
 const mockPath = "/home/";
-const mockProjConfig : ProjConfigJson = {
+const mockProjConfig: ProjConfigJson = {
   "projectName" : ""
 };
 
