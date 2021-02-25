@@ -13,10 +13,10 @@ async function action(args) {
   if (!software) {
     try {
       const softwareResult = await this.prompt({
-        type : 'list',
-        name : 'software',
-        choices : [ 'NodeJs', 'GitHub', 'Git CLI', 'Maven', 'Java Development Kit 8', 'Java Development Kit 11', 'Homebrew', 'Docker', 'Minikube', 'Kubernetes CLI', 'Kustomize' ],
-        message : "Software to be installed: "
+        type: 'list',
+        name: 'software',
+        choices: [ 'NodeJs', 'GitHub', 'Git CLI', 'Maven', 'Java Development Kit 8', 'Java Development Kit 11', 'Homebrew', 'Docker', 'Minikube', 'Kubernetes CLI', 'Kustomize' ],
+        message: "Software to be installed: "
       });
       if (softwareResult.name) {
         software = softwareResult.name;
@@ -29,7 +29,7 @@ async function action(args) {
   }
   this.log(`Attempting to install ${software}...`);
   /*
-  const installCommand : string = await InstallUtils.installSW(software);
+  const installCommand: string = await InstallUtils.installSW(software);
   try {
     execSync(installCommand);
   } catch (err) {
