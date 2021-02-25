@@ -32,7 +32,7 @@ async function action() {
     if(checkBoxResult.software) {
 
       for (let i = 0; i < checkBoxResult.software.length; i++) {
-        tests.push({checkable : checkBoxResult.software[i], details : {}})
+        tests.push({ checkable: checkBoxResult.software[i], details: { } })
       }
     }
     this.log(await CheckUtils.checkPreq(tests));
