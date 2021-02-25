@@ -14,7 +14,7 @@ it("provides create yaml function", async () => {
 
 it("is able to read a .yaml file", async () => {
   YamlUtils.printYaml = jest.fn();
-  await YamlUtils.printYaml('keycloak', './resources');
+  await YamlUtils.printYaml("keycloak", "./resources");
 
   expect((YamlUtils.printYaml)).toReturn();
 });
