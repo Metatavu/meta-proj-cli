@@ -20,7 +20,7 @@ it("is able to read a .yaml file", async () => {
 });
 
 it("provides a delete yaml command string", async () => {
-  const str = await YamlUtils.deleteYaml('deployment', '');
+  const str = await YamlUtils.deleteYaml("deployment", "");
 
   expect((str)).toMatch(/deployment.yaml$/);
 });
