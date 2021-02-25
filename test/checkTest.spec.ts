@@ -21,5 +21,12 @@ it('checks for prequisites', async () => {
                                 { checkable: Software.Maven, details: {} } ];
 
   const returnSet = await CheckUtils.checkPreq(testSet);
-  expect((returnSet)).toBe([]);
+
+  if (returnSet.length > 0) {
+    for (const set in returnSet) {
+      expect((set)).toBeInstanceOf({ checkable: String, error: Boolean, details: String })
+    }
+  } else {
+    expect((returnSet)).toBe([]);
+  } 
 });
