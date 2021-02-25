@@ -21,12 +21,12 @@ const choices = [
  */
 async function action() {
   try {
-    const tests : CheckSet[] = [];
+    const tests: CheckSet[] = [];
     const checkBoxResult = await this.prompt({
-      type : 'checkbox',
-      name : 'software',
-      choices : choices,
-      message : "Check if installed: "
+      type: "checkbox",
+      name: "software",
+      choices: choices,
+      message: "Check if installed: "
     });
 
     if(checkBoxResult.software) {
