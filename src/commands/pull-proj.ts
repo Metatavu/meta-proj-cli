@@ -20,8 +20,8 @@ async function action() {
 
   try { 
     const repoNameResult = await this.prompt({
-      type: 'input',
-      name: 'name',
+      type: "input",
+      name: "name",
       message: "Give the name of the repository: "
     });
 
@@ -35,15 +35,15 @@ async function action() {
   }
 
   try {
-    await runExecSync(`gh repo view ${process.env.GIT_ORGANIZATION}/${repoName}`, {stdio: "ignore"});
+    await runExecSync(`gh repo view ${process.env.GIT_ORGANIZATION}/${repoName}`, { stdio: "ignore" });
   } catch (err) {
     throw new Error(`Error while searching for repository: ${err}`);
   }
 
   try { 
     const repoIsLocalResult = await this.prompt({
-      type: 'confirm',
-      name: 'isLocal',
+      type: "confirm",
+      name: "isLocal",
       message: "Is the repository installed locally? "
     });
 
@@ -55,8 +55,8 @@ async function action() {
 
   try { 
     const repoPathResult = await this.prompt({
-      type: 'input',
-      name: 'path',
+      type: "input",
+      name: "path",
       message: repoIsLocal ?
         "Give a directory where to search for the repository (leave empty for default): " :
         "Give a directory where to open the repository folder (leave empty for default): "
@@ -87,17 +87,16 @@ async function action() {
 
     await runExecSync(`mkdir ${folderPath}`);
     await runExecSync(`mkdir ${repoPath}`);
-    await runExecSync("git init", {cwd: repoPath});
+    await runExecSync("git init", { cwd: repoPath });
 
-    await runExecSync(`${copy} project-config.json ${folderPath}`, {cwd: `.${path.sep}resources`});
+    await runExecSync(`${copy} project-config.json ${folderPath}`, { cwd: `.${path.sep}resources` });
 
     await runExecSync(
-      `git remote add origin git@github.com:${process.env.GIT_ORGANIZATION}/${repoName}.git`,
-      {cwd: repoPath}
+      `git remote add origin git@github.com:${process.env.GIT_ORGANIZATION}/${repoName}.git`, { cwd: repoPath }
     );
   }
 
-  await runExecSync(`git pull -q git@github.com:${process.env.GIT_ORGANIZATION}/${repoName}.git`, {cwd: repoPath});
+  await runExecSync(`git pull -q git@github.com:${process.env.GIT_ORGANIZATION}/${repoName}.git`, { cwd: repoPath });
 }
 
 /**

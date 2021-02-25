@@ -35,9 +35,9 @@ async function action() {
     }
 
     const typeResult = await this.prompt({
-      type: 'list',
-      name: 'type',
-      choices: ["Quarkus", "React", "No framework"],
+      type: "list",
+      name: "type",
+      choices: [ "Quarkus", "React", "No framework" ],
       message: "Framework for the project: "
     });
 
@@ -48,9 +48,9 @@ async function action() {
     }
 
     const vmResult = await this.prompt({
-      type: 'list',
-      name: 'vm',
-      choices: ["None", "Docker", "Minikube"],
+      type: "list",
+      name: "vm",
+      choices: [ "None", "Docker", "Minikube" ],
       message: "Add virtual environment for the project: "
     });
 
@@ -62,8 +62,8 @@ async function action() {
     }
 
     const pathResult = await this.prompt({
-      type: 'input',
-      name: 'path',
+      type: "input",
+      name: "path",
       message: "Set a path where to initiate repository, leave empty for default: "
     });
 
@@ -108,7 +108,7 @@ async function action() {
     const testResult = await this.prompt({
       type: "confirm",
       name: "testAnswer",
-      message: `do you want to run a test for ${projName}`
+      message: `Do you want to run a test for ${projName}?`
     });
 
     if (testResult.testAnswer) {
@@ -142,8 +142,8 @@ async function initDefaultProject() {
   try {
     const cmds: string[] = await CreateDefault(projName, folderPath, repoPath);
     await runExecSync(cmds[0]);
-    await runExecSync(cmds[1], {cwd: `.${path.sep}resources`});
-    await runExecSync(cmds[2], {cwd: `.${path.sep}resources`});
+    await runExecSync(cmds[1], { cwd: `.${path.sep}resources` });
+    await runExecSync(cmds[2], { cwd: `.${path.sep}resources` });
 
   } catch(err) {
     throw new Error(`Error when creating project: ${err}`);

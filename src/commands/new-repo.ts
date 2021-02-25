@@ -34,8 +34,8 @@ async function action(args) {
     try {
       if (!repoName) {
         const nameResult = await this.prompt({
-          type: 'input',
-          name: 'name',
+          type: "input",
+          name: "name",
           message: "Give a name for the repository (leave empty to cancel): "
         });
   
@@ -47,15 +47,15 @@ async function action(args) {
       }
 
       const publicityResult = await this.prompt({
-        type: 'list',
-        name: 'publicity',
-        choices: ["private", "internal", "public"],
+        type: "list",
+        name: "publicity",
+        choices: [ "private", "internal", "public" ],
         message: "Set the publicity of the repository: "
       });
   
       const descriptionResult = await this.prompt({
-        type: 'input',
-        name: 'description',
+        type: "input",
+        name: "description",
         message: "Give a description for the repository: "
       });
 
@@ -86,19 +86,19 @@ async function finishRepo() {
       ${description ? `-d="${description}"` : ""}\
       ${template ? `--template="${process.env.GIT_ORGANIZATION}/${template}"` : ""}\
       -y`,
-      {cwd: folderPath}
+      { cwd: folderPath }
     );
 
     if (template) {
-      await runExecSync(`git pull -q git@github.com:${process.env.GIT_ORGANIZATION}/${template}.git`, {cwd : repoPath});
-      await runExecSync("git branch -m master develop", {cwd: repoPath});
+      await runExecSync(`git pull -q git@github.com:${process.env.GIT_ORGANIZATION}/${template}.git`, { cwd: repoPath });
+      await runExecSync("git branch -m master develop", { cwd: repoPath });
       await checkout();
     } else {
-      await runExecSync("git init", {cwd: repoPath});
-      await runExecSync("git checkout -q -b develop", {cwd: repoPath});
-      await runExecSync(`git add README.md`, {cwd: repoPath});
-      await runExecSync(`git commit -q -m "first commit"`, {cwd: repoPath});
-      await runExecSync(`git push -q origin develop`, {cwd: repoPath});
+      await runExecSync("git init", { cwd: repoPath });
+      await runExecSync("git checkout -q -b develop", { cwd: repoPath });
+      await runExecSync(`git add README.md`, { cwd: repoPath });
+      await runExecSync(`git commit -q -m "first commit"`, { cwd: repoPath });
+      await runExecSync(`git push -q origin develop`, { cwd: repoPath });
       await checkout();
       const projConfigData = await ProjConfigUtils.readProjConfig(folderPath);
       projConfigData.projectName = repoName;
@@ -110,9 +110,9 @@ async function finishRepo() {
 }
 
 async function checkout() {
-  await runExecSync(`git checkout -q -b master`, {cwd: repoPath}); 
-  await runExecSync(`git push -q origin master`, {cwd: repoPath, stdio: ["ignore", "ignore", "ignore"]});
-  await runExecSync(`git checkout -q develop`, {cwd: repoPath});
+  await runExecSync(`git checkout -q -b master`, { cwd: repoPath }); 
+  await runExecSync(`git push -q origin master`, { cwd: repoPath, stdio: [ "ignore", "ignore", "ignore" ] });
+  await runExecSync(`git checkout -q develop`, { cwd: repoPath });
 }
 
 /**

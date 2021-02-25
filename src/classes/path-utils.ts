@@ -10,10 +10,6 @@ const defaultProjectPath = "~/.meta-proj-cli/projects";
 
 /**
  * Offers functions that help with paths
- * 
- * fixPath: changes file separators to platform specific ones and expands tilde(~) paths
- * outerFolder: gives the path format to the outer folder of a project
- * repoFolder: gives the path format to the folder that actually holds the project (contains .git)
  */
 export class PathUtils {
 
@@ -27,19 +23,44 @@ export class PathUtils {
     return  await PathUtils.translatePath(defaultProjectPath, os);
   }
 
+/**
+ * Changes file separators to platform specific ones and expands tilde(~) paths
+ * 
+ * @param givenPath path that is being fixed
+ * @returns platform specific path
+ */
   public static fixPath = async (givenPath: string): Promise<string> => { 
     const os: string = await PathUtils.osResolver();
     return await PathUtils.translatePath(givenPath, os);
   }
 
+  /**
+   * Gives the path format to the outer folder of a project
+   * 
+   * @param givenPath path where project is being initialised to
+   * @param repoName project folder name
+   * @returns path to outer folder of the project
+   */
   public static outerFolder = (givenPath: string, repoName: string): string => {
     return path.join(givenPath, repoName + "-project");
   }
 
+  /**
+   * Gives the path format to the folder that actually holds the project (contains .git)
+   * 
+   * @param givenPath path where project is being initialised to
+   * @param repoName project folder name
+   * @returns path to inner folder of the project
+   */
   public static repoFolder = (givenPath: string, repoName: string): string => {
     return path.join(givenPath, repoName + "-project", repoName);
   }
 
+  /**
+   * Checks is a folder path in question exists or not and creates it in case it doesn't exist
+   * 
+   * @param givenPath the path whose existence is being checked
+   */
   public static checkExists = async (givenPath: string): Promise<void> => {
     try {
       const activeOs = await OsUtils.getOS();
@@ -56,8 +77,8 @@ export class PathUtils {
  * Provides cross-platform functionality & tilde expansion when working with paths
  * 
  * @param givenPath path that is to be sanitized
- * 
  * @param os is the OS that is currently being used
+ * @returns translated platform specific path
  */
   private static async translatePath(givenPath: string, os: string) {
     if (!os) {
