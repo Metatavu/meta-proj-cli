@@ -2,6 +2,7 @@ import fs from "fs";
 import * as path from "path";
 import YAML from "yaml";
 import OsUtils from "./os-utils";
+import { CommandNames } from "../interfaces/types";
 
 /**
  * Provides CRUD operations on .yaml files that are used in projects.
@@ -71,7 +72,7 @@ export default class YamlUtils {
    * @returns a command string to be executed for the file deletion
    */
   public static deleteYaml = async (type: string, repoPath: string): Promise<string> => {
-    const del = await OsUtils.getCommand("delete");
+    const del = await OsUtils.getCommand(CommandNames.remove);
     return `${del} ${repoPath + path.sep + type}.yaml`;
   }
 
