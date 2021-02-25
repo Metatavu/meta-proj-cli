@@ -83,17 +83,18 @@ export default class YamlUtils {
    * @returns the edited JSON file for pod
    */
   private static setupPod = (args: any, file: any): any => {
-    if (file.spec.containers[0]){
+    const containerObj = file.spec.containers[0];
+    if (containerObj){
 
-      file.spec.containers[0].name = args.name;
+      containerObj.name = args.name;
       if (args.image) {
-        file.spec.containers[0].image = args.image;
+        containerObj.image = args.image;
       }
-      if (args.port && file.spec.containers[0].ports[0]) {
-        file.spec.containers[0].ports[0].containerport = args.port;
+      if (args.port && containerObj.ports[0]) {
+        containerObj.ports[0].containerport = args.port;
       }
+      file.spec.containers[0] = containerObj;
     }
-    
     return file;
   }
 
