@@ -1,4 +1,4 @@
-import { CheckSet, CheckErrorSet  } from "../interfaces/types";
+import { CheckSet, CheckErrorSet, Software  } from "../interfaces/types";
 import { checkGit } from "../functions/checks/checkGit";
 
 /**
@@ -11,12 +11,12 @@ export class CheckUtils {
    * 
    * @param toCheck contains a CheckSet array with prerequisites to check
    */
-  static checkPreq = async (toCheck : CheckSet[]) : Promise<CheckErrorSet[]> => {
-    const erroList : CheckErrorSet[] = [];
+  static checkPreq = async (toCheck: CheckSet[]): Promise<CheckErrorSet[]> => {
+    const erroList: CheckErrorSet[] = [];
 
     for (const currentCheck of toCheck) {
       try {
-        const checkResult : CheckErrorSet = await checkRouter(currentCheck);
+        const checkResult: CheckErrorSet = await checkRouter(currentCheck);
       
         if(checkResult.error){
           erroList.push(checkResult);
@@ -34,10 +34,60 @@ export class CheckUtils {
  * 
  * @param currentCheck details of current checkable command
  */
-const checkRouter = async (currentCheck : CheckSet) => {
+const checkRouter = async (currentCheck: CheckSet) => {
   try {
     switch(currentCheck.checkable){
-      case "git":
+      case Software.NodeJs:
+        //To do: add check
+        console.log(`Should add check for ${Software.NodeJs}`);
+        return await checkGit();
+
+      case Software.GitHub:
+        //To do: add check
+        console.log(`Should add check for ${Software.GitHub}`);
+        return await checkGit();
+
+      case Software.GitCLI:
+        return await checkGit();
+
+      case Software.Maven:
+        //To do: add check
+        console.log(`Should add check for ${Software.Maven}`);
+        return await checkGit();
+
+      case Software.JDK8:
+        //To do: add check
+        console.log(`Should add check for ${Software.JDK8}`);
+        return await checkGit();
+        
+      case Software.JDK11:
+        //To do: add check
+        console.log(`Should add check for ${Software.JDK11}`);
+        return await checkGit();
+
+      case Software.Homebrew:
+        //To do: add check
+        console.log(`Should add check for ${Software.Homebrew}`);
+        return await checkGit();
+
+      case Software.Docker:
+        //To do: add check
+        console.log(`Should add check for ${Software.Docker}`);
+        return await checkGit();
+
+      case Software.Minikube:
+        //To do: add check
+        console.log(`Should add check for ${Software.Minikube}`);
+        return await checkGit();
+
+      case Software.KubernetesCLI:
+        //To do: add check
+        console.log(`Should add check for ${Software.KubernetesCLI}`);
+        return await checkGit();
+
+      case Software.Kustomize:
+        //To do: add check
+        console.log(`Should add check for ${Software.Kustomize}`);
         return await checkGit();
     }
   } catch (err) {
