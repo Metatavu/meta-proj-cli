@@ -12,7 +12,7 @@ export class CheckUtils {
    * @param toCheck contains a CheckSet array with prerequisites to check
    */
   static checkPreq = async (toCheck: CheckSet[]): Promise<CheckErrorSet[]> => {
-    const erroList : CheckErrorSet[] = [];
+    const erroList: CheckErrorSet[] = [];
 
     for (const currentCheck of toCheck) {
       try {
