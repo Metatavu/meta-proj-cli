@@ -1,9 +1,9 @@
 import { UserConfigJson, OperatingSystems } from "../interfaces/types";
 import { OsCommands } from "./os-commands";
 import { UserConfigUtils } from "./user-config-utils";
-import { windows, linux, macos } from "platform-detect";
+import { windows, linux, linuxBased, macos } from "platform-detect";
 
-const systems : string[]  = [OperatingSystems.MAC, OperatingSystems.WINDOWS, OperatingSystems.LINUX];
+const systems: string[]  = [ OperatingSystems.MAC, OperatingSystems.WINDOWS, OperatingSystems.LINUX ];
 
 /**
  * Enables cross-platform support
@@ -20,7 +20,7 @@ export default class OsUtils {
   static getCommand = async (cmd: string): Promise<string | null> => {
     try {
       const userConfig: UserConfigJson = await UserConfigUtils.readUserConfig();
-      const command : string = await OsUtils.searchCmd(userConfig.osPref, cmd);
+      const command: string = await OsUtils.searchCmd(userConfig.osPref, cmd);
       if(command){
         return command;
       } else {
@@ -36,9 +36,9 @@ export default class OsUtils {
    * 
    * @returns the selected OS if any
    */
-  public static getOS = async () : Promise<string | null> => {
+  public static getOS = async (): Promise<string | null> => {
     try {
-      const os : UserConfigJson = await UserConfigUtils.readUserConfig();
+      const os: UserConfigJson = await UserConfigUtils.readUserConfig();
       return os?.osPref || null; 
     } catch (err) {
       throw new Error(err);
@@ -50,7 +50,7 @@ export default class OsUtils {
    * 
    * @param os is the OS that is being switched to, if supported
    */
-  public static setOS = async (os : string) : Promise<void> => {
+  public static setOS = async (os: string): Promise<void> => {
     if (systems.includes(os.toUpperCase())) {
       OsUtils.swapOs(os);
     } else {
@@ -63,17 +63,18 @@ export default class OsUtils {
    * 
    * @returns estimated OS in use
    */
-  public static detectOS = () : string => {
-    let detectedOS : string;
+  public static detectOS = (): string => {
+    let detectedOS: string;
     if (windows) {
       detectedOS = "WINDOWS";
     }
-
-    if(linux){
-      detectedOS = "LINUX";
-    }
-    if(macos){
+    else if (macos) {
       detectedOS = "MAC OS";
+    }
+    else if (linux || linuxBased) {
+      detectedOS = "LINUX";
+    } else {
+      console.log("It looks like you aren't running any of the supported platforms. Proceeding with selected OS...");
     }
     console.log(`It seems like you're using ${detectedOS}. If this is incorrect, please use "select-os" to switch it.`);
     return detectedOS
@@ -84,8 +85,8 @@ export default class OsUtils {
    * 
    * @param os is the OS that is being switched to, if supported
    */
-  private static async swapOs (os : string) {
-    const userConfig : UserConfigJson = await UserConfigUtils.readUserConfig();
+  private static async swapOs (os: string) {
+    const userConfig: UserConfigJson = await UserConfigUtils.readUserConfig();
     userConfig.osPref = os;
     const data = JSON.stringify(userConfig, null, 2);
     await UserConfigUtils.writeUserConfig(data);
@@ -100,7 +101,7 @@ export default class OsUtils {
    * 
    * @returns Command Object which matches with the user OS and the searched command
    */
-  private static async searchCmd (os: string, command: string) : Promise<string | null> {
+  private static async searchCmd (os: string, command: string): Promise<string | null> {
     try{
       const osCommands = await OsCommands.getCmds();
       if (osCommands) {

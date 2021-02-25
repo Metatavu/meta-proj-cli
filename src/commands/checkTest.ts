@@ -6,7 +6,7 @@ import { CheckSet } from "../interfaces/types";
  * Shows a debug message
  */
 async function action() {
-  const test : CheckSet[] = [{checkable : "git", details : {}}]
+  const test: CheckSet[] = [{ checkable: "git", details: {} }]
 
   this.log(await CheckUtils.checkPreq(test));
 
@@ -18,6 +18,6 @@ async function action() {
  * 
  * @param vorpal vorpal instance
  */
-export const test = (vorpal : Vorpal) : Vorpal.Command => vorpal
+export const test = (vorpal: Vorpal): Vorpal.Command => vorpal
   .command("test", `Outputs a debug message`)
   .action(action);

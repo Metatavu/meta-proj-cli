@@ -7,10 +7,10 @@ import OsUtils from "../classes/os-utils";
 async function action() {
   try {
     const osResult = await this.prompt({
-      type : "list",
-      name : "os",
-      choices : ["LINUX", "WINDOWS", "MAC OS"],
-      message : "Which operating system are you using? "
+      type: "list",
+      name: "os",
+      choices: [ "LINUX", "WINDOWS", "MAC OS" ],
+      message: "Which operating system are you using? "
     });
 
     if (osResult.os) {
@@ -28,6 +28,6 @@ async function action() {
  * 
  * @param vorpal vorpal instance
  */
-export const selectOs = (vorpal : Vorpal) : Vorpal.Command => vorpal
+export const selectOs = (vorpal: Vorpal): Vorpal.Command => vorpal
   .command("select-os", `Select OS`)
   .action(action);
