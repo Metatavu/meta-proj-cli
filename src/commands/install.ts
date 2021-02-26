@@ -18,7 +18,7 @@ const choices = [
   Software.EKSctl,
   Software.AWSCLI
 ];
-let installCommands = null;
+let installCommands: string | string[] = null;
 
 /**
  * Installs software with a given flag, or activates a wizard to give options
