@@ -49,10 +49,8 @@ async function action(args) {
   }
   this.log(`Attempting to install ${software}...`);
   
-  
-  
   try {
-    
+
     if (software == Software.Homebrew) {
       installCommands = await InstallUtils.installBrew();
 

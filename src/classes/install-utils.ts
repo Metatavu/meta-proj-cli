@@ -60,6 +60,11 @@ export class InstallUtils {
     return cmds;
   }
 
+  /**
+   * Install EKS command line tool command
+   * 
+   * @returns Array of installation commands that are run by the wizard
+   */
   public static async installEksctl(): Promise<string[]> {
     const installUtil: string = await OsUtils.getCommand(CommandNames.installUtil);
     const installRef: string = await InstallSwRefs.getInstallRef(installUtil, Software.Minikube);
