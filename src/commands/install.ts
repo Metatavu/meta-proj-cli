@@ -1,4 +1,24 @@
 import Vorpal from "vorpal";
+import { runExecSync } from "../classes/exec-sync-utils";
+import { InstallUtils } from "../classes/install-utils";
+import { Software } from "../interfaces/types";
+
+const choices = [
+  Software.NodeJs,
+  Software.GitHub,
+  Software.GitCLI,
+  Software.Maven,
+  Software.JDK8,
+  Software.JDK11,
+  Software.Homebrew,
+  Software.Docker,
+  Software.Minikube,
+  Software.KubernetesCLI,
+  Software.Kustomize,
+  Software.EKSctl,
+  Software.AWSCLI
+];
+let installCommands = null;
 
 /**
  * Installs software with a given flag, or activates a wizard to give options
@@ -15,7 +35,7 @@ async function action(args) {
       const softwareResult = await this.prompt({
         type: 'list',
         name: 'software',
-        choices: [ 'NodeJs', 'GitHub', 'Git CLI', 'Maven', 'Java Development Kit 8', 'Java Development Kit 11', 'Homebrew', 'Docker', 'Minikube', 'Kubernetes CLI', 'Kustomize' ],
+        choices: choices,
         message: "Software to be installed: "
       });
       if (softwareResult.name) {
@@ -28,14 +48,38 @@ async function action(args) {
     }
   }
   this.log(`Attempting to install ${software}...`);
-  /*
-  const installCommand: string = await InstallUtils.installSW(software);
+  
+  
+  
   try {
-    execSync(installCommand);
+    
+    if (software == Software.Homebrew) {
+      installCommands = await InstallUtils.installBrew();
+
+    } else if (software == Software.Minikube) {
+      installCommands = await InstallUtils.installKube();
+
+    } else if (software == Software.KubernetesCLI) {
+      installCommands = await InstallUtils.installKubeCtl();
+
+    } else if (software == Software.EKSctl) {
+      installCommands = await InstallUtils.installEksctl();
+
+    } else {
+      installCommands = await InstallUtils.installSW(software);
+    }
+
+    if (typeof(installCommands) === "string") {
+      await runExecSync(installCommands);
+    } else {
+      for (const cmd in installCommands) {
+        await runExecSync(cmd);
+      }
+    }
+    
   } catch (err) {
     throw new Error(`Error during ${software} installation process: ${err}`);
   }
-  */
 }
 
 /**

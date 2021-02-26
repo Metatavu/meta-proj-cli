@@ -66,6 +66,12 @@ export class InstallSwRefs {
       case Software.Kustomize:
         return (installUtil == "sudo apt") ? 'curl -s "https://raw.githubusercontent.com/\
         kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash' : 'kustomize';
+
+      case Software.EKSctl:
+        return "eksctl";
+
+      case Software.AWSCLI:
+        return "awscli";
     }
   }
 
@@ -109,6 +115,12 @@ export class InstallSwRefs {
 
       case Software.Kustomize:
         return "kustomize";
+
+      case Software.EKSctl:
+        return "eksctl";
+      
+      case Software.AWSCLI:
+        return "aws"
     }
   }
 }
