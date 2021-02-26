@@ -96,7 +96,7 @@ async function action() {
         message: "Use Gradle?: "
       });
 
-      if(!kotlinResult.kotlin || !gradleResult.gradle) {
+      if (!kotlinResult.kotlin || !gradleResult.gradle) {
         kotlin = false;
         gradle = false;
       } else {
@@ -181,7 +181,7 @@ async function initDefaultProject() {
 }
 
 /**
- * Inits a default project with no framework attached
+ * Inits a React project
  */
 async function initReactProject() {
   try {
