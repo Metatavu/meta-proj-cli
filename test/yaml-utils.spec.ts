@@ -1,10 +1,15 @@
 import YamlUtils from "../src/classes/yaml-utils";
+import { KubeArgs } from "../src/interfaces/types";
 
 it("provides create yaml function", async () => {
-  const args = {
+  const args: KubeArgs = {
     name: "test",
     image: "test",
-    port: 8088
+    port: 8088,
+    portType : null,
+    ports: null,
+    env: null,
+    replicas: null
   };
   YamlUtils.createYaml = jest.fn();
   await YamlUtils.createYaml(args, "pod", "");
