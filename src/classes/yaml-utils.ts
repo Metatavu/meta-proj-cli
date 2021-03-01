@@ -19,7 +19,7 @@ export default class YamlUtils {
    * @param repoPath Repository path where to init .yaml files
    */
   public static createYaml = async (args: KubeArgs, type: string, repoPath: string): Promise<void> => {
-    let file = JSON.parse(fs.readFileSync(`./resources/${type}.json`, "utf8"));
+    let file = YAML.parse(fs.readFileSync(`./resources/${type}.yaml`, "utf8"));
     file.metadata.name = args.name;
 
     if (file.metadata.labels) {
@@ -92,7 +92,7 @@ export default class YamlUtils {
         containerObj.image = args.image;
       }
       if (args.port && containerObj.ports[0]) {
-        containerObj.ports[0].containerport = args.port;
+        containerObj.ports[0].containerPort = args.port;
       }
       file.spec.containers[0] = containerObj;
     }

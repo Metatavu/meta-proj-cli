@@ -1,0 +1,53 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: meta-test
+  region: us-east-2
+
+iam:
+  withOIDC: true
+  serviceAccounts:
+  - metadata:
+      name: meta-test-cluster
+      namespace: meta-test
+      labels: {aws-usage: "cluster-ops"}
+    attachPolicyARNs:
+    - "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+
+vpc:
+  id: "meta-test-vpc"
+  cidr: 10.0.0.0/24
+  subnets:
+    public:
+      meta-test-subnet-one:
+        az: us-east-2a
+        cidr: 10.0.0.0/25
+      meta-test-subnet-two:
+        az: us-east-2b
+        cidr: 10.0.0.128/25
+  autoAllocateIPv6: false
+  clusterEndpoints:
+    publicAccess: true
+    privateAccess: false
+
+nodeGroups:
+  - name: meta-test-nodegroup
+    instanceType: t3.medium
+    instanceName: meta-test-nodegroup-1
+    desiredCapacity: 1
+    minSize: 1
+    maxSize: 2
+    volumeSize: 20
+    iam:
+      attachPolicyARNs:
+      - "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+      - "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+      - "AmazonEKS_CNI_Policy"
+    subnets:
+      - meta-test-subnet-one
+      - meta-test-subnet-two
+
+cloudWatch:
+  clusterLogging:
+    enableTypes: []
