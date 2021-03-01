@@ -19,36 +19,76 @@ export default class YamlUtils {
    * @param repoPath Repository path where to init .yaml files
    */
   public static createYaml = async (args: KubeArgs, type: string, repoPath: string): Promise<void> => {
-    let file = YAML.parse(fs.readFileSync(`./resources/${type}.yaml`, "utf8"));
-    file.metadata.name = args.name;
+    try {
+      let file = YAML.parse(fs.readFileSync(`./resources/${type}.yaml`, "utf8"));
+      file.metadata.name = args.name;
 
-    if (file.metadata.labels) {
+      if (file.metadata.labels) {
 
-      if (file.metadata.labels.app) {
-        file.metadata.labels.app = args.name;
+        if (file.metadata.labels.app) {
+          file.metadata.labels.app = args.name;
+        }
+
+        if (file.metadata.labels.run) {
+          file.metadata.labels.run = args.name;
+        }
       }
 
-      if (file.metadata.labels.run) {
-        file.metadata.labels.run = args.name;
+      switch (type) {
+
+        case "pod":
+          file = YamlUtils.setupPod(args, file);
+          break;
+
+        case "service":
+          file = YamlUtils.setupService(args, file);
+          break;
+        
+        case "deployment":
+          file = YamlUtils.setupDeployment(args, file);
+          break;
       }
+      fs.writeFileSync(`${repoPath + path.sep + type}.yaml`, YAML.stringify(file));
+
+    } catch (err) {
+      Promise.reject(`Error creating ${type}.yaml: ${err}`);
     }
+    
+  }
 
-    switch (type) {
+  /**
+   * Creates cluster.yaml to attach a Minikube project into RDS
+   * 
+   * @param {string} name Project/cluster name that is used when creating cluster
+   * @param {string} repoPath Path where project is being initialized
+   */
+  public static createClusterYaml = async (name: string, repoPath: string): Promise<void> => {
+    try {
+      const file = YAML.parse(fs.readFileSync("./resources/cluster.yaml", "utf8"));
+      console.log(file.iam);
+      console.log(file.nodeGroups);
+      file.metadata.name = name;
+      file.iam.serviceAccounts[0].metadata.name = `${name}-cluster`;
+      file.iam.serviceAccounts[0].metadata.namespace = name;
+      file.vpc.id = `${name}-vpc`;
+      const subnets = { public: {} };
+        subnets.public[name + "-subnet-one"] = {
+          "az": "us-east-2a",
+          "cidr": "10.0.0.0/25",
+        };
+        subnets.public[name + "-subnet-two"] = {
+          "az": "us-east-2b",
+          "cidr": "10.0.0.128/25"
+        } 
+      file.vpc.subnets = subnets;
+      file.nodeGroups[0].name = `${name}-nodegroup`;
+      file.nodeGroups[0].instanceName = `${name}-nodegroup-1`;
+      file.nodeGroups[0].subnets = [`${name}-subnet-one`,`${name}-subnet-two`];
+      fs.writeFileSync(`${repoPath + path.sep}cluster.yaml`, YAML.stringify(file));
 
-      case "pod":
-        file = YamlUtils.setupPod(args, file);
-        break;
-
-      case "service":
-        file = YamlUtils.setupService(args, file);
-        break;
-      
-      case "deployment":
-        file = YamlUtils.setupDeployment(args, file);
-        break;
+    } catch (err) {
+      Promise.reject(`Error creating cluster.yaml: ${err}`);
     }
-
-    fs.writeFileSync(`${repoPath + path.sep + type}.yaml`, YAML.stringify(file));
   }
 
   /**
@@ -59,8 +99,13 @@ export default class YamlUtils {
    * @param repoPath Repository path where .yaml files are located
    */
   public static printYaml = async (type: string, repoPath: string): Promise<void> => {
-    const file = YAML.parse(fs.readFileSync(`${repoPath + path.sep + type}.yaml`, "utf8"));
-    console.log(file);
+    try {
+      const file = YAML.parse(fs.readFileSync(`${repoPath + path.sep + type}.yaml`, "utf8"));
+      console.log(file);
+    } catch (err) {
+      Promise.reject(`Error when reading file: ${err}`);
+    }
+    
   }
 
   /**
