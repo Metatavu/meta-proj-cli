@@ -4,8 +4,8 @@ import YAML from "yaml";
 import OsUtils from "./os-utils";
 import { CommandNames, KubeArgs } from "../interfaces/types";
 
-const defaultIP1 = "10.0.0.0";
-const defaultIP2 = "10.0.0.128";
+const { IP_ONE } = process.env;
+const { IP_TWO } = process.env;
 
 /**
  * Provides CRUD operations on .yaml files that are used in projects.
@@ -75,11 +75,11 @@ export default class YamlUtils {
       const subnets = { public: {} };
         subnets.public[name + "-subnet-one"] = {
           "az": "us-east-2a",
-          "cidr": `${defaultIP1}/25`
+          "cidr": `${IP_ONE}/25`
         };
         subnets.public[name + "-subnet-two"] = {
           "az": "us-east-2b",
-          "cidr": `${defaultIP2}/25`
+          "cidr": `${IP_TWO}/25`
         } 
       file.vpc.subnets = subnets;
       file.nodeGroups[0].name = `${name}-nodegroup`;
