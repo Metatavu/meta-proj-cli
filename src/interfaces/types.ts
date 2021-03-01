@@ -94,6 +94,21 @@ export enum CommandNames {
   installUtil = "installation utility"
 }
 
+export interface KubeArgs {
+  name : string,
+  image: string,
+  port: number,
+  portType: string,
+  ports: []
+  env: []
+  replicas: number
+}
+
+export interface KubeComponent {
+  args: KubeArgs,
+  type: string
+}
+
 /**
  * Global constants for software names
  */

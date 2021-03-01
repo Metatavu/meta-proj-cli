@@ -2,7 +2,7 @@ import fs from "fs";
 import * as path from "path";
 import YAML from "yaml";
 import OsUtils from "./os-utils";
-import { CommandNames } from "../interfaces/types";
+import { CommandNames, KubeArgs } from "../interfaces/types";
 
 /**
  * Provides CRUD operations on .yaml files that are used in projects.
@@ -18,8 +18,8 @@ export default class YamlUtils {
    * @param type Type of Kubernetes component, either pod, service or deployment
    * @param repoPath Repository path where to init .yaml files
    */
-  public static createYaml = async (args: any, type: string, repoPath: string): Promise<void> => {
-    let file: any = fs.readFileSync(`./resources/${type}.json`);
+  public static createYaml = async (args: KubeArgs, type: string, repoPath: string): Promise<void> => {
+    let file = JSON.parse(fs.readFileSync(`./resources/${type}.json`, "utf8"));
     file.metadata.name = args.name;
 
     if (file.metadata.labels) {
@@ -83,7 +83,7 @@ export default class YamlUtils {
    * @param file The JSON file that is being edited to create a .yaml file
    * @returns the edited JSON file for pod
    */
-  private static setupPod = (args: any, file: any): any => {
+  private static setupPod = (args: KubeArgs, file: any): any => {
     const containerObj = file.spec.containers[0];
     if (containerObj){
 
@@ -106,7 +106,7 @@ export default class YamlUtils {
    * @param file The JSON file that is being edited to create a .yaml file
    * @returns the edited JSON file for service
    */
-  private static setupService = (args: any, file: any): any => {
+  private static setupService = (args: KubeArgs, file: any): any => {
     if (args.ports) {
       file.spec.ports = [];
       for (const port in args.ports) {
@@ -127,7 +127,7 @@ export default class YamlUtils {
    * @param file The JSON file that is being edited to create a .yaml file
    * @returns the edited JSON file for deployment
    */
-  private static setupDeployment = (args: any, file: any): any => {
+  private static setupDeployment = (args: KubeArgs, file: any): any => {
     file.spec.selector.app = args.name;
     file.spec.template.metadata.app = args.name;
     const containerObj = file.spec.template.spec.containers[0];
