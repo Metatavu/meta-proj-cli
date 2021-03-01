@@ -1,10 +1,8 @@
 apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
-
 metadata:
   name: meta-test
   region: us-east-2
-
 iam:
   withOIDC: true
   serviceAccounts:
@@ -14,7 +12,6 @@ iam:
       labels: {aws-usage: "cluster-ops"}
     attachPolicyARNs:
     - "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-
 vpc:
   id: "meta-test-vpc"
   cidr: 10.0.0.0/24
@@ -30,7 +27,6 @@ vpc:
   clusterEndpoints:
     publicAccess: true
     privateAccess: false
-
 nodeGroups:
   - name: meta-test-nodegroup
     instanceType: t3.medium
@@ -47,7 +43,6 @@ nodeGroups:
     subnets:
       - meta-test-subnet-one
       - meta-test-subnet-two
-
 cloudWatch:
   clusterLogging:
     enableTypes: []

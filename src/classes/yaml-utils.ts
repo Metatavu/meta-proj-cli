@@ -4,6 +4,9 @@ import YAML from "yaml";
 import OsUtils from "./os-utils";
 import { CommandNames, KubeArgs } from "../interfaces/types";
 
+const defaultIP1 = "10.0.0.0";
+const defaultIP2 = "10.0.0.128";
+
 /**
  * Provides CRUD operations on .yaml files that are used in projects.
  * "UPDATE" operation is yet to be implemented, as it probably won't be necessary.
@@ -65,8 +68,6 @@ export default class YamlUtils {
   public static createClusterYaml = async (name: string, repoPath: string): Promise<void> => {
     try {
       const file = YAML.parse(fs.readFileSync("./resources/cluster.yaml", "utf8"));
-      console.log(file.iam);
-      console.log(file.nodeGroups);
       file.metadata.name = name;
       file.iam.serviceAccounts[0].metadata.name = `${name}-cluster`;
       file.iam.serviceAccounts[0].metadata.namespace = name;
@@ -74,11 +75,11 @@ export default class YamlUtils {
       const subnets = { public: {} };
         subnets.public[name + "-subnet-one"] = {
           "az": "us-east-2a",
-          "cidr": "10.0.0.0/25",
+          "cidr": `${defaultIP1}/25`
         };
         subnets.public[name + "-subnet-two"] = {
           "az": "us-east-2b",
-          "cidr": "10.0.0.128/25"
+          "cidr": `${defaultIP2}/25`
         } 
       file.vpc.subnets = subnets;
       file.nodeGroups[0].name = `${name}-nodegroup`;
