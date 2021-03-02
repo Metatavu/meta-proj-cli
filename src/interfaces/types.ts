@@ -75,6 +75,18 @@ export interface ProjConfigJson {
   projectName: string
 }
 
+/**
+ * Cluster configuration with user input values, if any
+ * 
+ * @property desiredCapacity amount of desired Nodes
+ * @property minSize amount of minimum Nodes
+ * @property maxSize amount of maximum Nodes
+ * @property volumeSize the size of the volume in GiB
+ * @property vpcIp VPC CIDR with mask used to create VPC and its subnets
+ * @property clusterLabel label for the cluster
+ * @property ngLabel label for the NodeGroup
+ * @property cloudWatch options for Cloud Watch, currently not used
+ */
 export interface ClusterConfig {
   desiredCapacity: number,
   minSize: number,

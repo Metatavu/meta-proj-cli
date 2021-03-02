@@ -7,6 +7,9 @@ import YamlUtils from "./yaml-utils";
 const { HOME } = process.env;
 let configPath = `${HOME}/.aws/config`;
 
+/**
+ * Provides utilities for setting up AWS credentials, clusters and Kube configuration for AWS clusters
+ */
 export class AWSUtils {
 
   /**
