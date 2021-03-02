@@ -170,7 +170,7 @@ async function action() {
           });
         }
 
-        attachToMinikube(componentsArr, image, port, portType, ports, replicas);
+        await attachToMinikube(componentsArr, image, port, portType, ports, replicas);
       } catch (err) {
         throw new Error(`Error when attempting to init project into Minicube: ${err}`);
       }
@@ -197,7 +197,7 @@ async function action() {
 }
 
 /**
- * Gets OS-spevific version of path and resolves it into the outer and inner folder
+ * Gets OS-specific version of path and resolves it into the outer and inner folder
  */
 async function resolvePaths() {
   try {
@@ -228,12 +228,12 @@ async function initDefaultProject() {
 /**
  * Attachs possibly wanted components to Minikube
  * 
- * @param compsArr Array of components
- * @param image Image for component, if any
- * @param port Port for component (Pod)
- * @param portType Port type for port (Service)
- * @param ports Ports for component (Service/Deployment)
- * @param replicas Replicas of component, if any
+ * @param {string} compsArr Array of components
+ * @param {string} image Image for component, if any
+ * @param {number} port Port for component (Pod)
+ * @param {string} portType Port type for port (Service)
+ * @param {Array<unknown>} ports Ports for component (Service/Deployment)
+ * @param {number} replicas Replicas of component, if any
  */
 async function attachToMinikube(compsArr: string[], image: string, port: number, portType: string, ports: Array<unknown>, replicas: number) {
   const componentsArr: KubeComponent[] = [];
@@ -250,7 +250,7 @@ async function attachToMinikube(compsArr: string[], image: string, port: number,
       type: comp
     });
   }
-  MinikubeUtils.createComponents(componentsArr, repoPath);
+  await MinikubeUtils.createComponents(componentsArr, repoPath);
 }
 
 /**

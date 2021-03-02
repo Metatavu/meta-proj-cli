@@ -14,7 +14,7 @@ export interface CommandSet {
 /**
  * Used to store and transmit data about the outcome of a prerequisite check
  * 
- * checkable: name of the prerequisite that was checked\
+ * check: name of the prerequisite that was checked\
  * error: did an error occur or not\
  * details: possible extra details about the error
  */
@@ -77,6 +77,13 @@ export interface ProjConfigJson {
 
 /**
  * User arguments that are passed to edit and create .yaml files
+ * 
+ * @property name: Project name
+ * @property image: Image for component, if any
+ * @property port: Port number for component
+ * @property portType: Port type for Service, if any
+ * @property ports: Array of ports for Service / Deployment, if any
+ * @property replicas: Amount of component replicas
  */
 export interface KubeArgs {
   name: string,
@@ -89,6 +96,9 @@ export interface KubeArgs {
 
 /**
  * Includes user arguments and the component type attached
+ * 
+ * @property args User arguments
+ * @property type Component type Pod / Service / Deployment
  */
 export interface KubeComponent {
   args: KubeArgs,
