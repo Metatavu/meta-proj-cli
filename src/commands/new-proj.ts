@@ -231,6 +231,7 @@ async function initDefaultProject() {
  * @param compsArr Array of components
  * @param image Image for component, if any
  * @param port Port for component (Pod)
+ * @param portType Port type for port (Service)
  * @param ports Ports for component (Service/Deployment)
  * @param replicas Replicas of component, if any
  */
