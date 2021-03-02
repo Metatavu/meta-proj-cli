@@ -171,6 +171,8 @@ async function action() {
         }
 
         await attachToMinikube(componentsArr, image, port, portType, ports, replicas);
+        await runExecSync(`kustomize create --autodetect`, { cwd: repoPath });
+        await runExecSync(`kubectl create -f kustomization.yaml`, { cwd: repoPath });
       } catch (err) {
         throw new Error(`Error when attempting to init project into Minicube: ${err}`);
       }
