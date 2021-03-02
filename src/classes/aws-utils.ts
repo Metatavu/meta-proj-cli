@@ -42,13 +42,24 @@ export class AWSUtils {
       return Promise.reject("No VPC CIDR IP has been set.");
 
     } else {
-    args.desiredCapacity ? args.desiredCapacity : args.desiredCapacity = 1;
-    args.minSize ? args.minSize : args.minSize = 1;
-    args.maxSize ? args.maxSize : args.maxSize = 2;
-    args.volumeSize ? args.volumeSize : args.volumeSize = 20;
-    args.clusterLabel ? args.clusterLabel : args.clusterLabel = "cluster-ops";
-    args.ngLabel ? args.ngLabel : args.ngLabel = "frontend-workloads";
-
+    if (!args.desiredCapacity) {
+      args.desiredCapacity = 1;
+    }
+    if (!args.minSize) {
+      args.minSize = 1;
+    }
+    if (!args.maxSize) {
+      args.maxSize = 2;
+    }
+    if (!args.volumeSize) {
+      args.volumeSize = 20;
+    }
+    if (!args.clusterLabel) {
+      args.clusterLabel = "cluster-ops";
+    }
+    if (args.ngLabel) {
+      args.ngLabel = "frontend-workloads";
+    }
     await YamlUtils.createClusterYaml(name, args, repoPath);
     }
     
