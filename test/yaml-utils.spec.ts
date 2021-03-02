@@ -8,7 +8,6 @@ it("provides create yaml function", async () => {
     port: 8088,
     portType : null,
     ports: null,
-    env: null,
     replicas: null
   };
   YamlUtils.createYaml = jest.fn();
