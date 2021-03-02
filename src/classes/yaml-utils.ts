@@ -2,7 +2,7 @@ import fs from "fs";
 import * as path from "path";
 import YAML from "yaml";
 import OsUtils from "./os-utils";
-import { CommandNames } from "../interfaces/types";
+import { ClusterConfig, CommandNames } from "../interfaces/types";
 
 /**
  * Provides CRUD operations on .yaml files that are used in projects.
@@ -49,6 +49,37 @@ export default class YamlUtils {
     }
 
     fs.writeFileSync(`${repoPath + path.sep + type}.yaml`, YAML.stringify(file));
+  }
+
+  /**
+   * CREATE
+   * Creates cluster.yaml to attach a Minikube project into RDS
+   * 
+   * @param {string} name Project/cluster name that is used when creating cluster
+   * @param {ClusterConfig} args An object which contains user input details for cluster
+   * @param {string} repoPath Path where project is being initialized
+   */
+  public static createClusterYaml = async (name: string, args: ClusterConfig, repoPath: string): Promise<void> => {
+    try {
+      const file = YAML.parse(fs.readFileSync("./resources/cluster.yaml", "utf8"));
+      file.metadata.name = name;
+      file.metadata.labels = { "aws-usage": args.clusterLabel };
+      file.iam.serviceAccounts[0].metadata.name = `${name}-cluster`;
+      file.iam.serviceAccounts[0].metadata.namespace = name;
+      file.vpc.id = `${name}-vpc`;
+      file.vpc.cidr = args.vpcIP;
+      file.nodeGroups[0].name = `${name}-nodegroup`;
+      file.nodeGroups[0].instanceName = `${name}-nodegroup-1`;
+      file.nodeGroups[0].labels = { "nodegroup-type": args.ngLabel };
+      file.nodeGroups[0].desiredCapacity = args.desiredCapacity;
+      file.nodeGroups[0].minSize = args.minSize;
+      file.nodeGroups[0].maxSize = args.maxSize;
+      file.nodeGroups[0].volumeSize = args.volumeSize;
+      fs.writeFileSync(`${repoPath + path.sep}cluster.yaml`, YAML.stringify(file));
+
+    } catch (err) {
+      Promise.reject(`Error creating cluster.yaml: ${err}`);
+    }
   }
 
   /**

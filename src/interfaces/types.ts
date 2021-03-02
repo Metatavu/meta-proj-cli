@@ -75,6 +75,17 @@ export interface ProjConfigJson {
   projectName: string
 }
 
+export interface ClusterConfig {
+  desiredCapacity: number,
+  minSize: number,
+  maxSize: number,
+  volumeSize: number,
+  vpcIP: string,
+  clusterLabel: string,
+  ngLabel: string
+  cloudWatch: string[]
+}
+
 /**
  * Global constants for OS names
  */
