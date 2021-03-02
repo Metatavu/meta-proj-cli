@@ -76,6 +76,31 @@ export interface ProjConfigJson {
 }
 
 /**
+ * User arguments that are passed to edit and create .yaml files
+ */
+export interface KubeArgs {
+  name: string,
+  image: string,
+  port: number,
+  portType: string,
+  ports: Array<unknown>
+  replicas: number
+}
+
+/**
+ * Includes user arguments and the component type attached
+ */
+export interface KubeComponent {
+  args: KubeArgs,
+  type: string
+}
+
+export interface YamlEnv {
+  name: string,
+  value: string
+}
+
+/**
  * Global constants for OS names
  */
 export enum OperatingSystems {
@@ -92,21 +117,6 @@ export enum CommandNames {
   remove = "remove",
   removeDir = "remove directory",
   installUtil = "installation utility"
-}
-
-export interface KubeArgs {
-  name : string,
-  image: string,
-  port: number,
-  portType: string,
-  ports: []
-  env: []
-  replicas: number
-}
-
-export interface KubeComponent {
-  args: KubeArgs,
-  type: string
 }
 
 /**

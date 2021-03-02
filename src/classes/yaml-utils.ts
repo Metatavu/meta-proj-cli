@@ -2,7 +2,7 @@ import fs from "fs";
 import * as path from "path";
 import YAML from "yaml";
 import OsUtils from "./os-utils";
-import { CommandNames, KubeArgs } from "../interfaces/types";
+import { CommandNames, KubeArgs, YamlEnv } from "../interfaces/types";
 
 const { IP_ONE } = process.env;
 const { IP_TWO } = process.env;
@@ -60,6 +60,7 @@ export default class YamlUtils {
   }
 
   /**
+   * CREATE
    * Creates cluster.yaml to attach a Minikube project into RDS
    * 
    * @param {string} name Project/cluster name that is used when creating cluster
@@ -110,6 +111,21 @@ export default class YamlUtils {
   }
 
   /**
+   * Attachs AWS into Minikube, if needed
+   * 
+   * @param envArr Array which contains the data for connection
+   * @param repoPath Repository path where deployment.yaml is located
+   */
+  public static attachAWS = async (envArr: YamlEnv[], repoPath: string): Promise<void> => {
+    const file = YAML.parse(fs.readFileSync(`${repoPath + path.sep}deployment.yaml`, "utf8"));
+    if (file.spec.template.spec.containers[1]) {
+      for (const env in envArr) {
+        file.spec.template.spec.containers[1].env.push(env);
+      }
+    }
+  }
+
+  /**
    * DELETE
    * Creates a delete command for a .yaml file, if one is deemed to be unnecessary or faulty
    * 
@@ -134,9 +150,9 @@ export default class YamlUtils {
     if (containerObj){
 
       containerObj.name = args.name;
-      if (args.image) {
-        containerObj.image = args.image;
-      }
+      (args.image) ? containerObj.image = args.image
+      : containerObj.image = null;
+
       if (args.port && containerObj.ports[0]) {
         containerObj.ports[0].containerPort = args.port;
       }
@@ -181,9 +197,9 @@ export default class YamlUtils {
     if (containerObj) {
       containerObj.name = args.name;
 
-      if (args.image) {
-        containerObj.image = args.image;
-      }
+      (args.image) ? containerObj.image = args.image
+      : containerObj.image = null;
+
       if (args.ports && containerObj) {
         containerObj.ports = [];
         for (const port in args.ports) {
@@ -193,11 +209,6 @@ export default class YamlUtils {
       file.spec.template.spec.containers[0] = containerObj;
     }
     
-    if (args.env && file.spec.template.spec.containers[1]) {
-      for (const env in args.env) {
-        file.spec.template.spec.containers[1].env.push(env);
-      }
-    }
     if (args.replicas) {
       file.spec.replicas = args.replicas;
     }

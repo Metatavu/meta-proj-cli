@@ -5,6 +5,8 @@ import { PathUtils } from "../classes/path-utils";
 import { CreateDefault } from "./new-proj/create-default";
 import * as path from "path";
 import { runExecSync } from "../classes/exec-sync-utils";
+import { KubeComponent } from "../interfaces/types";
+import MinikubeUtils from "../classes/minikube-utils";
 
 const vorpal = new Vorpal();
 const { HOME } = process.env;
@@ -95,7 +97,80 @@ async function action() {
     if (projVm == "Docker") runExecSync(`docker build -t ${projName} ${repoPath}`);
     if (projVm == "Minikube") {
       try {
-        // Add yaml files and crate resources in another issue
+        let componentsArr: string[] = [];
+        const componentResult = await this.prompt({
+          type: "checkbox",
+          name: "components",
+          choices: [ "Pod", "Service", "Deployment" ],
+          message: "Components for Minikube (max one of each): "
+        });
+        componentResult.components ? componentsArr = componentResult.components : componentsArr = null;
+
+        let image: string = null;
+        const imageResult = await this.prompt({
+          type: "input",
+          name: "image",
+          message: "Set an image for pod / deployment, leave empty for default: "
+        });
+        imageResult.image ? image = imageResult.image : image = "";
+
+        let port: number = null;
+        let replicas: number = null;
+        if (componentsArr.indexOf("Pod") != -1) {
+          const portResult = await this.prompt({
+            type: "input",
+            name: "port",
+            message: "Set a port for pod, leave empty for default (3000): "
+          });
+          portResult.port ? port = Number(portResult.port) : port = 3000;
+
+          const replicaResult = await this.prompt({
+            type: "input",
+            name: "replicas",
+            message: "Set an amount of replicas of pod, leave empty for default (1): "
+          });
+          replicaResult.replicas ? replicas = Number(replicaResult.replicas) : replicas = 1;
+        }
+
+        let portType: string = null;
+        if (componentsArr.indexOf("Service") != -1) {
+          const portTypeResult = await this.prompt({
+              type: "input",
+              name: "portType",
+              message: "Set a port type for service, leave empty for default (NodePort): "
+            });
+          portTypeResult.portType ? portType = portTypeResult.portType : portType = "NodePort";
+        }
+
+        const ports = [];
+        if (componentsArr.indexOf("Service") != -1 || componentsArr.indexOf("Deployment") != -1) {
+          const nameResult = await this.prompt({
+            type: "input",
+            name: "name",
+            message: "Set a port name, leave empty for default (tcp): "
+          });
+          
+          const portResult = await this.prompt({
+            type: "input",
+            name: "port",
+            message: "Set a port for pod, leave empty for default (3000): "
+          });
+
+          const protocolResult = await this.prompt({
+            type: "input",
+            name: "protocol",
+            message: "Set a protocol for port, leave empty for default (TCP): "
+          });
+
+          ports.push({
+            name: nameResult.name ? nameResult.name : "tcp",
+            port: portResult.port ? portResult.port : 3000,
+            containerPort: portResult.port ? portResult.port : 3000,
+            protocol: protocolResult.protocol ? protocolResult.protocol : "TCP"
+          });
+        }
+
+        attachToMinikube(componentsArr, image, port, portType, ports, replicas);
       } catch (err) {
         throw new Error(`Error when attempting to init project into Minicube: ${err}`);
       }
@@ -148,6 +223,33 @@ async function initDefaultProject() {
   } catch(err) {
     throw new Error(`Error when creating project: ${err}`);
   }
+}
+
+/**
+ * Attachs possibly wanted components to Minikube
+ * 
+ * @param compsArr Array of components
+ * @param image Image for component, if any
+ * @param port Port for component (Pod)
+ * @param ports Ports for component (Service/Deployment)
+ * @param replicas Replicas of component, if any
+ */
+async function attachToMinikube(compsArr: string[], image: string, port: number, portType: string, ports: Array<unknown>, replicas: number) {
+  const componentsArr: KubeComponent[] = [];
+  for (const comp in compsArr) {
+    componentsArr.push({
+      args: {
+        name: `${projName}-${comp}`,
+        image: image,
+        port: port,
+        portType: portType,
+        ports: ports,
+        replicas: replicas
+      },
+      type: comp
+    });
+  }
+  MinikubeUtils.createComponents(componentsArr, repoPath);
 }
 
 /**
