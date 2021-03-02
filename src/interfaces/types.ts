@@ -95,6 +95,9 @@ export interface KubeComponent {
   type: string
 }
 
+/**
+ * Contains a detail for linking a Minikube into AWS
+ */
 export interface YamlEnv {
   name: string,
   value: string
