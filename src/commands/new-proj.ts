@@ -5,6 +5,7 @@ import { PathUtils } from "../classes/path-utils";
 import { CreateDefault } from "./new-proj/create-default";
 import * as path from "path";
 import { runExecSync } from "../classes/exec-sync-utils";
+import { AWSUtils } from "../classes/aws-utils";
 
 const vorpal = new Vorpal();
 const { HOME } = process.env;
@@ -14,6 +15,7 @@ let projType: string = null;
 let projVm: string = null;
 let folderPath: string = null;
 let repoPath: string = null;
+let aws = false;
 
 /**
  * Prompts the user and runs corresponding commands
@@ -70,6 +72,17 @@ async function action() {
     if (pathResult?.path) {
       givenPath = pathResult.path;
     }
+
+    const awsResult = await this.prompt({
+      type: "list",
+      name: "aws",
+      choices: [ "Yes", "No" ],
+      message: "Attach project to AWS: "
+    });
+
+    if (awsResult.aws) {
+      (awsResult.aws == "Yes") ? aws = true : aws = false;
+    }
   } catch (err) {
     throw new Error(`Error while prompting: ${err}`);
   }
@@ -102,7 +115,54 @@ async function action() {
     } 
   }
 
-  repoViaVorpal();
+  await repoViaVorpal();
+
+  if (aws) {
+    let access: string = null;
+    let secret: string = null;
+    try {
+      const configResult = await this.prompt({
+        type: "list",
+        name: "config",
+        choices: [ "Yes", "No" ],
+        message: "Do you have an AWS config file under home location /.aws/config : "
+      });
+
+      if (configResult) {
+        let cmds: string[] = [];
+        if (configResult.config == "No") {
+          const accessResult = await this.prompt({
+            type: "input",
+            name: "access",
+            message: "Access key ID for AWS: "
+          });
+          accessResult.access ? access = accessResult.access : access = "";
+
+          const secretResult = await this.prompt({
+            type: "input",
+            name: "secret",
+            message: "Access key Secret for AWS: "
+          });
+          secretResult.secret ? secret = secretResult.secret : secret = "";
+          cmds = await AWSUtils.configAWS(projName, access, secret);
+        }
+        if (configResult.config == "Yes") {
+          cmds = await AWSUtils.configAWS(projName);
+        }
+        for (const cmd in cmds) {
+          await runExecSync(cmd);
+        }
+      } else {
+        throw new Error("Inquiry for config was stopped by the user.");
+      }
+
+    const cmd: string = AWSUtils.configKube(projName);
+    await runExecSync(cmd);
+
+    } catch (err) {
+      throw new Error(`Error when setting up AWS credentials: ${err}`);
+    }
+  }
 
   try {
     const testResult = await this.prompt({
