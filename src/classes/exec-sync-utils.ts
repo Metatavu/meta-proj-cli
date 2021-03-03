@@ -26,10 +26,10 @@ export const runExecSync = async (command: string, options?: ExecSyncOptionsWith
      * files that are run in a sandbox without checks as well as files with possible malware included
      */
 
-    for(let i = 0; i < fileExtensions.length; i++){
-      if (command.search(fileExtensions[i]) != -1) {
+    for(const ext of fileExtensions){
+      if (command.search(ext) != -1) {
         harmful = true;
-        foundExt = fileExtensions[i].toString();
+        foundExt = ext.toString();
       }
     }
 
