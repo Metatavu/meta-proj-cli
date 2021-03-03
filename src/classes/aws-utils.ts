@@ -28,7 +28,7 @@ export class AWSUtils {
       const os: string = await OsUtils.getOS();
       if (!access && !secret) {
         const fileData: string[] = (fs.readFileSync(configPath, "utf8").split("\n"));
-        for (const line in fileData) {
+        for (const line of fileData) {
           if (line == `[${projName}]`) {
             return (os == OperatingSystems.WINDOWS) 
             ? [`echo Found "${projName}" configuration. Not writing a new one.`, `SET AWS_PROFILE="${projName}"`]
