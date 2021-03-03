@@ -14,6 +14,8 @@ let projType: string = null;
 let projVm: string = null;
 let folderPath: string = null;
 let repoPath: string = null;
+let hasFolder = false;
+let hasReadme = false;
 
 /**
  * Prompts the user and runs corresponding commands
@@ -79,11 +81,14 @@ async function action() {
   if (projType == "Quarkus") {
     //To do: Add quarkus
     this.log("Creating Quarkus project - please wait...");
+    hasFolder = true;
   }
 
   if (projType == "React") {
     //To do: Add React
     this.log("Creating react project - please wait...");
+    hasFolder = true;
+    hasReadme = true;
   }
 
   if (projType == "No framework") {
@@ -157,7 +162,7 @@ async function repoViaVorpal() {
   try {
     await vorpal
     .use(newRepo)
-    .execSync(`new-repo ${projName} --path ${givenPath}`);
+    .execSync(`new-repo ${projName} --path ${givenPath} ${hasFolder ? "--hasFolder" : ""} ${hasReadme ? "--hasReadme" : ""}`);
 
   } catch(err) {
     throw new Error("Encountered an error while creating repository: " + err);
