@@ -15,10 +15,12 @@ it('exports itself', () => {
 });
 
 it('checks for prequisites', async () => {
-  const testSet: CheckSet[] = [ { checkable: Software.NodeJs, details: {} },
-                                { checkable: Software.GitCLI, details: {} },
-                                { checkable: Software.GitHub, details: {} },
-                                { checkable: Software.Maven, details: {} } ];
+  const testSet: CheckSet[] = [
+    { checkable: Software.NodeJs, details: { } },
+    { checkable: Software.GitCLI, details: { } },
+    { checkable: Software.GitHub, details: { } },
+    { checkable: Software.Maven, details: { } }
+   ];
 
   const returnSet = await CheckUtils.checkPreq(testSet);
 
