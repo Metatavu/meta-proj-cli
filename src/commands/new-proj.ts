@@ -157,7 +157,7 @@ async function action() {
       }
 
     await runExecSync("aws ec2 describe-vpcs");
-    this.log("These are your current active VPCs. You need to choose a new CIDR for VPC.")
+    this.log("These are your current active VPCs. You need to choose a new CIDR for VPC.");
     const vpcIpResult = await this.prompt({
       type: "input",
       name: "ip",
