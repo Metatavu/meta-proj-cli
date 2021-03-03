@@ -28,8 +28,8 @@ export class AWSUtils {
       const os: string = await OsUtils.getOS();
       if (!access && !secret) {
         const fileData: string[] = (fs.readFileSync(configPath, "utf8").split("\n"));
-        for (let i=0; i<fileData.length; i++) {
-          if (fileData[i] == `[${projName}]`) {
+        for (const line in fileData) {
+          if (line == `[${projName}]`) {
             return (os == OperatingSystems.WINDOWS) 
             ? [`echo Found "${projName}" configuration. Not writing a new one.`, `SET AWS_PROFILE="${projName}"`]
             : [`echo Found "${projName}" configuration. Not writing a new one.`, `export AWS_PROFILE="${projName}"`];
@@ -42,7 +42,7 @@ export class AWSUtils {
         `echo \n[${projName}]\naws_access_key_id = ${access}\naws_secret_access_key = ${secret} >> ${credsPath}`
         ];
       }
-      
+
     } catch (err) {
       return Promise.reject(`Error when trying to config AWS: ${err}`);
     }
