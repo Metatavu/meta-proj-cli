@@ -155,71 +155,8 @@ async function action() {
       } else {
         throw new Error("Inquiry for config was stopped by the user.");
       }
-
-    await runExecSync("aws ec2 describe-vpcs");
-    this.log("These are your current active VPCs. You need to choose a new CIDR for VPC.");
-    const vpcIpResult = await this.prompt({
-      type: "input",
-      name: "ip",
-      message: "Give a CIDR IP address with mask for VPC: "
-    });
-    if (!vpcIpResult.ip) {
-      throw new Error("User didn't input an IP address for VPC, quitting AWS setup");
-    }
-
-    const clusterResult = await this.prompt({
-      type: "input",
-      name: "label",
-      message: "Give a label for the Cluster, leave empty for default : "
-    });
-
-    const ngResult = await this.prompt({
-      type: "input",
-      name: "label",
-      message: "Give a label for the Node Group, leave empty for default : "
-    });
-
-    const desiredSizeResult = await this.prompt({
-      type: "input",
-      name: "size",
-      message: "Give a desired amount of Nodes in the group, leave empty for default (1): "
-    });
-
-    const minSizeResult = await this.prompt({
-      type: "input",
-      name: "size",
-      message: "Give the minimum amount of Nodes in the group, leave empty for default (1): "
-    });
-
-    const maxSizeResult = await this.prompt({
-      type: "input",
-      name: "size",
-      message: "Give the maximum amount of Nodes in the group, leave empty for default (2): "
-    });
-
-    const volumeSizeResult = await this.prompt({
-      type: "input",
-      name: "size",
-      message: "Give a desired size for the volume(GiB), leave empty for default (20): "
-    });
-
-    AWSUtils.createCluster(
-      projName,
-      {
-        desiredCapacity: desiredSizeResult.size,
-        minSize: minSizeResult.size,
-        maxSize: maxSizeResult.size,
-        volumeSize: volumeSizeResult.size,
-        vpcIP: vpcIpResult.ip,
-        clusterLabel: clusterResult.label,
-        ngLabel: ngResult.label,
-        cloudWatch: []
-      },
-      repoPath
-    );
     
-    await runExecSync("eksctl create cluster -f cluster.yaml", { cwd: repoPath });
-    const command: string = AWSUtils.configKube(projName);
+    const command: string = AWSUtils.configKube("meta-cli");
     await runExecSync(command);
 
     } catch (err) {
