@@ -3,21 +3,6 @@ import { runExecSync } from "../classes/exec-sync-utils";
 import { InstallUtils } from "../classes/install-utils";
 import { Software } from "../interfaces/types";
 
-const choices = [
-  Software.NodeJs,
-  Software.GitHub,
-  Software.GitCLI,
-  Software.Maven,
-  Software.JDK8,
-  Software.JDK11,
-  Software.Homebrew,
-  Software.Docker,
-  Software.Minikube,
-  Software.KubernetesCLI,
-  Software.Kustomize,
-  Software.EKSctl,
-  Software.AWSCLI
-];
 let installCommands: string | string[] = null;
 
 /**
@@ -33,9 +18,9 @@ async function action(args) {
   if (!software) {
     try {
       const softwareResult = await this.prompt({
-        type: 'list',
-        name: 'software',
-        choices: choices,
+        type: "list",
+        name: "software",
+        choices: Object.keys(Software),
         message: "Software to be installed: "
       });
       if (softwareResult.name) {
@@ -50,21 +35,26 @@ async function action(args) {
   this.log(`Attempting to install ${software}...`);
   
   try {
+    switch (software) {
+      case Software.Homebrew:
+        installCommands = await InstallUtils.installBrew();
+        break;
+      
+      case Software.Minikube:
+        installCommands = await InstallUtils.installKube();
+        break;
 
-    if (software == Software.Homebrew) {
-      installCommands = await InstallUtils.installBrew();
+      case Software.KubernetesCLI:
+        installCommands = await InstallUtils.installKubeCtl();
+        break;
 
-    } else if (software == Software.Minikube) {
-      installCommands = await InstallUtils.installKube();
+      case Software.EKSctl:
+        installCommands = await InstallUtils.installEksctl();
+        break;
 
-    } else if (software == Software.KubernetesCLI) {
-      installCommands = await InstallUtils.installKubeCtl();
-
-    } else if (software == Software.EKSctl) {
-      installCommands = await InstallUtils.installEksctl();
-
-    } else {
-      installCommands = await InstallUtils.installSW(software);
+      default:
+        installCommands = await InstallUtils.installSW(software);
+        break;
     }
 
     if (typeof(installCommands) === "string") {
