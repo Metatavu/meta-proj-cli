@@ -35,7 +35,7 @@ export class CheckUtils {
  * @param {CheckSet} currentCheck  details of current checkable command
  * @returns {CheckErrorSet} that contains software name, error and possible details
  */
-const checkHandler = async (currentCheck: CheckSet) => {
+const checkHandler = async (currentCheck: CheckSet): Promise<CheckErrorSet> => {
   try {
     const installed: boolean = await InstallUtils.isInstalled(currentCheck.checkable);
 
