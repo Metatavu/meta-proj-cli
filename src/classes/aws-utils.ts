@@ -24,25 +24,26 @@ export class AWSUtils {
     try {
       configPath = await PathUtils.fixPath(configPath);
       credsPath = await PathUtils.fixPath(credsPath);
-      const os: string = await OsUtils.getOS();
+
       if (!access && !secret) {
         const fileData: string[] = (fs.readFileSync(configPath, "utf8").split("\n"));
+
         for (const line of fileData) {
           if (line == "[meta-cli]") {
-            return (os == OperatingSystems.WINDOWS) 
-            ? ['echo Found "[meta-cli]" configuration. Not writing a new one.', 'SET AWS_PROFILE="[meta-cli]"']
-            : ['echo Found "[meta-cli]" configuration. Not writing a new one.', 'export AWS_PROFILE="[meta-cli]"'];
+            const os: string = await OsUtils.getOS();
+            return (os == OperatingSystems.WINDOWS) ?
+            ['echo Found "[meta-cli]" configuration. Not writing a new one.', 'SET AWS_PROFILE="[meta-cli]"'] :
+            ['echo Found "[meta-cli]" configuration. Not writing a new one.', 'export AWS_PROFILE="[meta-cli]"'];
           }
         }
       } else {
         return [
-        'echo Writing "[meta-cli]" configuration...',
-        `echo \n[meta-cli]\nregion = us-east-2\noutput = yaml >> ${configPath}`,
-        `echo \n[meta-cli]\naws_access_key_id = ${access}\naws_secret_access_key = ${secret} >> ${credsPath}`,
-        "echo Configuring as Meta-cli"
+          'echo Writing "[meta-cli]" configuration...',
+          `echo \n[meta-cli]\nregion = us-east-2\noutput = yaml >> ${configPath}`,
+          `echo \n[meta-cli]\naws_access_key_id = ${access}\naws_secret_access_key = ${secret} >> ${credsPath}`,
+          "echo Configuring as Meta-cli"
         ];
       }
-
     } catch (err) {
       return Promise.reject(`Error when trying to config AWS: ${err}`);
     }
