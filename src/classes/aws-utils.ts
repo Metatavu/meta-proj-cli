@@ -48,6 +48,12 @@ export class AWSUtils {
     }
   }
 
+  /**
+   * Returns a create db instance command string to be run in new-proj
+   * 
+   * @param {string} projName Project name
+   * @param {DBUserConfig} userConfig User configuration for RDS
+   */
   public static createDBInstance = (projName: string, userConfig: DBUserConfig): string => {
     return `aws rds create-db-instance \
     --db-name ${projName}-meta-cli-mysql

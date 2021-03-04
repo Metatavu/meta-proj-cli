@@ -196,7 +196,7 @@ async function action() {
       message: "Setting Tag (Key-Value). Give a tag Value for the DB: "
     });
 
-    AWSUtils.createDBInstance(
+    const createDB: string = AWSUtils.createDBInstance(
       projName,
       {
         password: pwResult.password,
@@ -207,10 +207,10 @@ async function action() {
           Value: tagValueResult.value ? tagValueResult.value : `${projName}`
         }
       }
-      );
-    
-    const command: string = AWSUtils.configKube("meta-cli");
-    await runExecSync(command);
+    );
+    await runExecSync(createDB);
+    const configKube: string = AWSUtils.configKube("meta-cli");
+    await runExecSync(configKube);
 
     } catch (err) {
       throw new Error(`Error when setting up AWS: ${err}`);
