@@ -35,8 +35,8 @@ async function action(args) {
   template = args.options.template;
   publicity = args.options.publicity ? args.options.publicity : "private";
   givenPath = args.options.path ? args.options.path : defaultPath;
-  hasFolder = args.options.hasFolder ? true : false;
-  hasReadme = args.options.hasReadme ? true : false;
+  hasFolder = (args.options.hasFolder);
+  hasReadme = (args.options.hasReadme);
   
   if (!publicity || !repoName) {
     try {
