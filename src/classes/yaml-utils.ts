@@ -62,40 +62,6 @@ export default class YamlUtils {
   }
 
   /**
-   * CREATE
-   * Creates cluster.yaml to attach a Minikube project into RDS
-   * 
-   * @param {string} name Project/cluster name that is used when creating cluster
-   * @param {string} repoPath Path where project is being initialized
-   */
-  public static createClusterYaml = async (name: string, repoPath: string): Promise<void> => {
-    try {
-      const file = YAML.parse(fs.readFileSync("./resources/cluster.yaml", "utf8"));
-      file.metadata.name = name;
-      file.iam.serviceAccounts[0].metadata.name = `${name}-cluster`;
-      file.iam.serviceAccounts[0].metadata.namespace = name;
-      file.vpc.id = `${name}-vpc`;
-      const subnets = { public: {} };
-        subnets.public[name + "-subnet-one"] = {
-          "az": "us-east-2a",
-          "cidr": `${IP_ONE}/25`
-        };
-        subnets.public[name + "-subnet-two"] = {
-          "az": "us-east-2b",
-          "cidr": `${IP_TWO}/25`
-        } 
-      file.vpc.subnets = subnets;
-      file.nodeGroups[0].name = `${name}-nodegroup`;
-      file.nodeGroups[0].instanceName = `${name}-nodegroup-1`;
-      file.nodeGroups[0].subnets = [`${name}-subnet-one`,`${name}-subnet-two`];
-      fs.writeFileSync(`${repoPath + path.sep}cluster.yaml`, YAML.stringify(file));
-
-    } catch (err) {
-      Promise.reject(`Error creating cluster.yaml: ${err}`);
-    }
-  }
-
-  /**
    * READ
    * Prints out an existing .yaml file
    * 
@@ -125,6 +91,13 @@ export default class YamlUtils {
         file.spec.template.spec.containers[1].env.push(env);
       }
     }
+  }
+
+  public static attachKeyCloak = async (kubeIP: string, repoPath: string): Promise<void> => {
+    const file = YAML.parse(fs.readFileSync("./resources/keycloak-ingress.yaml", "utf8"));
+    file.spec.tls[0].hosts[0] = `keycloak.${kubeIP}.nip.io`;
+    file.spec.rules[0].host = `keycloak.${kubeIP}.nip.io`;
+    fs.writeFileSync(`${repoPath + path.sep}keycloak-ingress.yaml`, YAML.stringify(file));
   }
 
   /**

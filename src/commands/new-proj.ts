@@ -98,6 +98,7 @@ async function action() {
     if (projVm == "Minikube") {
       try {
         let componentsArr: string[] = [];
+        let keyCloak = false;
         const componentResult = await this.prompt({
           type: "checkbox",
           name: "components",
@@ -169,10 +170,35 @@ async function action() {
             protocol: protocolResult.protocol ? protocolResult.protocol : "TCP"
           });
         }
+        this.log("Check that your Docker is running before proceeding.");
+        const keyCloakResult = await this.prompt({
+          type: "list",
+          name: "keyCloak",
+          choices: [ "Yes", "No" ],
+          message: "Attach KeyCloak to Minikube : "
+        });
+        keyCloak = (keyCloakResult.keyCloak == "Yes");
 
+        if (keyCloak) {
+          const attachKc: string = await MinikubeUtils.attachKeycloak(repoPath);
+          await runExecSync(attachKc, { cwd: `.${path.sep}resources` });
+        }
+        
         await attachToMinikube(componentsArr, image, port, portType, ports, replicas);
         await runExecSync(`kustomize create --autodetect`, { cwd: repoPath });
+        await runExecSync("minikube start");
+        if (keyCloak) {
+          await runExecSync("minikube addons enable ingress");
+        }
         await runExecSync(`kubectl create -f kustomization.yaml`, { cwd: repoPath });
+        const kubeIP: string | void = (await runExecSync("minikube ip"));
+        if (kubeIP) {
+          await MinikubeUtils.createIngress(kubeIP, repoPath);
+          await runExecSync(`kubectl create -f keycloak-ingress.yaml`, { cwd: repoPath });
+        } else {
+          this.log("Could not fetch Minikube IP. Failed to create Ingress for KeyCloak.");
+        }
+        this.log("Completed building Minikube setup. Please note that your Minikube is now running.");
       } catch (err) {
         throw new Error(`Error when attempting to init project into Minicube: ${err}`);
       }

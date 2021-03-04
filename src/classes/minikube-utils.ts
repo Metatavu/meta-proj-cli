@@ -1,5 +1,6 @@
 import YamlUtils from "./yaml-utils";
-import { KubeComponent } from "../interfaces/types";
+import { CommandNames, KubeComponent } from "../interfaces/types";
+import OsUtils from "./os-utils";
 
 /**
  * Provides utilities for initialising a project into Minikube
@@ -22,6 +23,15 @@ export default class MinikubeUtils {
       Promise.reject(`Ran into an error when attempting to setup a .yaml file: ${err}`);
     }
     
+  }
+
+  public static async attachKeycloak(repoPath: string): Promise<string> {
+    const copy = await OsUtils.getCommand(CommandNames.copy);
+    return `${copy} deployment.yaml ${repoPath}`;
+  }
+
+  public static async createIngress(kubeIP: string, repoPath: string): Promise<void> {
+    await YamlUtils.attachKeyCloak(kubeIP, repoPath);
   }
 
   /**
