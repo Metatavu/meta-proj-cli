@@ -1,8 +1,7 @@
 import fs from "fs";
-import { ClusterConfig, OperatingSystems } from "../interfaces/types";
+import { DBUserConfig, OperatingSystems } from "../interfaces/types";
 import OsUtils from "./os-utils";
 import { PathUtils } from "./path-utils";
-import YamlUtils from "./yaml-utils";
 
 const { HOME } = process.env;
 let configPath = `${HOME}/.aws/config`;
@@ -47,6 +46,28 @@ export class AWSUtils {
     } catch (err) {
       return Promise.reject(`Error when trying to config AWS: ${err}`);
     }
+  }
+
+  public static createDBInstance = (projName: string, userConfig: DBUserConfig): string => {
+    return `aws rds create-db-instance \
+    --db-name ${projName}-meta-cli-mysql
+    --db-instance-identifier ${projName}-mysql \
+    --db-instance-class db.t2.micro \
+    --db-subnet-group-name default-vpc-0f373251e71b37870 \
+    --engine mysql \
+    --master-username root \
+    --master-user-password ${userConfig.password} \
+    --availability-zone us-east-2a \
+    --db-cluster-identifier meta-cli \
+    --kms-key-id arn:aws:rds:us-east-2:414711980085:db:meta-cli-mysql \
+    --license-model general-public-license \
+    --port ${userConfig.port} \
+    --no-publicly-accessible \
+    --storage-encrypted \
+    --storage-type gp2
+    --allocated-storage ${userConfig.storage} \
+    --preferred-maintenance-window thu:03:10-thu:03:40
+    --tags Key=${userConfig.tag.Key},Value=${userConfig.tag.Value}`;
   }
 
   /**

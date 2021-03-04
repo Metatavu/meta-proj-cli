@@ -76,26 +76,20 @@ export interface ProjConfigJson {
 }
 
 /**
- * Cluster configuration with user input values, if any
+ * User config for AWS RDS
  * 
- * @property desiredCapacity amount of desired Nodes
- * @property minSize amount of minimum Nodes
- * @property maxSize amount of maximum Nodes
- * @property volumeSize the size of the volume in GiB
- * @property vpcIp VPC CIDR with mask used to create VPC and its subnets
- * @property clusterLabel label for the cluster
- * @property ngLabel label for the NodeGroup
- * @property cloudWatch options for Cloud Watch, currently not used
+ * @property password: db master password
+ * @property port: db port
+ * @property tag: Includes Key and Value for RDS db tag
  */
-export interface ClusterConfig {
-  desiredCapacity: number,
-  minSize: number,
-  maxSize: number,
-  volumeSize: number,
-  vpcIP: string,
-  clusterLabel: string,
-  ngLabel: string
-  cloudWatch: string[]
+export interface DBUserConfig {
+  password: string,
+  port: number,
+  storage: number,
+  tag: {
+    Key: string,
+    Value: string
+  }
 }
 
 /**

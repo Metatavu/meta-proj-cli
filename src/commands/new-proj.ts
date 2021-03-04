@@ -128,7 +128,7 @@ async function action() {
         message: "Do you have an AWS config file under home location /.aws/config : "
       });
 
-      if (configResult) {
+      if (configResult.config) {
         let cmds: string[] = [];
         if (configResult.config == "No") {
           const accessResult = await this.prompt({
@@ -155,6 +155,59 @@ async function action() {
       } else {
         throw new Error("Inquiry for config was stopped by the user.");
       }
+
+    const pwResult = await this.prompt({
+      type: "input",
+      name: "password",
+      message: "Add password for DB master 'root' (minimum 8 characters): "
+    });
+    if (pwResult.password) {
+      if(pwResult.password.length < 8) {
+        throw new Error("The DB master password was too short.");
+      }
+    } else {
+      throw new Error("The DB master password has to be set.");
+    }
+
+    const portResult = await this.prompt({
+      type: "input",
+      name: "port",
+      message: "Port for DB (range 1150-65535): "
+    });
+    if (!portResult.port) {
+      throw new Error("The DB port has to be set.");
+    }
+
+    const storageResult = await this.prompt({
+      type: "input",
+      name: "storage",
+      message: "Allocated storage for DB, leave empty for default (20): "
+    });
+
+    const tagKeyResult = await this.prompt({
+      type: "input",
+      name: "key",
+      message: "Setting Tag (Key-Value). Give a tag Key for the DB: "
+    });
+
+    const tagValueResult = await this.prompt({
+      type: "input",
+      name: "value",
+      message: "Setting Tag (Key-Value). Give a tag Value for the DB: "
+    });
+
+    AWSUtils.createDBInstance(
+      projName,
+      {
+        password: pwResult.password,
+        port: portResult.port,
+        storage: storageResult.storage ? storageResult.storage : 20,
+        tag: {
+          Key: tagKeyResult.key ? tagKeyResult.key : `project`,
+          Value: tagValueResult.value ? tagValueResult.value : `${projName}`
+        }
+      }
+      );
     
     const command: string = AWSUtils.configKube("meta-cli");
     await runExecSync(command);

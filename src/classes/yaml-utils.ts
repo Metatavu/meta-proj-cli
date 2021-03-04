@@ -2,7 +2,7 @@ import fs from "fs";
 import * as path from "path";
 import YAML from "yaml";
 import OsUtils from "./os-utils";
-import { ClusterConfig, CommandNames } from "../interfaces/types";
+import { CommandNames } from "../interfaces/types";
 
 /**
  * Provides CRUD operations on .yaml files that are used in projects.
