@@ -135,10 +135,10 @@ async function action() {
         let portType: string = null;
         if (componentsArr.indexOf("Service") != -1) {
           const portTypeResult = await this.prompt({
-              type: "input",
-              name: "portType",
-              message: "Set a port type for service, leave empty for default (NodePort): "
-            });
+            type: "input",
+            name: "portType",
+            message: "Set a port type for service, leave empty for default (NodePort): "
+          });
           portTypeResult.portType ? portType = portTypeResult.portType : portType = "NodePort";
         }
 
