@@ -29,6 +29,6 @@ it('checks for prequisites', async () => {
       expect((set)).toBeInstanceOf({ checkable: String, error: Boolean, details: String })
     }
   } else {
-    expect((returnSet)).toBe([]);
+    expect((returnSet)).toStrictEqual([]);
   } 
 });
