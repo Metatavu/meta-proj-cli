@@ -61,6 +61,25 @@ export class InstallUtils {
   }
 
   /**
+   * Install EKS command line tool command
+   * 
+   * @returns Array of installation commands that are run by the wizard
+   */
+  public static async installEksctl(): Promise<string[]> {
+    const installUtil: string = await OsUtils.getCommand(CommandNames.installUtil);
+    const installRef: string = await InstallSwRefs.getInstallRef(installUtil, Software.Minikube);
+    const cmds: string[] = [];
+
+    if (installUtil == "sudo apt") {
+      cmds.push('curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp');
+      cmds.push("sudo mv /tmp/eksctl /usr/local/bin");
+    } else {
+      cmds.push(`${installUtil} install ${installRef}`);
+    }
+    return cmds;
+  }
+
+  /**
    * Install software command for bash
    * 
    * @param software is the desired software to be installed
