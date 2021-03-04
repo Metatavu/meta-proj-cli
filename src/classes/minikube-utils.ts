@@ -1,6 +1,9 @@
 import YamlUtils from "./yaml-utils";
 import { KubeComponent } from "../interfaces/types";
 
+/**
+ * Provides utilities for initialising a project into Minikube
+ */
 export default class MinikubeUtils {
 
   /**

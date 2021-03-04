@@ -25,17 +25,19 @@ export default class YamlUtils {
     try {
       let file = YAML.parse(fs.readFileSync(`./resources/${type}.yaml`, "utf8"));
       file.metadata.name = args.name;
+      const labels = file.metadata.labels;
 
-      if (file.metadata.labels) {
+      if (labels) {
 
-        if (file.metadata.labels.app) {
-          file.metadata.labels.app = args.name;
+        if (labels.app) {
+          labels.app = args.name;
         }
 
-        if (file.metadata.labels.run) {
-          file.metadata.labels.run = args.name;
+        if (labels.run) {
+          labels.run = args.name;
         }
       }
+      file.metadata.labels = labels;
 
       switch (type) {
 
