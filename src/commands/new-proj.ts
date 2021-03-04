@@ -100,8 +100,8 @@ async function action() {
         kotlin = false;
         gradle = false;
       } else {
-        (kotlinResult.kotlin == "Yes") ? kotlin = true : kotlin = false;
-        (gradleResult.gradle == "Yes") ? gradle = true : gradle = false;
+        kotlin = (kotlinResult.kotlin == "Yes");
+        gradle = (gradleResult.gradle == "Yes");
       }
       initQuarkusProject();
 
