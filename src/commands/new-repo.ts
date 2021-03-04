@@ -87,7 +87,9 @@ async function action(args) {
  */
 async function finishRepo() {
   try {
-    if (!hasFolder) { await runExecSync(`mkdir ${folderPath}`) }
+    if (!hasFolder) {
+      await runExecSync(`mkdir ${folderPath}`);
+    }
     await runExecSync(
       `gh repo create\
       ${process.env.GIT_ORGANIZATION}/${repoName}\
