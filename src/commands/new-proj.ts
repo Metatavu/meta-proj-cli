@@ -190,7 +190,11 @@ async function initReactProject() {
 
     const cmds: string[] = await CleanReact(folderPath, repoPath);
     for (let i = 0; i < cmds.length; i++) {
-      (i <= 8) ? await runExecSync(cmds[i]) : await runExecSync(cmds[i], { cwd: `.${path.sep}resources` });
+      if (i < 9) {
+        await runExecSync(cmds[i]);
+      } else {
+        await runExecSync(cmds[i], { cwd: `.${path.sep}resources` });
+      }
     }
 
   } catch(err) {
