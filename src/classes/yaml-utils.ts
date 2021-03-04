@@ -93,6 +93,12 @@ export default class YamlUtils {
     }
   }
 
+  /**
+   * Creates Ingress file for KeyCloak
+   * 
+   * @param kubeIP Minikube IP address
+   * @param repoPath Repository path where to write file
+   */
   public static attachKeyCloak = async (kubeIP: string, repoPath: string): Promise<void> => {
     const file = YAML.parse(fs.readFileSync("./resources/keycloak-ingress.yaml", "utf8"));
     file.spec.tls[0].hosts[0] = `keycloak.${kubeIP}.nip.io`;

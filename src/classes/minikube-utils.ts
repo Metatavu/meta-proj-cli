@@ -25,11 +25,23 @@ export default class MinikubeUtils {
     
   }
 
+  /**
+   * Returns a command string for attaching KeyCloak into Minikube
+   * 
+   * @param repoPath Repository path where to write file
+   * @returns a command string which can be run to attach KeyCloak to project
+   */
   public static async attachKeycloak(repoPath: string): Promise<string> {
     const copy = await OsUtils.getCommand(CommandNames.copy);
-    return `${copy} deployment.yaml ${repoPath}`;
+    return `${copy} keycloak.yaml ${repoPath}`;
   }
 
+  /**
+   * Creates Ingress creation file for KeyCloak
+   * 
+   * @param kubeIP Minikube IP address
+   * @param repoPath Repository path where to write file
+   */
   public static async createIngress(kubeIP: string, repoPath: string): Promise<void> {
     await YamlUtils.attachKeyCloak(kubeIP, repoPath);
   }
