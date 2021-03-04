@@ -71,9 +71,9 @@ export class AWSUtils {
     --port ${userConfig.port} \
     --no-publicly-accessible \
     --storage-encrypted \
-    --storage-type gp2
+    --storage-type gp2 \
     --allocated-storage ${userConfig.storage} \
-    --preferred-maintenance-window thu:03:10-thu:03:40
+    --preferred-maintenance-window thu:03:10-thu:03:40 \
     --tags Key=${userConfig.tag.Key},Value=${userConfig.tag.Value}`;
   }
 
