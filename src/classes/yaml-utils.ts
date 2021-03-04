@@ -197,8 +197,7 @@ export default class YamlUtils {
     if (containerObj) {
       containerObj.name = args.name;
 
-      (args.image) ? containerObj.image = args.image
-      : containerObj.image = null;
+      (args.image) ? containerObj.image = args.image : containerObj.image = null;
 
       if (args.ports && containerObj) {
         containerObj.ports = [];
