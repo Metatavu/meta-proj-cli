@@ -13,7 +13,9 @@ const choices = [
   { name: Software.Docker, checked: true },
   { name: Software.Minikube, checked: true },
   { name: Software.KubernetesCLI, checked: true },
-  { name: Software.Kustomize, checked: true }
+  { name: Software.Kustomize, checked: true },
+  { name: Software.EKSctl, checked: true },
+  { name: Software.AWSCLI, checked: true }
 ];
 
 /**
