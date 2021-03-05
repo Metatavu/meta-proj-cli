@@ -226,8 +226,21 @@ async function action() {
       message: "Setting Tag (Key-Value). Give a tag Value for the DB: "
     });
 
+    let subnetGrpName: string = null;
+    const subnetGrps = await runExecSync("aws rds describe-db-subnet-groups");
+    if(subnetGrps) {
+      const grpsJson = JSON.parse(subnetGrps);
+      for (const subnetGrp of grpsJson.DBSubnetGroups) {
+        if (subnetGrp.VpcId == "vpc-0f373251e71b37870") {
+          subnetGrpName = subnetGrp.DBSubnetGroupName;
+        }
+      }
+    }
+    
+
     const createDB: string = AWSUtils.createDBInstance(
       projName,
+      subnetGrpName,
       {
         password: pwResult.password,
         port: portResult.port,

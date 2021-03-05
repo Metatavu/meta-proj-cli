@@ -55,12 +55,12 @@ export class AWSUtils {
    * @param {string} projName Project name
    * @param {DBUserConfig} userConfig User configuration for RDS
    */
-  public static createDBInstance = (projName: string, userConfig: DBUserConfig): string => {
+  public static createDBInstance = (projName: string, dbSubnetGrpName: string, userConfig: DBUserConfig): string => {
     return `aws rds create-db-instance \
     --db-name ${projName}-meta-cli-mysql
     --db-instance-identifier ${projName}-mysql \
     --db-instance-class db.t2.micro \
-    --db-subnet-group-name default-vpc-0f373251e71b37870 \
+    --db-subnet-group-name ${dbSubnetGrpName} \
     --engine mysql \
     --master-username root \
     --master-user-password ${userConfig.password} \
