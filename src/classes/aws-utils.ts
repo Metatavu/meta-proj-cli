@@ -57,7 +57,7 @@ export class AWSUtils {
    */
   public static createDBInstance = (projName: string, dbSubnetGrpName: string, userConfig: DBUserConfig): string => {
     return `aws rds create-db-instance \
-    --db-name ${projName}-meta-cli-mysql
+    --db-name ${projName}-meta-cli-mysql \
     --db-instance-identifier ${projName}-mysql \
     --db-instance-class db.t2.micro \
     --db-subnet-group-name ${dbSubnetGrpName} \
