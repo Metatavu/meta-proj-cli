@@ -231,8 +231,8 @@ async function action() {
     if(subnetGrps) {
       const grpsJson = JSON.parse(subnetGrps);
       for (const subnetGrp of grpsJson.DBSubnetGroups) {
-        if (subnetGrp.VpcId == "vpc-0f373251e71b37870") {
-          subnetGrpName = subnetGrp.DBSubnetGroupName;
+        if (subnetGrp.VpcId.toString() == "vpc-0f373251e71b37870") {
+          subnetGrpName = subnetGrp.DBSubnetGroupName.toString();
         }
       }
     }
@@ -240,7 +240,7 @@ async function action() {
 
     const createDB: string = AWSUtils.createDBInstance(
       projName,
-      subnetGrpName,
+      subnetGrpName ? subnetGrpName : "default-vpc-0f373251e71b37870",
       {
         password: pwResult.password,
         port: portResult.port,
