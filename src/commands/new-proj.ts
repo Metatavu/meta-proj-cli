@@ -6,6 +6,8 @@ import { CreateDefault } from "./new-proj/create-default";
 import * as path from "path";
 import { runExecSync } from "../classes/exec-sync-utils";
 import { AWSUtils } from "../classes/aws-utils";
+import { CreateQuarkus } from "./new-proj/create-quarkus";
+import { CleanReact, CreateReact } from "./new-proj/create-react";
 
 const vorpal = new Vorpal();
 const { HOME } = process.env;
@@ -16,12 +18,13 @@ let projVm: string = null;
 let folderPath: string = null;
 let repoPath: string = null;
 let aws = false;
+let kotlin = true;
+let gradle = true;
 
 /**
  * Prompts the user and runs corresponding commands
  */
 async function action() {
-  
 
   try {
     const nameResult = await this.prompt({
@@ -90,13 +93,40 @@ async function action() {
   resolvePaths();
   
   if (projType == "Quarkus") {
-    //To do: Add quarkus
     this.log("Creating Quarkus project - please wait...");
+    try {
+      const kotlinResult = await this.prompt({
+        type: "list",
+        name: "kotlin",
+        choices: [ "Yes", "No" ],
+        message: "Use Kotlin?: "
+      });
+
+      const gradleResult = await this.prompt({
+        type: "list",
+        name: "gradle",
+        choices: [ "Yes", "No" ],
+        message: "Use Gradle?: "
+      });
+
+      if (!kotlinResult.kotlin || !gradleResult.gradle) {
+        kotlin = false;
+        gradle = false;
+      } else {
+        kotlin = (kotlinResult.kotlin == "Yes");
+        gradle = (gradleResult.gradle == "Yes");
+      }
+      initQuarkusProject();
+
+    } catch (err) {
+      throw new Error(`Error when attempting to init ${projType} project: ${err}`);
+    }
+    
   }
 
   if (projType == "React") {
-    //To do: Add React
     this.log("Creating react project - please wait...");
+    initReactProject();
   }
 
   if (projType == "No framework") {
@@ -257,6 +287,41 @@ async function initDefaultProject() {
     await runExecSync(cmds[0]);
     await runExecSync(cmds[1], { cwd: `.${path.sep}resources` });
     await runExecSync(cmds[2], { cwd: `.${path.sep}resources` });
+
+  } catch(err) {
+    throw new Error(`Error when creating project: ${err}`);
+  }
+}
+
+/**
+ * Inits a React project
+ */
+async function initReactProject() {
+  try {
+    const cmd: string = await CreateReact(projName);
+    await runExecSync(cmd);
+
+    const cmds: string[] = await CleanReact(folderPath, repoPath);
+    for (let i = 0; i < cmds.length; i++) {
+      if (i < 9) {
+        await runExecSync(cmds[i]);
+      } else {
+        await runExecSync(cmds[i], { cwd: `.${path.sep}resources` });
+      }
+    }
+
+  } catch(err) {
+    throw new Error(`Error when creating project: ${err}`);
+  }
+}
+
+/**
+ * Inits a Quarkus project
+ */
+async function initQuarkusProject() {
+  try {
+    const cmd: string = await CreateQuarkus(projName, kotlin, gradle);
+    await runExecSync(cmd);
 
   } catch(err) {
     throw new Error(`Error when creating project: ${err}`);

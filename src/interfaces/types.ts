@@ -125,5 +125,7 @@ export enum Software {
   Docker = "Docker",
   Minikube = "Minikube",
   KubernetesCLI = "Kubernetes CLI",
-  Kustomize = "Kustomize"
+  Kustomize = "Kustomize",
+  EKSctl = "EKS CLI",
+  AWSCLI = "AWS CLI"
 }
