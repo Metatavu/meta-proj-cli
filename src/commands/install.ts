@@ -19,7 +19,7 @@ async function action(args) {
     try {
       const softwareResult = await this.prompt({
         type: "list",
-        name: "software",
+        name: "name",
         choices: Object.keys(Software),
         message: "Software to be installed: "
       });

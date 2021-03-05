@@ -7,6 +7,7 @@ import { test } from "./commands/checkTest";
 import { PathUtils } from "./classes/path-utils";
 import { selectOs } from "./commands/select-os";
 import OsUtils from "./classes/os-utils";
+import { installWizard } from "./commands/install";
 
 ( async () => {
   dotenv.config();
@@ -28,5 +29,6 @@ import OsUtils from "./classes/os-utils";
     .use(newRepo)
     .use(newProj)
     .use(pullProj)
+    .use(installWizard)
     .show();
 })();
