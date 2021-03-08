@@ -110,15 +110,19 @@ export class InstallUtils {
    */
   public static async isInstalled(software: string): Promise<boolean> {
     const bashRef = await InstallSwRefs.getBashRef(software);
+    const os: string = await OsUtils.getOS();
 
     if(bashRef == "brew"){
       try {
         const str = `which ${bashRef}`;
-        const result = runExecSync(str).toString();
-        return (result.search(/not found/) == -1);
-
+        const result = await runExecSync(str);
+        if (result) {
+          return (result.search(/not found/) == -1);
+        } else {
+          Promise.reject(`Something went wrong when checking ${software}`);
+        }
       } catch (err) {
-        throw new Error(`Error when checking software ${software}: ${err}`);
+        Promise.reject(`Error when checking software ${software}: ${err}`);
       }
 
     } else {
@@ -132,11 +136,19 @@ export class InstallUtils {
         } else {
           str = `${bashRef} --version`;
         }
-        const result = runExecSync(str).toString();
-        return (result.search(/is not recognized/) == -1);
+        const result = await runExecSync(str, {stdio: [2, "pipe"]});
+        if (result) {
+          return (result.search(/is not recognized/) == -1);
+        } else {
+          
+          return false;
+        }
       } catch (err) {
-        throw new Error(`Error when checking software ${software}: ${err}`);
-      }
+        if (err.stderr) {
+          return (err.stderr.toString().search(/is not recognized/) == -1);
+        }
+        Promise.reject(`Software ${software}: ${err}`);
+      }  
     }
   }
 }

@@ -28,7 +28,7 @@ export const runExecSync = async (command: string, options?: ExecSyncOptionsWith
     for (const ext in fileExtensions) {
       if (command.search(ext) != -1) {
         harmful = true;
-        foundExt = ext;
+        foundExt = ext.toString();
       }
     }
 
@@ -47,6 +47,10 @@ export const runExecSync = async (command: string, options?: ExecSyncOptionsWith
     }
     
   } catch (err) {
-    throw new Error(`Error while executing command ${command}, with options ${options}. Error: ${err}`);
+    if (err.stderr) {
+      return err.stderr.toString();
+    } else {
+      Promise.reject(`Error while executing command ${command}, with options ${options}: ${err}`);
+    }
   }
 }
