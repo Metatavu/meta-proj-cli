@@ -34,9 +34,9 @@ export class PromptUtils {
    * @param message the message to show to the user
    * @returns users input (string containing either "yes" or "no");
    */
-  static confirmPrompt = async (message : string): Promise<string | null> => {
+  static confirmPrompt = async (instance: any, message : string): Promise<string | null> => {
     try {
-      const prompt = await inquirer.prompt({
+      const prompt = await instance.prompt({
         type: "confirm",
         name: "output",
         message: message
