@@ -9,7 +9,7 @@ export class PromptUtils {
    * @param message the message to show to the user
    * @returns the user input
    */
-  static inputPrompt = async (instance: any, message : string) : Promise<string | null> => {
+  static inputPrompt = async (instance: any, message: string): Promise<string | null> => {
     try {
       console.log(3);
       const prompt = await instance.prompt({
