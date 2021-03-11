@@ -55,7 +55,7 @@ export class PromptUtils {
    * @param choices array of choises to show to the user
    * @returns the choise that the user chose
    */
-  static listPrompt = async (instance: any, message : string, choices : string[]): Promise<string | null> => {
+  static listPrompt = async (instance: any, message: string, choices: string[]): Promise<string | null> => {
     try {
       const prompt = await instance.prompt({
         type: "list",
