@@ -1,0 +1,74 @@
+import inquirer from "inquirer";
+
+/**
+ * Provides functions for prompting user, helps shorten syntax
+ */
+export class PromptUtils {
+  /**
+   * Prompts the user with a message, that accepts text based input
+   * 
+   * @param message the message to show to the user
+   * @returns the user input
+   */
+  static inputPrompt = async (message : string) : Promise<string | null> => {
+    try {
+      console.log(3);
+      const prompt = await inquirer.prompt({
+        type: "input",
+        name: "output",
+        message: message
+      });
+
+      console.log(4);
+      return prompt.output;
+
+    } catch (err) {
+      console.log("o-ou");
+      throw new Error(`Error while input-prompting "${message}", Error: ${err}`);
+    }
+  }
+
+  /**
+   * Prompts the user with a message, that offers a yes/no choise for input
+   * 
+   * @param message the message to show to the user
+   * @returns users input (string containing either "yes" or "no");
+   */
+  static confirmPrompt = async (message : string): Promise<string | null> => {
+    try {
+      const prompt = await inquirer.prompt({
+        type: "confirm",
+        name: "output",
+        message: message
+      });
+
+      return prompt.output;
+
+    } catch (err) {
+      throw new Error(`Error while confirm-prompting "${message}", Error: ${err}`);
+    }
+  }
+
+  /**
+   * Prompts the user with a message, that offers given choises as inputs
+   * 
+   * @param message the message to show to the user
+   * @param choices array of choises to show to the user
+   * @returns the choise that the user chose
+   */
+  static listPrompt = async (message : string, choices : string[]): Promise<string | null> => {
+    try {
+      const prompt = await inquirer.prompt({
+        type: "list",
+        name: "output",
+        message: message,
+        choices: choices
+      });
+
+      return prompt.output;
+
+    } catch (err) {
+      throw new Error(`Error while confirm-prompting "${message}", Error: ${err}`);
+    }
+  }
+}

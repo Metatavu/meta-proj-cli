@@ -2,6 +2,7 @@ import Vorpal from "vorpal";
 import { PathUtils } from "../classes/path-utils";
 import { ProjConfigUtils } from "../classes/proj-config-utils";
 import { runExecSync } from "../classes/exec-sync-utils";
+import { PromptUtils } from "../classes/prompt-utils";
 
 const { HOME } = process.env;
 const defaultPath = `${HOME}/.meta-proj-cli/projects`;
@@ -33,34 +34,25 @@ async function action(args) {
   if (!publicity || !repoName) {
     try {
       if (!repoName) {
-        const nameResult = await this.prompt({
-          type: "input",
-          name: "name",
-          message: "Give a name for the repository (leave empty to cancel): "
-        });
-  
-        if (nameResult.name) {
-          repoName = nameResult.name;
+        console.log(1);
+        const nameResult = await PromptUtils.inputPrompt("Give a name for the repository (leave empty to cancel): ");
+        console.log(2);
+        if (nameResult) {
+          repoName = nameResult;
         } else {
+          console.log(5)
           throw new Error("No name given, cancelling command");
         }
       }
 
-      const publicityResult = await this.prompt({
-        type: "list",
-        name: "publicity",
-        choices: [ "private", "internal", "public" ],
-        message: "Set the publicity of the repository: "
-      });
+      const publicityResult = await PromptUtils.listPrompt("Set the publicity of the repository: ", [ "private", "internal", "public" ]);
   
-      const descriptionResult = await this.prompt({
-        type: "input",
-        name: "description",
-        message: "Give a description for the repository: "
-      });
+      const descriptionResult = await PromptUtils.inputPrompt("Give a description for the repository: ");
 
-      description = descriptionResult.description;
-      publicity = publicityResult.publicity;
+      description = descriptionResult;
+      publicity = publicityResult;
+
+      console.log("repoName: " + repoName + "description: " + description + "publicity: " + publicity);
       
     } catch(err) {
       throw new Error(`encountered error while prompting: ${err}`);
@@ -71,7 +63,7 @@ async function action(args) {
   folderPath = PathUtils.outerFolder(givenPath, repoName);
   repoPath = PathUtils.repoFolder(givenPath, repoName);
 
-  finishRepo();
+  //finishRepo();
 }
 
 /**
