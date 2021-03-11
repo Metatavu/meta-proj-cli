@@ -34,13 +34,10 @@ async function action(args) {
   if (!publicity || !repoName) {
     try {
       if (!repoName) {
-        console.log(1);
         const nameResult = await PromptUtils.inputPrompt(this, "Give a name for the repository (leave empty to cancel): ");
-        console.log(2);
         if (nameResult) {
           repoName = nameResult;
         } else {
-          console.log(5)
           throw new Error("No name given, cancelling command");
         }
       }
