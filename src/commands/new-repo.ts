@@ -35,7 +35,7 @@ async function action(args) {
     try {
       if (!repoName) {
         console.log(1);
-        const nameResult = await PromptUtils.inputPrompt("Give a name for the repository (leave empty to cancel): ");
+        const nameResult = await PromptUtils.inputPrompt(this, "Give a name for the repository (leave empty to cancel): ");
         console.log(2);
         if (nameResult) {
           repoName = nameResult;
