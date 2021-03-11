@@ -31,7 +31,6 @@
     "@typescript-eslint/parser": "^4.13.0",
     "coveralls": "^3.1.0",
     "eslint": "^7.17.0",
-    "i": "^0.3.6",
     "jest": "^26.6.3",
     "npm": "^7.6.2",
     "ts-jest": "^26.5.0"

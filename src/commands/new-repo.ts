@@ -63,7 +63,7 @@ async function action(args) {
   folderPath = PathUtils.outerFolder(givenPath, repoName);
   repoPath = PathUtils.repoFolder(givenPath, repoName);
 
-  //finishRepo();
+  finishRepo();
 }
 
 /**
