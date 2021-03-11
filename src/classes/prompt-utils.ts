@@ -1,4 +1,3 @@
-import inquirer from "inquirer";
 
 /**
  * Provides functions for prompting user, helps shorten syntax
