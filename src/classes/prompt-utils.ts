@@ -1,4 +1,3 @@
-
 /**
  * Provides functions for prompting user, helps shorten syntax
  */
