@@ -11,18 +11,15 @@ export class PromptUtils {
    */
   static inputPrompt = async (instance: any, message: string): Promise<string | null> => {
     try {
-      console.log(3);
       const prompt = await instance.prompt({
         type: "input",
         name: "output",
         message: message
       });
 
-      console.log(4);
       return prompt.output;
 
     } catch (err) {
-      console.log("o-ou");
       throw new Error(`Error while input-prompting "${message}", Error: ${err}`);
     }
   }
