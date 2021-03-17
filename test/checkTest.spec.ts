@@ -20,7 +20,7 @@ it('checks for prequisites', async () => {
     { checkable: Software.GitCLI, details: { } },
     { checkable: Software.GitHub, details: { } },
     { checkable: Software.Maven, details: { } }
-   ];
+  ];
 
   const returnSet = await CheckUtils.checkPreq(testSet);
 
@@ -29,6 +29,6 @@ it('checks for prequisites', async () => {
       expect((set)).toBeInstanceOf({ checkable: String, error: Boolean, details: String })
     }
   } else {
-    expect((returnSet)).toBe([]);
+    expect((returnSet)).toEqual([]);
   } 
 });
