@@ -35,8 +35,8 @@ async function action(args) {
   template = args.options.template;
   publicity = args.options.publicity ? args.options.publicity : "private";
   givenPath = args.options.path ? args.options.path : defaultPath;
-  hasFolder = args.options.hasFolder ? true : false;
-  hasReadme = args.options.hasReadme ? true : false;
+  hasFolder = (args.options.hasFolder);
+  hasReadme = (args.options.hasReadme);
   
   if (!publicity || !repoName) {
     try {
@@ -87,7 +87,9 @@ async function action(args) {
  */
 async function finishRepo() {
   try {
-    if (!hasFolder) { await runExecSync(`mkdir ${folderPath}`) }
+    if (!hasFolder) {
+      await runExecSync(`mkdir ${folderPath}`);
+    }
     await runExecSync(
       `gh repo create\
       ${process.env.GIT_ORGANIZATION}/${repoName}\
