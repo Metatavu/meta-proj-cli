@@ -16,6 +16,8 @@ let projType: string = null;
 let projVm: string = null;
 let folderPath: string = null;
 let repoPath: string = null;
+let hasFolder = false;
+let hasReadme = false;
 let kotlin = true;
 let gradle = true;
 
@@ -103,7 +105,8 @@ async function action() {
         kotlin = (kotlinResult.kotlin == "Yes");
         gradle = (gradleResult.gradle == "Yes");
       }
-      initQuarkusProject();
+      await initQuarkusProject();
+      hasFolder = true;
 
     } catch (err) {
       throw new Error(`Error when attempting to init ${projType} project: ${err}`);
@@ -113,7 +116,10 @@ async function action() {
 
   if (projType == "React") {
     this.log("Creating react project - please wait...");
-    initReactProject();
+    
+    await initReactProject();
+    hasFolder = true;
+    hasReadme = true;
   }
 
   if (projType == "No framework") {
@@ -222,7 +228,7 @@ async function repoViaVorpal() {
   try {
     await vorpal
     .use(newRepo)
-    .execSync(`new-repo ${projName} --path ${givenPath}`);
+    .execSync(`new-repo ${projName} --path ${givenPath} ${hasFolder ? "--hasFolder" : ""} ${hasReadme ? "--hasReadme" : ""}`);
 
   } catch(err) {
     throw new Error("Encountered an error while creating repository: " + err);

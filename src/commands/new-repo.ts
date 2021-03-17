@@ -2,6 +2,8 @@ import Vorpal from "vorpal";
 import { PathUtils } from "../classes/path-utils";
 import { ProjConfigUtils } from "../classes/proj-config-utils";
 import { runExecSync } from "../classes/exec-sync-utils";
+import OsUtils from "../classes/os-utils";
+import path from "path";
 
 const { HOME } = process.env;
 const defaultPath = `${HOME}/.meta-proj-cli/projects`;
@@ -12,6 +14,8 @@ let publicity: string = null;
 let givenPath: string = null;
 let folderPath: string = null;
 let repoPath: string = null;
+let hasFolder = false;
+let hasReadme = false;
 
 /**
  * Creates a new github repo with given flags, or activates a wizard to ask for settings
@@ -22,6 +26,8 @@ let repoPath: string = null;
  * path(string)
  * description(string)
  * template(string)
+ * hasFolder(boolean)
+ * hasReadme(boolean)
  */
 async function action(args) {
   repoName = args.name;
@@ -29,6 +35,8 @@ async function action(args) {
   template = args.options.template;
   publicity = args.options.publicity ? args.options.publicity : "private";
   givenPath = args.options.path ? args.options.path : defaultPath;
+  hasFolder = (args.options.hasFolder);
+  hasReadme = (args.options.hasReadme);
   
   if (!publicity || !repoName) {
     try {
@@ -79,6 +87,9 @@ async function action(args) {
  */
 async function finishRepo() {
   try {
+    if (!hasFolder) {
+      await runExecSync(`mkdir ${folderPath}`);
+    }
     await runExecSync(
       `gh repo create\
       ${process.env.GIT_ORGANIZATION}/${repoName}\
@@ -96,6 +107,12 @@ async function finishRepo() {
     } else {
       await runExecSync("git init", { cwd: repoPath });
       await runExecSync("git checkout -q -b develop", { cwd: repoPath });
+
+      if (!hasReadme) { 
+        const copy = await OsUtils.getCommand("copy");
+        await runExecSync(`${copy} README.md ${repoPath}`, { cwd : `.${path.sep}resources` });
+      }
+
       await runExecSync(`git add README.md`, { cwd: repoPath });
       await runExecSync(`git commit -q -m "first commit"`, { cwd: repoPath });
       await runExecSync(`git push -q origin develop`, { cwd: repoPath });
@@ -137,5 +154,11 @@ export const newRepo = (vorpal: Vorpal): Vorpal.Command => vorpal
   )
   .option(
     '-t, --template <text>', 'specify a template (if any) from which to make the repository'
+  )
+  .option(
+    '--hasFolder', 'intended for automatical running. Add this if the project already has a folder'
+  )
+  .option(
+    '--hasReadme', 'intended for automatical running. Add this if the project already has a readme.md'
   )
   .action(action);
