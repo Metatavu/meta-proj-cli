@@ -61,7 +61,6 @@ export class PromptUtils {
       });
 
       return prompt.output;
-
     } catch (err) {
       throw new Error(`Error while confirm-prompting "${message}", Error: ${err}`);
     }
