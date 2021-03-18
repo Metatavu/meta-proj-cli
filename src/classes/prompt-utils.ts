@@ -17,7 +17,6 @@ export class PromptUtils {
       });
 
       return prompt.output;
-
     } catch (err) {
       throw new Error(`Error while input-prompting "${message}", Error: ${err}`);
     }
