@@ -2,6 +2,7 @@ import Vorpal from "vorpal";
 import { PathUtils } from "../classes/path-utils";
 import { ProjConfigUtils } from "../classes/proj-config-utils";
 import { runExecSync } from "../classes/exec-sync-utils";
+import { PromptUtils } from "../classes/prompt-utils";
 import OsUtils from "../classes/os-utils";
 import path from "path";
 
@@ -41,34 +42,22 @@ async function action(args) {
   if (!publicity || !repoName) {
     try {
       if (!repoName) {
-        const nameResult = await this.prompt({
-          type: "input",
-          name: "name",
-          message: "Give a name for the repository (leave empty to cancel): "
-        });
-  
-        if (nameResult.name) {
-          repoName = nameResult.name;
+        const nameResult = await PromptUtils.inputPrompt(this, "Give a name for the repository (leave empty to cancel): ");
+        if (nameResult) {
+          repoName = nameResult;
         } else {
           throw new Error("No name given, cancelling command");
         }
       }
 
-      const publicityResult = await this.prompt({
-        type: "list",
-        name: "publicity",
-        choices: [ "private", "internal", "public" ],
-        message: "Set the publicity of the repository: "
-      });
+      const publicityResult = await PromptUtils.listPrompt(this, "Set the publicity of the repository: ", [ "private", "internal", "public" ]);
   
-      const descriptionResult = await this.prompt({
-        type: "input",
-        name: "description",
-        message: "Give a description for the repository: "
-      });
+      const descriptionResult = await PromptUtils.inputPrompt(this, "Give a description for the repository: ");
 
-      description = descriptionResult.description;
-      publicity = publicityResult.publicity;
+      description = descriptionResult;
+      publicity = publicityResult;
+
+      console.log("repoName: " + repoName + "description: " + description + "publicity: " + publicity);
       
     } catch(err) {
       throw new Error(`encountered error while prompting: ${err}`);
