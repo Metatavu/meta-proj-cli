@@ -50,14 +50,9 @@ async function action(args) {
         }
       }
 
-      const publicityResult = await PromptUtils.listPrompt(this, "Set the publicity of the repository: ", [ "private", "internal", "public" ]);
+      publicity = await PromptUtils.listPrompt(this, "Set the publicity of the repository: ", [ "private", "internal", "public" ]);
   
-      const descriptionResult = await PromptUtils.inputPrompt(this, "Give a description for the repository: ");
-
-      description = descriptionResult;
-      publicity = publicityResult;
-
-      console.log("repoName: " + repoName + "description: " + description + "publicity: " + publicity);
+      description = await PromptUtils.inputPrompt(this, "Give a description for the repository: ");
       
     } catch(err) {
       throw new Error(`encountered error while prompting: ${err}`);
