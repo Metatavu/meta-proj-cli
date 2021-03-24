@@ -35,7 +35,7 @@ export class InstallUtils {
       cmds.push("sudo cp minikube-linux-amd64 /usr/local/bin/minikube");
       cmds.push("sudo chmod 755 /usr/local/bin/minikube");
     } else {
-      cmds.push(`${installUtil} install ${installRef}`);
+      cmds.push(this.chocoOrBrew(installUtil, installRef));
     }
     return cmds;
   }
@@ -55,7 +55,7 @@ export class InstallUtils {
       cmds.push("chmod +x ./kubectl");
       cmds.push("sudo mv ./kubectl /usr/local/bin/kubectl");
     } else {
-      cmds.push(`${installUtil} install ${installRef}`);
+      cmds.push(this.chocoOrBrew(installUtil, installRef));
     }
     return cmds;
   }
@@ -74,7 +74,7 @@ export class InstallUtils {
       cmds.push('curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp');
       cmds.push("sudo mv /tmp/eksctl /usr/local/bin");
     } else {
-      cmds.push(`${installUtil} install ${installRef}`);
+      cmds.push(this.chocoOrBrew(installUtil, installRef));
     }
     return cmds;
   }
@@ -88,8 +88,12 @@ export class InstallUtils {
   public static async installSW(software: string): Promise<string> {
     const installUtil: string = await OsUtils.getCommand(CommandNames.installUtil);
     const installRef: string = await InstallSwRefs.getInstallRef(installUtil, software);
-
-    return (software == Software.Kustomize) ? installRef : `${installUtil} install ${installRef}`;
+    if (installUtil == "choco") {
+      return `${installUtil} install -y ${installRef}`;
+    } else {
+      return (software == Software.Kustomize) ? installRef : `${installUtil} install ${installRef}`;
+    }
+    
   }
 
   /**
@@ -104,21 +108,48 @@ export class InstallUtils {
     if(bashRef == "brew"){
       try {
         const str = `which ${bashRef}`;
-        const result = runExecSync(str).toString();
-        return (result.search(/not found/) == -1);
-
+        const result = await runExecSync(str);
+        if (result) {
+          return (result.search(/not found/) == -1);
+        } else {
+          Promise.reject(`Something went wrong when checking ${software}`);
+        }
       } catch (err) {
-        throw new Error(`Error when checking software ${software}: ${err}`);
+        Promise.reject(`Error when checking software ${software}: ${err}`);
       }
 
     } else {
       try {
-        const str = `${bashRef} --version`;
-        const result = runExecSync(str).toString();
-        return (result.search(/is not recognized/) == -1);
+        let str: string = null;
+        if (bashRef == "minikube" || bashRef == "kustomize" || bashRef == "kubectl") {
+          (bashRef == "kubectl") ? str = `${bashRef} version --client=true` : str = `${bashRef} version`;
+        } else {
+          (bashRef == "java") ? str = `${bashRef} -version` : str = `${bashRef} --version`;
+        }
+        const result = await runExecSync(str, {stdio: [2, "pipe"]});
+        if (result) {
+          return (result.search(/is not recognized/) == -1);
+        } else {
+          return false;
+        }
       } catch (err) {
-        throw new Error(`Error when checking software ${software}: ${err}`);
-      }
+        if (err.stderr) {
+          return (err.stderr.toString().search(/is not recognized/) == -1);
+        }
+        Promise.reject(`Software ${software}: ${err}`);
+      }  
     }
+  }
+
+  /**
+   * When install tool is Chocolatey or Homebrew, only two types of strings are needed
+   * 
+   * @param {string} installUtil installation utility
+   * @param {string} installRef installation reference
+   * @returns {string} install command for either installation utility
+   */
+  private static chocoOrBrew(installUtil: string, installRef: string): string {
+    return (installUtil == "choco") ? `${installUtil} install -y ${installRef}`
+    : `${installUtil} install ${installRef}`;
   }
 }

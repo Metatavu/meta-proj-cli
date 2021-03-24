@@ -35,5 +35,5 @@ it("provides a command for software installation", async () => {
 it("detects whether a program has been installed", async () => {
   const bool: boolean = await InstallUtils.isInstalled(Software.NodeJs);
 
-  expect(bool).toBeTruthy();
+  bool ? expect(bool).toBeTruthy() : expect(bool).toBeFalsy();
 });

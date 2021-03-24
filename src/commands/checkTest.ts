@@ -9,12 +9,12 @@ const choices = [
   { name: Software.Maven, checked: true }, 
   { name: Software.JDK8, checked: true },
   { name: Software.JDK11, checked: false },
-  { name: Software.Homebrew, checked: true },
+  { name: Software.Homebrew, checked: false },
   { name: Software.Docker, checked: true },
   { name: Software.Minikube, checked: true },
   { name: Software.KubernetesCLI, checked: true },
   { name: Software.Kustomize, checked: true },
-  { name: Software.EKSctl, checked: true },
+  { name: Software.EKSctl, checked: false },
   { name: Software.AWSCLI, checked: true }
 ];
 
