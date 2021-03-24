@@ -7,6 +7,7 @@ import * as path from "path";
 import { runExecSync } from "../classes/exec-sync-utils";
 import { CreateQuarkus } from "./new-proj/create-quarkus";
 import { CleanReact, CreateReact } from "./new-proj/create-react";
+import { PromptUtils } from "../classes/prompt-utils";
 
 const vorpal = new Vorpal();
 const { HOME } = process.env;
@@ -16,6 +17,8 @@ let projType: string = null;
 let projVm: string = null;
 let folderPath: string = null;
 let repoPath: string = null;
+let hasFolder = false;
+let hasReadme = false;
 let kotlin = true;
 let gradle = true;
 
@@ -25,53 +28,35 @@ let gradle = true;
 async function action() {
 
   try {
-    const nameResult = await this.prompt({
-      type: "input",
-      name: "name",
-      message: "Give a name for the project: "
-    });
+    const nameResult = await PromptUtils.inputPrompt(this, "Give a name for the project: ");
 
-    if (nameResult.name) {
-      projName = nameResult.name;
+    if (nameResult) {
+      projName = nameResult;
     } else {
       throw new Error("No name was given for the project");
     }
 
-    const typeResult = await this.prompt({
-      type: "list",
-      name: "type",
-      choices: [ "Quarkus", "React", "No framework" ],
-      message: "Framework for the project: "
-    });
+    const typeResult = await PromptUtils.listPrompt(this, "Framework for the project: ", [ "Quarkus", "React", "No framework" ]);
 
-    if (typeResult.type) {
-      projType = typeResult.type;
+    if (typeResult) {
+      projType = typeResult;
     } else {
       throw new Error("No type was given for the project");
     }
 
-    const vmResult = await this.prompt({
-      type: "list",
-      name: "vm",
-      choices: [ "None", "Docker", "Minikube" ],
-      message: "Add virtual environment for the project: "
-    });
+    const vmResult = await PromptUtils.listPrompt(this, "Add virtual environment for the project: ", [ "None", "Docker", "Minikube" ]);
 
-    if (vmResult.vm) {
-      projVm = vmResult.vm;
+    if (vmResult) {
+      projVm = vmResult;
 
     } else {
       throw new Error("No environment option was given for the project");
     }
 
-    const pathResult = await this.prompt({
-      type: "input",
-      name: "path",
-      message: "Set a path where to initiate repository, leave empty for default: "
-    });
+    const pathResult = await PromptUtils.inputPrompt(this, "Set a path where to initiate repository, leave empty for default: ");
 
-    if (pathResult?.path) {
-      givenPath = pathResult.path;
+    if (pathResult) {
+      givenPath = pathResult;
     }
   } catch (err) {
     throw new Error(`Error while prompting: ${err}`);
@@ -82,28 +67,19 @@ async function action() {
   if (projType == "Quarkus") {
     this.log("Creating Quarkus project - please wait...");
     try {
-      const kotlinResult = await this.prompt({
-        type: "list",
-        name: "kotlin",
-        choices: [ "Yes", "No" ],
-        message: "Use Kotlin?: "
-      });
+      const kotlinResult = await PromptUtils.confirmPrompt(this, "Use Kotlin?: "); 
 
-      const gradleResult = await this.prompt({
-        type: "list",
-        name: "gradle",
-        choices: [ "Yes", "No" ],
-        message: "Use Gradle?: "
-      });
+      const gradleResult = await PromptUtils.confirmPrompt(this, "Use Gradle?: ");
 
-      if (!kotlinResult.kotlin || !gradleResult.gradle) {
+      if (!kotlinResult || !gradleResult) {
         kotlin = false;
         gradle = false;
       } else {
-        kotlin = (kotlinResult.kotlin == "Yes");
-        gradle = (gradleResult.gradle == "Yes");
+        kotlin = kotlinResult;
+        gradle = gradleResult;
       }
-      initQuarkusProject();
+      await initQuarkusProject();
+      hasFolder = true;
 
     } catch (err) {
       throw new Error(`Error when attempting to init ${projType} project: ${err}`);
@@ -113,7 +89,10 @@ async function action() {
 
   if (projType == "React") {
     this.log("Creating react project - please wait...");
-    initReactProject();
+    
+    await initReactProject();
+    hasFolder = true;
+    hasReadme = true;
   }
 
   if (projType == "No framework") {
@@ -135,13 +114,9 @@ async function action() {
   repoViaVorpal();
 
   try {
-    const testResult = await this.prompt({
-      type: "confirm",
-      name: "testAnswer",
-      message: `Do you want to run a test for ${projName}?`
-    });
+    const testResult = await PromptUtils.confirmPrompt(this, `Do you want to run a test for ${projName}?`);
 
-    if (testResult.testAnswer) {
+    if (testResult) {
       await vorpal
       .use(test)
       .execSync("test");
@@ -222,7 +197,7 @@ async function repoViaVorpal() {
   try {
     await vorpal
     .use(newRepo)
-    .execSync(`new-repo ${projName} --path ${givenPath}`);
+    .execSync(`new-repo ${projName} --path ${givenPath} ${hasFolder ? "--hasFolder" : ""} ${hasReadme ? "--hasReadme" : ""}`);
 
   } catch(err) {
     throw new Error("Encountered an error while creating repository: " + err);
