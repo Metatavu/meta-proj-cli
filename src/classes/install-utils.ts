@@ -35,8 +35,7 @@ export class InstallUtils {
       cmds.push("sudo cp minikube-linux-amd64 /usr/local/bin/minikube");
       cmds.push("sudo chmod 755 /usr/local/bin/minikube");
     } else {
-      (installUtil == "choco") ? cmds.push(`${installUtil} install -y ${installRef}`) 
-      : cmds.push(`${installUtil} install ${installRef}`);
+      cmds.push(this.chocoOrBrew(installUtil, installRef));
     }
     return cmds;
   }
@@ -56,8 +55,7 @@ export class InstallUtils {
       cmds.push("chmod +x ./kubectl");
       cmds.push("sudo mv ./kubectl /usr/local/bin/kubectl");
     } else {
-      (installUtil == "choco") ? cmds.push(`${installUtil} install -y ${installRef}`) 
-      : cmds.push(`${installUtil} install ${installRef}`);
+      cmds.push(this.chocoOrBrew(installUtil, installRef));
     }
     return cmds;
   }
@@ -76,8 +74,7 @@ export class InstallUtils {
       cmds.push('curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp');
       cmds.push("sudo mv /tmp/eksctl /usr/local/bin");
     } else {
-      (installUtil == "choco") ? cmds.push(`${installUtil} install -y ${installRef}`) 
-      : cmds.push(`${installUtil} install ${installRef}`);
+      cmds.push(this.chocoOrBrew(installUtil, installRef));
     }
     return cmds;
   }
@@ -142,5 +139,17 @@ export class InstallUtils {
         Promise.reject(`Software ${software}: ${err}`);
       }  
     }
+  }
+
+  /**
+   * When install tool is Chocolatey or Homebrew, only two types of strings are needed
+   * 
+   * @param {string} installUtil installation utility
+   * @param {string} installRef installation reference
+   * @returns {string} install command for either installation utility
+   */
+  private static chocoOrBrew(installUtil: string, installRef: string): string {
+    return (installUtil == "choco") ? `${installUtil} install -y ${installRef}`
+    : `${installUtil} install ${installRef}`;
   }
 }
