@@ -110,7 +110,6 @@ export class InstallUtils {
    */
   public static async isInstalled(software: string): Promise<boolean> {
     const bashRef = await InstallSwRefs.getBashRef(software);
-    const os: string = await OsUtils.getOS();
 
     if(bashRef == "brew"){
       try {
