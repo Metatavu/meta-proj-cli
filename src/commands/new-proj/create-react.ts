@@ -1,5 +1,7 @@
 import OsUtils from "../../classes/os-utils";
 import { CommandNames } from "../../interfaces/types";
+import * as path from "path";
+
 /**
  * Create React project
  * 
@@ -24,14 +26,14 @@ export const CleanReact = async (folderPath: string, repoPath: string): Promise<
   try {
     const cmdsArray: string[] = [];
     cmdsArray.push(`${remove} README.md`);
-    cmdsArray.push(`${remove} src/App.css`);
-    cmdsArray.push(`${remove} src/App.test.tsx`);
-    cmdsArray.push(`${remove} src/App.tsx`);
-    cmdsArray.push(`${remove} src/index.css`);
-    cmdsArray.push(`${remove} src/index.tsx`);
-    cmdsArray.push(`${remove} src/logo.svg`);
-    cmdsArray.push(`${remove} src/react-app-env.d.ts`);
-    cmdsArray.push(`${remove} src/setupTests.ts`);
+    cmdsArray.push(`${remove} src${path.sep}App.css`);
+    cmdsArray.push(`${remove} src${path.sep}App.test.tsx`);
+    cmdsArray.push(`${remove} src${path.sep}App.tsx`);
+    cmdsArray.push(`${remove} src${path.sep}index.css`);
+    cmdsArray.push(`${remove} src${path.sep}index.tsx`);
+    cmdsArray.push(`${remove} src${path.sep}logo.svg`);
+    cmdsArray.push(`${remove} src${path.sep}react-app-env.d.ts`);
+    cmdsArray.push(`${remove} src${path.sep}setupTests.ts`);
     cmdsArray.push(`${copy} project-config.json ${folderPath}`);
     cmdsArray.push(`${copy} README.md ${repoPath}`);
 

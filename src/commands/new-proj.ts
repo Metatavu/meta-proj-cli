@@ -62,7 +62,9 @@ async function action() {
     throw new Error(`Error while prompting: ${err}`);
   }
 
-  resolvePaths();
+  await resolvePaths();
+  await runExecSync(`mkdir ${folderPath}`);
+  hasFolder = true;
   
   if (projType == "Quarkus") {
     this.log("Creating Quarkus project - please wait...");
@@ -79,7 +81,6 @@ async function action() {
         gradle = gradleResult;
       }
       await initQuarkusProject();
-      hasFolder = true;
 
     } catch (err) {
       throw new Error(`Error when attempting to init ${projType} project: ${err}`);
@@ -91,13 +92,12 @@ async function action() {
     this.log("Creating react project - please wait...");
     
     await initReactProject();
-    hasFolder = true;
     hasReadme = true;
   }
 
   if (projType == "No framework") {
     this.log("Creating project - please wait...");
-    initDefaultProject();
+    await initDefaultProject();
   }
 
   if (projVm != "None") {
@@ -111,7 +111,7 @@ async function action() {
     } 
   }
 
-  repoViaVorpal();
+  await repoViaVorpal();
 
   try {
     const testResult = await PromptUtils.confirmPrompt(this, `Do you want to run a test for ${projName}?`);
@@ -161,12 +161,12 @@ async function initDefaultProject() {
 async function initReactProject() {
   try {
     const cmd: string = await CreateReact(projName);
-    await runExecSync(cmd);
+    await runExecSync(cmd, { cwd: folderPath });
 
     const cmds: string[] = await CleanReact(folderPath, repoPath);
     for (let i = 0; i < cmds.length; i++) {
       if (i < 9) {
-        await runExecSync(cmds[i]);
+        await runExecSync(cmds[i], { cwd: repoPath });
       } else {
         await runExecSync(cmds[i], { cwd: `.${path.sep}resources` });
       }
@@ -183,7 +183,7 @@ async function initReactProject() {
 async function initQuarkusProject() {
   try {
     const cmd: string = await CreateQuarkus(projName, kotlin, gradle);
-    await runExecSync(cmd);
+    await runExecSync(cmd, { cwd: folderPath });
 
   } catch(err) {
     throw new Error(`Error when creating project: ${err}`);

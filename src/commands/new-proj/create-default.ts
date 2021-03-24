@@ -18,7 +18,7 @@ export const CreateDefault = async (projName: string, folderPath: string, repoPa
     throw new Error(`Error when fetching command: ${err}`);
   }
   const cmdsArray: string[] = [];
-  cmdsArray.push(`mkdir ${projName}`);
+  cmdsArray.push(`mkdir ${repoPath}`);
   cmdsArray.push(`${copy} project-config.json ${folderPath}`);
   cmdsArray.push(`${copy} README.md ${repoPath}`);
 
