@@ -1,6 +1,7 @@
 import Vorpal from "vorpal";
 import { runExecSync } from "../classes/exec-sync-utils";
 import { InstallUtils } from "../classes/install-utils";
+import { PromptUtils } from "../classes/prompt-utils";
 import { Software } from "../interfaces/types";
 
 let installCommands: string | string[] = null;
@@ -17,14 +18,9 @@ async function action(args) {
 
   if (!software) {
     try {
-      const softwareResult = await this.prompt({
-        type: "list",
-        name: "software",
-        choices: Object.keys(Software),
-        message: "Software to be installed: "
-      });
-      if (softwareResult.name) {
-        software = softwareResult.name;
+      const softwareResult = await PromptUtils.listPrompt(this, "Software to be installed: ", Object.keys(Software));
+      if (softwareResult) {
+        software = softwareResult;
       } else {
         throw new Error("No software name given, cancelling command");
       }
