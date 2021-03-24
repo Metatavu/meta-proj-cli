@@ -108,85 +108,51 @@ async function action() {
       try {
         let componentsArr: string[] = [];
         let keyCloak = false;
-        const componentResult = await this.prompt({
-          type: "checkbox",
-          name: "components",
-          choices: [ "Pod", "Service", "Deployment" ],
-          message: "Components for Minikube (max one of each): "
-        });
-        componentResult.components ? componentsArr = componentResult.components : componentsArr = null;
+        const componentResult = await PromptUtils.checkboxPrompt(
+          this,
+          "Components for Minikube (max one of each): ",
+          [ "Pod", "Service", "Deployment" ]
+        );
+        componentResult ? componentsArr = componentResult : componentsArr = null;
 
         let image: string = null;
-        const imageResult = await this.prompt({
-          type: "input",
-          name: "image",
-          message: "Set an image for pod / deployment, leave empty for default: "
-        });
-        imageResult.image ? image = imageResult.image : image = "";
+        const imageResult = await PromptUtils.inputPrompt(this, "Set an image for pod / deployment, leave empty for default: ");
+        imageResult ? image = imageResult : image = "";
 
         let port: number = null;
         let replicas: number = null;
         if (componentsArr.indexOf("Pod") != -1) {
-          const portResult = await this.prompt({
-            type: "input",
-            name: "port",
-            message: "Set a port for pod, leave empty for default (3000): "
-          });
-          portResult.port ? port = Number(portResult.port) : port = 3000;
+          const portResult = await PromptUtils.inputPrompt(this, "Set a port for pod, leave empty for default (3000): ");
+          portResult ? port = Number(portResult) : port = 3000;
 
-          const replicaResult = await this.prompt({
-            type: "input",
-            name: "replicas",
-            message: "Set an amount of replicas of pod, leave empty for default (1): "
-          });
-          replicaResult.replicas ? replicas = Number(replicaResult.replicas) : replicas = 1;
+          const replicaResult = await PromptUtils.inputPrompt(this, "Set an amount of replicas of pod, leave empty for default (1): ");
+          replicaResult ? replicas = Number(replicaResult) : replicas = 1;
         }
 
         let portType: string = null;
         if (componentsArr.indexOf("Service") != -1) {
-          const portTypeResult = await this.prompt({
-            type: "input",
-            name: "portType",
-            message: "Set a port type for service, leave empty for default (NodePort): "
-          });
-          portTypeResult.portType ? portType = portTypeResult.portType : portType = "NodePort";
+          const portTypeResult = await PromptUtils.inputPrompt(this, "Set a port type for service, leave empty for default (NodePort): ");
+          portTypeResult ? portType = portTypeResult : portType = "NodePort";
         }
 
         const ports = [];
         if (componentsArr.indexOf("Service") != -1 || componentsArr.indexOf("Deployment") != -1) {
-          const nameResult = await this.prompt({
-            type: "input",
-            name: "name",
-            message: "Set a port name, leave empty for default (tcp): "
-          });
+          const nameResult = await PromptUtils.inputPrompt(this, "Set a port name, leave empty for default (tcp): ");
           
-          const portResult = await this.prompt({
-            type: "input",
-            name: "port",
-            message: "Set a port for pod, leave empty for default (3000): "
-          });
+          const portResult = await PromptUtils.inputPrompt(this, "Set a port for pod, leave empty for default (3000): ");
 
-          const protocolResult = await this.prompt({
-            type: "input",
-            name: "protocol",
-            message: "Set a protocol for port, leave empty for default (TCP): "
-          });
+          const protocolResult = await PromptUtils.inputPrompt(this, "Set a protocol for port, leave empty for default (TCP): ");
 
           ports.push({
-            name: nameResult.name ? nameResult.name : "tcp",
-            port: portResult.port ? portResult.port : 3000,
-            containerPort: portResult.port ? portResult.port : 3000,
-            protocol: protocolResult.protocol ? protocolResult.protocol : "TCP"
+            name: nameResult ? nameResult : "tcp",
+            port: portResult ? portResult : 3000,
+            containerPort: portResult ? portResult : 3000,
+            protocol: protocolResult ? protocolResult : "TCP"
           });
         }
         this.log("Check that your Docker is running before proceeding.");
-        const keyCloakResult = await this.prompt({
-          type: "list",
-          name: "keyCloak",
-          choices: [ "Yes", "No" ],
-          message: "Attach KeyCloak to Minikube : "
-        });
-        keyCloak = (keyCloakResult.keyCloak == "Yes");
+        const keyCloakResult = await PromptUtils.listPrompt(this, "Attach KeyCloak to Minikube : ", [ "Yes", "No" ]);
+        keyCloak = (keyCloakResult == "Yes");
 
         if (keyCloak) {
           const attachKc: string = await MinikubeUtils.attachKeycloak(repoPath);
