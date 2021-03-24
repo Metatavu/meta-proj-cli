@@ -127,116 +127,7 @@ async function action() {
   await repoViaVorpal();
 
   if (aws) {
-    let access: string = null;
-    let secret: string = null;
-    try {
-      const configResult = await this.prompt({
-        type: "list",
-        name: "config",
-        choices: [ "Yes", "No" ],
-        message: "Do you have an AWS config file under home location /.aws/config : "
-      });
-
-      if (configResult.config) {
-        let cmds: string[] = [];
-        if (configResult.config == "No") {
-          const accessResult = await this.prompt({
-            type: "input",
-            name: "access",
-            message: "Access key ID for AWS: "
-          });
-          accessResult.access ? access = accessResult.access : access = "";
-
-          const secretResult = await this.prompt({
-            type: "input",
-            name: "secret",
-            message: "Access key Secret for AWS: "
-          });
-          secretResult.secret ? secret = secretResult.secret : secret = "";
-          cmds = await AWSUtils.configAWS(projName, access, secret);
-        }
-        if (configResult.config == "Yes") {
-          cmds = await AWSUtils.configAWS(projName);
-        }
-        for (const cmd in cmds) {
-          await runExecSync(cmd);
-        }
-      } else {
-        throw new Error("Inquiry for config was stopped by the user.");
-      }
-
-    const pwResult = await this.prompt({
-      type: "input",
-      name: "password",
-      message: "Add password for DB master 'root' (minimum 8 characters): "
-    });
-    if (pwResult.password) {
-      if(pwResult.password.length < 8) {
-        throw new Error("The DB master password was too short.");
-      }
-    } else {
-      throw new Error("The DB master password has to be set.");
-    }
-
-    const portResult = await this.prompt({
-      type: "input",
-      name: "port",
-      message: "Port for DB (range 1150-65535): "
-    });
-    if (!portResult.port) {
-      throw new Error("The DB port has to be set.");
-    }
-
-    const storageResult = await this.prompt({
-      type: "input",
-      name: "storage",
-      message: "Allocated storage for DB, leave empty for default (20): "
-    });
-
-    const tagKeyResult = await this.prompt({
-      type: "input",
-      name: "key",
-      message: "Setting Tag (Key-Value). Give a tag Key for the DB: "
-    });
-
-    const tagValueResult = await this.prompt({
-      type: "input",
-      name: "value",
-      message: "Setting Tag (Key-Value). Give a tag Value for the DB: "
-    });
-
-    let subnetGrpName: string = null;
-    const subnetGrps = await runExecSync("aws rds describe-db-subnet-groups");
-    if(subnetGrps) {
-      const grpsJson = JSON.parse(subnetGrps);
-      for (const subnetGrp of grpsJson.DBSubnetGroups) {
-        if (subnetGrp.VpcId.toString() == "vpc-0f373251e71b37870") {
-          subnetGrpName = subnetGrp.DBSubnetGroupName.toString();
-        }
-      }
-    }
-    
-
-    const createDB: string = AWSUtils.createDBInstance(
-      projName,
-      subnetGrpName ? subnetGrpName : "default-vpc-0f373251e71b37870",
-      {
-        password: pwResult.password,
-        port: portResult.port,
-        storage: storageResult.storage ? storageResult.storage : 20,
-        tag: {
-          Key: tagKeyResult.key ? tagKeyResult.key : `project`,
-          Value: tagValueResult.value ? tagValueResult.value : `${projName}`
-        }
-      }
-    );
-    await runExecSync(createDB);
-    const configKube: string = AWSUtils.configKube("meta-cli");
-    await runExecSync(configKube);
-
-    } catch (err) {
-      throw new Error(`Error when setting up AWS: ${err}`);
-    }
+    await attachAWS(this);
   }
 
   try {
@@ -313,6 +204,92 @@ async function initQuarkusProject() {
 
   } catch(err) {
     throw new Error(`Error when creating project: ${err}`);
+  }
+}
+
+/**
+ * Attachs AWS to the project
+ * 
+ * @param instance Vorpal instance for inquiry
+ */
+async function attachAWS(instance: any) {
+  let access: string = null;
+  let secret: string = null;
+  try {
+    const configResult = await PromptUtils.listPrompt(
+      instance,
+      "Do you have an AWS config file under home location /.aws/config : ",
+      [ "Yes", "No" ]
+    );
+
+    if (configResult) {
+      let cmds: string[] = [];
+      if (configResult == "No") {
+        const accessResult = await PromptUtils.inputPrompt(instance, "Access key ID for AWS: ");
+        accessResult ? access = accessResult : access = "";
+
+        const secretResult = await PromptUtils.inputPrompt(instance, "Access key Secret for AWS: ");
+        secretResult ? secret = secretResult : secret = "";
+        cmds = await AWSUtils.configAWS(projName, access, secret);
+      }
+      if (configResult == "Yes") {
+        cmds = await AWSUtils.configAWS(projName);
+      }
+      for (const cmd in cmds) {
+        await runExecSync(cmd);
+      }
+    } else {
+      throw new Error("Inquiry for config was stopped by the user.");
+    }
+
+  const pwResult = await PromptUtils.inputPrompt(instance, "Add password for DB master 'root' (minimum 8 characters): ");
+  if (pwResult) {
+    if(pwResult.length < 8) {
+      throw new Error("The DB master password was too short.");
+    }
+  } else {
+    throw new Error("The DB master password has to be set.");
+  }
+
+  const portResult = await PromptUtils.inputPrompt(instance, "Port for DB (range 1150-65535): ");
+  if (!portResult) {
+    throw new Error("The DB port has to be set.");
+  }
+
+  const storageResult = await PromptUtils.inputPrompt(instance, "Allocated storage for DB, leave empty for default (20): ");
+  const tagKeyResult = await PromptUtils.inputPrompt(instance, "Setting Tag (Key-Value). Give a tag Key for the DB: ");
+  const tagValueResult = await PromptUtils.inputPrompt(instance, "Setting Tag (Key-Value). Give a tag Value for the DB: ");
+
+  let subnetGrpName: string = null;
+  const subnetGrps = await runExecSync("aws rds describe-db-subnet-groups");
+  if(subnetGrps) {
+    const grpsJson = JSON.parse(subnetGrps);
+    for (const subnetGrp of grpsJson.DBSubnetGroups) {
+      if (subnetGrp.VpcId.toString() == "vpc-0f373251e71b37870") {
+        subnetGrpName = subnetGrp.DBSubnetGroupName.toString();
+      }
+    }
+  }
+
+  const createDB: string = AWSUtils.createDBInstance(
+    projName,
+    subnetGrpName ? subnetGrpName : "default-vpc-0f373251e71b37870",
+    {
+      password: pwResult,
+      port: Number(portResult),
+      storage: storageResult ? Number(storageResult) : 20,
+      tag: {
+        Key: tagKeyResult ? tagKeyResult : `project`,
+        Value: tagValueResult ? tagValueResult : `${projName}`
+      }
+    }
+  );
+  await runExecSync(createDB);
+  const configKube: string = AWSUtils.configKube("meta-cli");
+  await runExecSync(configKube);
+
+  } catch (err) {
+    throw new Error(`Error when setting up AWS: ${err}`);
   }
 }
 
