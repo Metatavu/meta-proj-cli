@@ -26,7 +26,7 @@ it('checks for prequisites', async () => {
 
   if (returnSet.length > 0) {
     for (const set of returnSet) {
-      expect((set)).toHaveProperty("checkable");
+      expect((set)).toHaveProperty("check");
       expect((set)).toHaveProperty("error");
       expect((set)).toHaveProperty("details");
     }
