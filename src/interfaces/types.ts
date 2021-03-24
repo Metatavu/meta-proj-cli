@@ -76,6 +76,23 @@ export interface ProjConfigJson {
 }
 
 /**
+ * User config for AWS RDS
+ * 
+ * @property password: db master password
+ * @property port: db port
+ * @property tag: Includes Key and Value for RDS db tag
+ */
+export interface DBUserConfig {
+  password: string,
+  port: number,
+  storage: number,
+  tag: {
+    Key: string,
+    Value: string
+  }
+}
+
+/**
  * Global constants for OS names
  */
 export enum OperatingSystems {

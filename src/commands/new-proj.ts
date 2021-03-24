@@ -5,6 +5,7 @@ import { PathUtils } from "../classes/path-utils";
 import { CreateDefault } from "./new-proj/create-default";
 import * as path from "path";
 import { runExecSync } from "../classes/exec-sync-utils";
+import { AWSUtils } from "../classes/aws-utils";
 import { CreateQuarkus } from "./new-proj/create-quarkus";
 import { CleanReact, CreateReact } from "./new-proj/create-react";
 import { PromptUtils } from "../classes/prompt-utils";
@@ -17,6 +18,7 @@ let projType: string = null;
 let projVm: string = null;
 let folderPath: string = null;
 let repoPath: string = null;
+let aws = false;
 let hasFolder = false;
 let hasReadme = false;
 let kotlin = true;
@@ -58,6 +60,9 @@ async function action() {
     if (pathResult) {
       givenPath = pathResult;
     }
+
+    aws = await PromptUtils.confirmPrompt(this, "Attach project to AWS: ");
+
   } catch (err) {
     throw new Error(`Error while prompting: ${err}`);
   }
@@ -111,7 +116,11 @@ async function action() {
     } 
   }
 
-  repoViaVorpal();
+  await repoViaVorpal();
+
+  if (aws) {
+    await attachAWS(this);
+  }
 
   try {
     const testResult = await PromptUtils.confirmPrompt(this, `Do you want to run a test for ${projName}?`);
@@ -187,6 +196,88 @@ async function initQuarkusProject() {
 
   } catch(err) {
     throw new Error(`Error when creating project: ${err}`);
+  }
+}
+
+/**
+ * Attachs AWS to the project
+ * 
+ * @param {any} instance Vorpal instance for inquiry.
+ */
+async function attachAWS(instance: any) {
+  let access: string = null;
+  let secret: string = null;
+  try {
+    const configResult = await PromptUtils.confirmPrompt(instance, "Do you have an AWS config file under home location /.aws/config : ");
+
+    if (configResult != null) {
+      let cmds: string[] = [];
+      if (configResult == false) {
+        const accessResult = await PromptUtils.inputPrompt(instance, "Access key ID for AWS: ");
+        accessResult ? access = accessResult : access = "";
+
+        const secretResult = await PromptUtils.inputPrompt(instance, "Access key Secret for AWS: ");
+        secretResult ? secret = secretResult : secret = "";
+        cmds = await AWSUtils.configAWS(projName, access, secret);
+      }
+      if (configResult == true) {
+        cmds = await AWSUtils.configAWS(projName);
+      }
+      for (const cmd of cmds) {
+        await runExecSync(cmd);
+      }
+    } else {
+      throw new Error("Inquiry for config was stopped by the user.");
+    }
+
+  const pwResult = await PromptUtils.inputPrompt(instance, "Add password for DB master 'root' (minimum 8 characters): ");
+  if (pwResult) {
+    if(pwResult.length < 8) {
+      throw new Error("The DB master password was too short.");
+    }
+  } else {
+    throw new Error("The DB master password has to be set.");
+  }
+
+  const portResult = await PromptUtils.inputPrompt(instance, "Port for DB (range 1150-65535): ");
+  if (!portResult) {
+    throw new Error("The DB port has to be set.");
+  }
+
+  const storageResult = await PromptUtils.inputPrompt(instance, "Allocated storage for DB, leave empty for default (20): ");
+  const tagKeyResult = await PromptUtils.inputPrompt(instance, "Setting Tag (Key-Value). Give a tag Key for the DB: ");
+  const tagValueResult = await PromptUtils.inputPrompt(instance, "Setting Tag (Key-Value). Give a tag Value for the DB: ");
+
+  let subnetGrpName: string = null;
+  const subnetGrps = await runExecSync("aws rds describe-db-subnet-groups");
+  if(subnetGrps) {
+    const grpsJson = JSON.parse(subnetGrps);
+    for (const subnetGrp of grpsJson.DBSubnetGroups) {
+      if (subnetGrp.VpcId.toString() == "vpc-0f373251e71b37870") {
+        subnetGrpName = subnetGrp.DBSubnetGroupName.toString();
+      }
+    }
+  }
+
+  const createDB: string = AWSUtils.createDBInstance(
+    projName,
+    subnetGrpName ? subnetGrpName : "default-vpc-0f373251e71b37870",
+    {
+      password: pwResult,
+      port: Number(portResult),
+      storage: storageResult ? Number(storageResult) : 20,
+      tag: {
+        Key: tagKeyResult ? tagKeyResult : `project`,
+        Value: tagValueResult ? tagValueResult : `${projName}`
+      }
+    }
+  );
+  await runExecSync(createDB);
+  const configKube: string = AWSUtils.configKube("meta-cli");
+  await runExecSync(configKube);
+
+  } catch (err) {
+    throw new Error(`Error when setting up AWS: ${err}`);
   }
 }
 
