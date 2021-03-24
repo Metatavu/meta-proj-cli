@@ -61,16 +61,8 @@ async function action() {
       givenPath = pathResult;
     }
 
-    const awsResult = await this.prompt({
-      type: "list",
-      name: "aws",
-      choices: [ "Yes", "No" ],
-      message: "Attach project to AWS: "
-    });
+    aws = await PromptUtils.confirmPrompt(this, "Attach project to AWS: ");
 
-    if (awsResult.aws) {
-      (awsResult.aws == "Yes") ? aws = true : aws = false;
-    }
   } catch (err) {
     throw new Error(`Error while prompting: ${err}`);
   }
@@ -216,15 +208,11 @@ async function attachAWS(instance: any) {
   let access: string = null;
   let secret: string = null;
   try {
-    const configResult = await PromptUtils.listPrompt(
-      instance,
-      "Do you have an AWS config file under home location /.aws/config : ",
-      [ "Yes", "No" ]
-    );
+    const configResult = await PromptUtils.confirmPrompt(instance, "Do you have an AWS config file under home location /.aws/config : ");
 
-    if (configResult) {
+    if (configResult != null) {
       let cmds: string[] = [];
-      if (configResult == "No") {
+      if (configResult == false) {
         const accessResult = await PromptUtils.inputPrompt(instance, "Access key ID for AWS: ");
         accessResult ? access = accessResult : access = "";
 
@@ -232,10 +220,10 @@ async function attachAWS(instance: any) {
         secretResult ? secret = secretResult : secret = "";
         cmds = await AWSUtils.configAWS(projName, access, secret);
       }
-      if (configResult == "Yes") {
+      if (configResult == true) {
         cmds = await AWSUtils.configAWS(projName);
       }
-      for (const cmd in cmds) {
+      for (const cmd of cmds) {
         await runExecSync(cmd);
       }
     } else {
