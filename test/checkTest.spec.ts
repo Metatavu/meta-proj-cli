@@ -25,7 +25,7 @@ it('checks for prequisites', async () => {
   const returnSet = await CheckUtils.checkPreq(testSet);
 
   if (returnSet.length > 0) {
-    for (const set in returnSet) {
+    for (const set of returnSet) {
       expect((set)).toBeInstanceOf({ checkable: String, error: Boolean, details: String })
     }
   } else {
