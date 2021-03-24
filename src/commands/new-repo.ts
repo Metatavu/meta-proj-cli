@@ -2,6 +2,9 @@ import Vorpal from "vorpal";
 import { PathUtils } from "../classes/path-utils";
 import { ProjConfigUtils } from "../classes/proj-config-utils";
 import { runExecSync } from "../classes/exec-sync-utils";
+import { PromptUtils } from "../classes/prompt-utils";
+import OsUtils from "../classes/os-utils";
+import path from "path";
 
 const { HOME } = process.env;
 const defaultPath = `${HOME}/.meta-proj-cli/projects`;
@@ -12,6 +15,8 @@ let publicity: string = null;
 let givenPath: string = null;
 let folderPath: string = null;
 let repoPath: string = null;
+let hasFolder = false;
+let hasReadme = false;
 
 /**
  * Creates a new github repo with given flags, or activates a wizard to ask for settings
@@ -22,6 +27,8 @@ let repoPath: string = null;
  * path(string)
  * description(string)
  * template(string)
+ * hasFolder(boolean)
+ * hasReadme(boolean)
  */
 async function action(args) {
   repoName = args.name;
@@ -29,38 +36,23 @@ async function action(args) {
   template = args.options.template;
   publicity = args.options.publicity ? args.options.publicity : "private";
   givenPath = args.options.path ? args.options.path : defaultPath;
+  hasFolder = (args.options.hasFolder);
+  hasReadme = (args.options.hasReadme);
   
   if (!publicity || !repoName) {
     try {
       if (!repoName) {
-        const nameResult = await this.prompt({
-          type: "input",
-          name: "name",
-          message: "Give a name for the repository (leave empty to cancel): "
-        });
-  
-        if (nameResult.name) {
-          repoName = nameResult.name;
+        const nameResult = await PromptUtils.inputPrompt(this, "Give a name for the repository (leave empty to cancel): ");
+        if (nameResult) {
+          repoName = nameResult;
         } else {
           throw new Error("No name given, cancelling command");
         }
       }
 
-      const publicityResult = await this.prompt({
-        type: "list",
-        name: "publicity",
-        choices: [ "private", "internal", "public" ],
-        message: "Set the publicity of the repository: "
-      });
+      publicity = await PromptUtils.listPrompt(this, "Set the publicity of the repository: ", [ "private", "internal", "public" ]);
   
-      const descriptionResult = await this.prompt({
-        type: "input",
-        name: "description",
-        message: "Give a description for the repository: "
-      });
-
-      description = descriptionResult.description;
-      publicity = publicityResult.publicity;
+      description = await PromptUtils.inputPrompt(this, "Give a description for the repository: ");
       
     } catch(err) {
       throw new Error(`encountered error while prompting: ${err}`);
@@ -79,6 +71,9 @@ async function action(args) {
  */
 async function finishRepo() {
   try {
+    if (!hasFolder) {
+      await runExecSync(`mkdir ${folderPath}`);
+    }
     await runExecSync(
       `gh repo create\
       ${process.env.GIT_ORGANIZATION}/${repoName}\
@@ -96,6 +91,12 @@ async function finishRepo() {
     } else {
       await runExecSync("git init", { cwd: repoPath });
       await runExecSync("git checkout -q -b develop", { cwd: repoPath });
+
+      if (!hasReadme) { 
+        const copy = await OsUtils.getCommand("copy");
+        await runExecSync(`${copy} README.md ${repoPath}`, { cwd : `.${path.sep}resources` });
+      }
+
       await runExecSync(`git add README.md`, { cwd: repoPath });
       await runExecSync(`git commit -q -m "first commit"`, { cwd: repoPath });
       await runExecSync(`git push -q origin develop`, { cwd: repoPath });
@@ -137,5 +138,11 @@ export const newRepo = (vorpal: Vorpal): Vorpal.Command => vorpal
   )
   .option(
     '-t, --template <text>', 'specify a template (if any) from which to make the repository'
+  )
+  .option(
+    '--hasFolder', 'intended for automatical running. Add this if the project already has a folder'
+  )
+  .option(
+    '--hasReadme', 'intended for automatical running. Add this if the project already has a readme.md'
   )
   .action(action);

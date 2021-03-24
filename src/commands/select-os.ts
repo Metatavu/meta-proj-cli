@@ -1,20 +1,16 @@
 import Vorpal from "vorpal";
 import OsUtils from "../classes/os-utils";
+import { PromptUtils } from "../classes/prompt-utils";
 
 /**
  * Prompts the user to input their OS for running other commands later on
  */
 async function action() {
   try {
-    const osResult = await this.prompt({
-      type: "list",
-      name: "os",
-      choices: [ "LINUX", "WINDOWS", "MAC OS" ],
-      message: "Which operating system are you using? "
-    });
+    const osResult = await PromptUtils.listPrompt(this, "Which operating system are you using? ", [ "LINUX", "WINDOWS", "MAC OS" ]);
 
-    if (osResult.os) {
-      OsUtils.setOS(osResult.os);
+    if (osResult) {
+      OsUtils.setOS(osResult);
     } else {
       throw new Error("ERROR: No operating system has been input.");
     }
