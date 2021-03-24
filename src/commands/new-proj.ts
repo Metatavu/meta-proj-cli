@@ -210,7 +210,7 @@ async function initQuarkusProject() {
 /**
  * Attachs AWS to the project
  * 
- * @param instance Vorpal instance for inquiry
+ * @param {any} instance Vorpal instance for inquiry.
  */
 async function attachAWS(instance: any) {
   let access: string = null;
