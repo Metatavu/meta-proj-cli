@@ -4,6 +4,7 @@ import * as fs from "fs";
 import { PathUtils } from "../classes/path-utils";
 import OsUtils from "../classes/os-utils";
 import { runExecSync } from "../classes/exec-sync-utils";
+import { PromptUtils } from "../classes/prompt-utils";
 
 const { HOME } = process.env;
 const defaultPath = `${HOME}/.meta-proj-cli/projects`;
@@ -19,14 +20,10 @@ async function action() {
   const copy: string = await OsUtils.getCommand("copy");
 
   try { 
-    const repoNameResult = await this.prompt({
-      type: "input",
-      name: "name",
-      message: "Give the name of the repository: "
-    });
+    const repoNameResult = await PromptUtils.inputPrompt(this, "Give the name of the repository: ")
 
-    if (repoNameResult.name) {
-      repoName = repoNameResult.name;
+    if (repoNameResult) {
+      repoName = repoNameResult;
     } else {
       throw new Error("No repository name given");
     }
@@ -41,29 +38,21 @@ async function action() {
   }
 
   try { 
-    const repoIsLocalResult = await this.prompt({
-      type: "confirm",
-      name: "isLocal",
-      message: "Is the repository installed locally? "
-    });
-
-    repoIsLocal = repoIsLocalResult.isLocal;
+    repoIsLocal = await PromptUtils.confirmPrompt(this, "Is the repository installed locally? ");
 
   } catch (err) {
     throw new Error(`Encountered error while prompting repository locality: ${err}`);
   }
 
   try { 
-    const repoPathResult = await this.prompt({
-      type: "input",
-      name: "path",
-      message: repoIsLocal ?
+    const repoPathResult = await PromptUtils.inputPrompt(this, 
+      repoIsLocal ?
         "Give a directory where to search for the repository (leave empty for default): " :
         "Give a directory where to open the repository folder (leave empty for default): "
-    });
+    );
 
-    repoPathResult.path !== "" ? 
-      givenPath = await PathUtils.fixPath(repoPathResult.path):
+    repoPathResult !== "" ? 
+      givenPath = await PathUtils.fixPath(repoPathResult):
       givenPath = await PathUtils.fixPath(defaultPath);
 
   } catch (err) {
