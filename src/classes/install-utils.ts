@@ -34,10 +34,9 @@ export class InstallUtils {
       cmds.push("wget https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64");
       cmds.push("sudo cp minikube-linux-amd64 /usr/local/bin/minikube");
       cmds.push("sudo chmod 755 /usr/local/bin/minikube");
-    } else if (installUtil == "choco") {
-      cmds.push(`${installUtil} install -y ${installRef}`);
     } else {
-      cmds.push(`${installUtil} install ${installRef}`);
+      (installUtil == "choco") ? cmds.push(`${installUtil} install -y ${installRef}`) 
+      : cmds.push(`${installUtil} install ${installRef}`);
     }
     return cmds;
   }
@@ -56,10 +55,9 @@ export class InstallUtils {
       cmds.push("curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl");
       cmds.push("chmod +x ./kubectl");
       cmds.push("sudo mv ./kubectl /usr/local/bin/kubectl");
-    } else if (installUtil == "choco") {
-      cmds.push(`${installUtil} install -y ${installRef}`);
     } else {
-      cmds.push(`${installUtil} install ${installRef}`);
+      (installUtil == "choco") ? cmds.push(`${installUtil} install -y ${installRef}`) 
+      : cmds.push(`${installUtil} install ${installRef}`);
     }
     return cmds;
   }
@@ -77,10 +75,9 @@ export class InstallUtils {
     if (installUtil == "sudo apt") {
       cmds.push('curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp');
       cmds.push("sudo mv /tmp/eksctl /usr/local/bin");
-    } else if (installUtil == "choco") {
-      cmds.push(`${installUtil} install -y ${installRef}`);
     } else {
-      cmds.push(`${installUtil} install ${installRef}`);
+      (installUtil == "choco") ? cmds.push(`${installUtil} install -y ${installRef}`) 
+      : cmds.push(`${installUtil} install ${installRef}`);
     }
     return cmds;
   }
@@ -129,17 +126,13 @@ export class InstallUtils {
         let str: string = null;
         if (bashRef == "minikube" || bashRef == "kustomize" || bashRef == "kubectl") {
           (bashRef == "kubectl") ? str = `${bashRef} version --client=true` : str = `${bashRef} version`;
-        }
-        else if (bashRef == "java") {
-          str = `${bashRef} -version`
         } else {
-          str = `${bashRef} --version`;
+          (bashRef == "java") ? str = `${bashRef} -version` : str = `${bashRef} --version`;
         }
         const result = await runExecSync(str, {stdio: [2, "pipe"]});
         if (result) {
           return (result.search(/is not recognized/) == -1);
         } else {
-          
           return false;
         }
       } catch (err) {
