@@ -21,7 +21,7 @@ export default class YamlUtils {
    * @param type Type of Kubernetes component, either pod, service or deployment
    * @param repoPath Repository path where to init .yaml files
    */
-  public static createYaml = async (args: KubeArgs, type: string, repoPath: string): Promise<void> => {
+  public static createYaml = async (args: KubeArgs, type: string, namespace: string, repoPath: string): Promise<void> => {
     try {
       let file = YAML.parse(fs.readFileSync(`./resources/${type}.yaml`, "utf8"));
       file.metadata.name = args.name;
@@ -42,15 +42,15 @@ export default class YamlUtils {
       switch (type) {
 
         case "pod":
-          file = YamlUtils.setupPod(args, file);
+          file = YamlUtils.setupPod(args, namespace, file);
           break;
 
         case "service":
-          file = YamlUtils.setupService(args, file);
+          file = YamlUtils.setupService(args, namespace, file);
           break;
         
         case "deployment":
-          file = YamlUtils.setupDeployment(args, file);
+          file = YamlUtils.setupDeployment(args, namespace, file);
           break;
       }
       fs.writeFileSync(`${repoPath + path.sep + type}.yaml`, YAML.stringify(file));
@@ -126,11 +126,14 @@ export default class YamlUtils {
    * @param file The JSON file that is being edited to create a .yaml file
    * @returns the edited JSON file for pod
    */
-  private static setupPod = (args: KubeArgs, file: any): any => {
+  private static setupPod = (args: KubeArgs, namespace: string, file: any): any => {
+
+    file.metadata.name = args.name;
     const containerObj = file.spec.containers[0];
+
     if (containerObj){
 
-      containerObj.name = args.name;
+      containerObj.name = namespace;
       (args.image) ? containerObj.image = args.image
       : containerObj.image = null;
 
@@ -149,14 +152,18 @@ export default class YamlUtils {
    * @param file The JSON file that is being edited to create a .yaml file
    * @returns the edited JSON file for service
    */
-  private static setupService = (args: KubeArgs, file: any): any => {
+  private static setupService = (args: KubeArgs, namespace: string, file: any): any => {
+
+    file.metadata.name = args.name;
+    file.metadata.labels.run = namespace;
+
     if (args.ports) {
       file.spec.ports = [];
       for (const port in args.ports) {
         file.spec.ports.push(port);
       }
     }
-    file.spec.selector.app = args.name;
+    file.spec.selector.app = namespace;
     if (args.portType) {
       file.spec.type = args.portType;
     }
@@ -170,9 +177,14 @@ export default class YamlUtils {
    * @param file The JSON file that is being edited to create a .yaml file
    * @returns the edited JSON file for deployment
    */
-  private static setupDeployment = (args: KubeArgs, file: any): any => {
+  private static setupDeployment = (args: KubeArgs, namespace: string, file: any): any => {
+
+    file.metadata.name = args.name;
+    file.metadata.labels.app = namespace;
     file.spec.selector.app = args.name;
+    file.spec.selector.matchLabels.app = namespace;
     file.spec.template.metadata.app = args.name;
+    file.spec.template.metadata.labels.app = namespace;
     const containerObj = file.spec.template.spec.containers[0];
 
     if (containerObj) {

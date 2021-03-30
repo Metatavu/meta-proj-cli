@@ -3,29 +3,28 @@ kind: Deployment
 metadata:
   creationTimestamp: null
   labels:
-    app: default
-  name: default
+    app: NAMESPACE
+  name: DEPLOYMENT_NAME
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: default
-    app: default
+      app: NAMESPACE
+    app: DEPLOYMENT_NAME
   strategy: {}
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: default
-      app: default
+        app: NAMESPACE
+      app: DEPLOYMENT_NAME
     spec:
       containers:
-        - name: default
-          image: metatavu
+        - name: DEPLOYMENT_NAME
+          image: IMAGE
           resources: {}
           ports:
-            - name: tcp
+            - name: PORT
               containerPort: 3000
               protocol: TCP
         - env: []
-status: {}

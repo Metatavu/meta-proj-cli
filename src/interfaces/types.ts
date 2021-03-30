@@ -102,7 +102,8 @@ export interface KubeArgs {
  */
 export interface KubeComponent {
   args: KubeArgs,
-  type: string
+  type: string,
+  namespace: string
 }
 
 /**

@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: default
+  name: SERVICE_NAME
   labels:
-    run: default
+    run: NAMESPACE
 spec:
   ports:
-    - name: tcp
+    - name: PORT
       port: 3000
       protocol: TCP
   selector:
-    app: default
+    app: NAMESPACE
   type: NodePort

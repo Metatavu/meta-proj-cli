@@ -5,7 +5,7 @@ import OsUtils from "./os-utils";
 /**
  * Provides utilities for initialising a project into Minikube
  */
-export default class MinikubeUtils {
+export default class KubeUtils {
 
   /**
    * Creates a Minikube component (pod, service, deployment) .yaml file that is
@@ -17,7 +17,7 @@ export default class MinikubeUtils {
   public static async createComponents(compArr: KubeComponent[], repoPath: string): Promise<void> {
     try {
       for (let i = 0; i < compArr.length; i++) {
-        await YamlUtils.createYaml(compArr[i].args, compArr[i].type, repoPath);
+        await YamlUtils.createYaml(compArr[i].args, compArr[i].type, compArr[i].namespace, repoPath);
       }
     } catch (err) {
       Promise.reject(`Ran into an error when attempting to setup a .yaml file: ${err}`);

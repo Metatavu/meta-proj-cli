@@ -6,7 +6,7 @@ import { CreateDefault } from "./new-proj/create-default";
 import * as path from "path";
 import { runExecSync } from "../classes/exec-sync-utils";
 import { KubeComponent } from "../interfaces/types";
-import MinikubeUtils from "../classes/minikube-utils";
+import KubeUtils from "../classes/kube-utils";
 import { CreateQuarkus } from "./new-proj/create-quarkus";
 import { CleanReact, CreateReact } from "./new-proj/create-react";
 import { PromptUtils } from "../classes/prompt-utils";
@@ -151,11 +151,11 @@ async function action() {
           });
         }
         this.log("Check that your Docker is running before proceeding.");
-        const keyCloakResult = await PromptUtils.listPrompt(this, "Attach KeyCloak to Minikube : ", [ "Yes", "No" ]);
-        keyCloak = (keyCloakResult == "Yes");
+        const keyCloakResult = await PromptUtils.confirmPrompt(this, "Attach KeyCloak to Minikube : ");
+        keyCloak = keyCloakResult;
 
         if (keyCloak) {
-          const attachKc: string = await MinikubeUtils.attachKeycloak(repoPath);
+          const attachKc: string = await KubeUtils.attachKeycloak(repoPath);
           await runExecSync(attachKc, { cwd: `.${path.sep}resources` });
         }
         
@@ -168,7 +168,7 @@ async function action() {
         await runExecSync(`kubectl create -f kustomization.yaml`, { cwd: repoPath });
         const kubeIP: string | void = (await runExecSync("minikube ip"));
         if (kubeIP) {
-          await MinikubeUtils.createIngress(kubeIP, repoPath);
+          await KubeUtils.createIngress(kubeIP, repoPath);
           await runExecSync(`kubectl create -f keycloak-ingress.yaml`, { cwd: repoPath });
         } else {
           this.log("Could not fetch Minikube IP. Failed to create Ingress for KeyCloak.");
@@ -246,10 +246,11 @@ async function attachToMinikube(compsArr: string[], image: string, port: number,
         ports: ports,
         replicas: replicas
       },
-      type: comp
+      type: comp,
+      namespace: projName
     });
   }
-  await MinikubeUtils.createComponents(componentsArr, repoPath);
+  await KubeUtils.createComponents(componentsArr, repoPath);
 }
  /**
   * Inits a React project
