@@ -15,9 +15,21 @@ export default class KubeUtils {
    * @param {string} repoPath String to project repository path where files are written to
    */
   public static async createComponents(compArr: KubeComponent[], repoPath: string): Promise<void> {
+    let podIncluded = false;
+    let pod: KubeComponent = null;
+
+    for (const comp of compArr) {
+      if (comp.type == "pod") {
+        podIncluded = true;
+        pod = comp;
+      }
+    }
     try {
-      for (let i = 0; i < compArr.length; i++) {
-        await YamlUtils.createYaml(compArr[i].args, compArr[i].type, compArr[i].namespace, repoPath);
+      for (const component of compArr) {
+        if (component.type != "pod") {
+          podIncluded ? await YamlUtils.createYaml(component.args, component.type, component.projName, repoPath, pod)
+          : await YamlUtils.createYaml(component.args, component.type, component.projName, repoPath);
+        }
       }
     } catch (err) {
       Promise.reject(`Ran into an error when attempting to setup a .yaml file: ${err}`);

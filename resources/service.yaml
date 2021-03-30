@@ -8,5 +8,5 @@ spec:
   ports:
     - {}
   selector:
-    app: NAMESPACE
+    app: POD_NAME
   type: NodePort

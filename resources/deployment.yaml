@@ -20,7 +20,7 @@ spec:
       app: DEPLOYMENT_NAME
     spec:
       containers:
-        - name: DEPLOYMENT_NAME
+        - name: POD_NAME
           image: IMAGE
           resources: {}
           ports:

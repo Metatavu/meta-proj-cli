@@ -119,16 +119,6 @@ async function action() {
         const imageResult = await PromptUtils.inputPrompt(this, "Set an image for pod / deployment, leave empty for default: ");
         imageResult ? image = imageResult : image = "";
 
-        let port: number = null;
-        let replicas: number = null;
-        if (componentsArr.indexOf("Pod") != -1) {
-          const portResult = await PromptUtils.inputPrompt(this, "Set a port for pod, leave empty for default (3000): ");
-          portResult ? port = Number(portResult) : port = 3000;
-
-          const replicaResult = await PromptUtils.inputPrompt(this, "Set an amount of replicas of pod, leave empty for default (1): ");
-          replicaResult ? replicas = Number(replicaResult) : replicas = 1;
-        }
-
         let portType: string = null;
         if (componentsArr.indexOf("Service") != -1) {
           const portTypeResult = await PromptUtils.inputPrompt(this, "Set a port type for service, leave empty for default (NodePort): ");
@@ -139,7 +129,7 @@ async function action() {
         if (componentsArr.indexOf("Service") != -1 || componentsArr.indexOf("Deployment") != -1) {
           const nameResult = await PromptUtils.inputPrompt(this, "Set a port name, leave empty for default (tcp): ");
           
-          const portResult = await PromptUtils.inputPrompt(this, "Set a port for pod, leave empty for default (3000): ");
+          const portResult = await PromptUtils.inputPrompt(this, "Set a port for service, leave empty for default (3000): ");
 
           const protocolResult = await PromptUtils.inputPrompt(this, "Set a protocol for port, leave empty for default (TCP): ");
 
@@ -150,6 +140,18 @@ async function action() {
             protocol: protocolResult ? protocolResult : "TCP"
           });
         }
+
+        let port: number = ports[0] ? ports[0].port : null;
+        let replicas: number = null;
+        if (componentsArr.indexOf("Pod") != -1) {
+          if (!port) {
+            const portResult = await PromptUtils.inputPrompt(this, "Set a listening port for pod, leave empty for default (3000): ");
+            portResult ? port = Number(portResult) : port = 3000;
+          }
+          const replicaResult = await PromptUtils.inputPrompt(this, "Set an amount of replicas of pod, leave empty for default (1): ");
+          replicaResult ? replicas = Number(replicaResult) : replicas = 1;
+        }
+
         this.log("Check that your Docker is running before proceeding.");
         const keyCloakResult = await PromptUtils.confirmPrompt(this, "Attach KeyCloak to Minikube : ");
         keyCloak = keyCloakResult;
@@ -247,7 +249,7 @@ async function attachToMinikube(compsArr: string[], image: string, port: number,
         replicas: replicas
       },
       type: comp,
-      namespace: projName
+      projName: projName
     });
   }
   await KubeUtils.createComponents(componentsArr, repoPath);
