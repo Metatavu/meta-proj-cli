@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: NAMESPACE
+  name: DEPLOYMENT_NAME
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: NAMESPACE
+    app: DEPLOYMENT_NAME
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: NAMESPACE
+      app: DEPLOYMENT_NAME
+    spec:
+      containers:
+        - name: POD_NAME
+          image: IMAGE
+          resources: {}
+          ports:
+            - {}
+        - env: []

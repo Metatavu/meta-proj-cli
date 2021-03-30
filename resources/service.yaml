@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: SERVICE_NAME
+  labels:
+    run: NAMESPACE
+spec:
+  ports:
+    - {}
+  selector:
+    app: POD_NAME
+  type: NodePort

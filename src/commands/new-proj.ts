@@ -5,6 +5,8 @@ import { PathUtils } from "../classes/path-utils";
 import { CreateDefault } from "./new-proj/create-default";
 import * as path from "path";
 import { runExecSync } from "../classes/exec-sync-utils";
+import { KubeComponent } from "../interfaces/types";
+import KubeUtils from "../classes/kube-utils";
 import { CreateQuarkus } from "./new-proj/create-quarkus";
 import { CleanReact, CreateReact } from "./new-proj/create-react";
 import { PromptUtils } from "../classes/prompt-utils";
@@ -104,7 +106,76 @@ async function action() {
     if (projVm == "Docker") runExecSync(`docker build -t ${projName} ${repoPath}`);
     if (projVm == "Minikube") {
       try {
-        // Add yaml files and crate resources in another issue
+        let componentsArr: string[] = [];
+        let keyCloak = false;
+        const componentResult = await PromptUtils.checkboxPrompt(
+          this,
+          "Components for Minikube (max one of each): ",
+          [ "Pod", "Service", "Deployment" ]
+        );
+        componentResult ? componentsArr = componentResult : componentsArr = null;
+
+        let image: string = null;
+        const imageResult = await PromptUtils.inputPrompt(this, "Set an image for pod / deployment, leave empty for default: ");
+        imageResult ? image = imageResult : image = "";
+
+        let portType: string = null;
+        if (componentsArr.indexOf("Service") != -1) {
+          const portTypeResult = await PromptUtils.inputPrompt(this, "Set a port type for service, leave empty for default (NodePort): ");
+          portTypeResult ? portType = portTypeResult : portType = "NodePort";
+        }
+
+        const ports = [];
+        if (componentsArr.indexOf("Service") != -1 || componentsArr.indexOf("Deployment") != -1) {
+          const nameResult = await PromptUtils.inputPrompt(this, "Set a port name, leave empty for default (tcp): ");
+          
+          const portResult = await PromptUtils.inputPrompt(this, "Set a port for service, leave empty for default (3000): ");
+
+          const protocolResult = await PromptUtils.inputPrompt(this, "Set a protocol for port, leave empty for default (TCP): ");
+
+          ports.push({
+            name: nameResult ? nameResult : "tcp",
+            port: portResult ? portResult : 3000,
+            containerPort: portResult ? portResult : 3000,
+            protocol: protocolResult ? protocolResult : "TCP"
+          });
+        }
+
+        let port: number = ports[0] ? ports[0].port : null;
+        let replicas: number = null;
+        if (componentsArr.indexOf("Pod") != -1) {
+          if (!port) {
+            const portResult = await PromptUtils.inputPrompt(this, "Set a listening port for pod, leave empty for default (3000): ");
+            portResult ? port = Number(portResult) : port = 3000;
+          }
+          const replicaResult = await PromptUtils.inputPrompt(this, "Set an amount of replicas of pod, leave empty for default (1): ");
+          replicaResult ? replicas = Number(replicaResult) : replicas = 1;
+        }
+
+        this.log("Check that your Docker is running before proceeding.");
+        const keyCloakResult = await PromptUtils.confirmPrompt(this, "Attach KeyCloak to Minikube : ");
+        keyCloak = keyCloakResult;
+
+        if (keyCloak) {
+          const attachKc: string = await KubeUtils.attachKeyCloak(repoPath);
+          await runExecSync(attachKc, { cwd: `.${path.sep}resources` });
+        }
+        
+        await attachToMinikube(componentsArr, image, port, portType, ports, replicas);
+        await runExecSync(`kustomize create --autodetect`, { cwd: repoPath });
+        await runExecSync("minikube start");
+        if (keyCloak) {
+          await runExecSync("minikube addons enable ingress");
+        }
+        await runExecSync(`kubectl create -f kustomization.yaml`, { cwd: repoPath });
+        const kubeIP: string | void = (await runExecSync("minikube ip"));
+        if (kubeIP) {
+          await KubeUtils.createIngress(kubeIP, repoPath);
+          await runExecSync(`kubectl create -f keycloak-ingress.yaml`, { cwd: repoPath });
+        } else {
+          this.log("Could not fetch Minikube IP. Failed to create Ingress for KeyCloak.");
+        }
+        this.log("Completed building Minikube setup. Please note that your Minikube is now running.");
       } catch (err) {
         throw new Error(`Error when attempting to init project into Minicube: ${err}`);
       }
@@ -127,7 +198,7 @@ async function action() {
 }
 
 /**
- * Gets OS-spevific version of path and resolves it into the outer and inner folder
+ * Gets OS-specific version of path and resolves it into the outer and inner folder
  */
 async function resolvePaths() {
   try {
@@ -156,7 +227,35 @@ async function initDefaultProject() {
 }
 
 /**
- * Inits a React project
+ * Attachs possibly wanted components to Minikube
+ * 
+ * @param {string} compsArr Array of components
+ * @param {string} image Image for component, if any
+ * @param {number} port Port for component (Pod)
+ * @param {string} portType Port type for port (Service)
+ * @param {Array<unknown>} ports Ports for component (Service/Deployment)
+ * @param {number} replicas Replicas of component, if any
+ */
+async function attachToMinikube(compsArr: string[], image: string, port: number, portType: string, ports: Array<unknown>, replicas: number) {
+  const componentsArr: KubeComponent[] = [];
+  for (const comp in compsArr) {
+    componentsArr.push({
+      args: {
+        name: `${projName}-${comp}`,
+        image: image,
+        port: port,
+        portType: portType,
+        ports: ports,
+        replicas: replicas
+      },
+      type: comp,
+      projName: projName
+    });
+  }
+  await KubeUtils.createComponents(componentsArr, repoPath);
+}
+ /**
+  * Inits a React project
  */
 async function initReactProject() {
   try {

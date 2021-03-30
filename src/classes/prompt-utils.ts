@@ -63,4 +63,26 @@ export class PromptUtils {
       throw new Error(`Error while confirm-prompting "${message}", Error: ${err}`);
     }
   }
+
+  /**
+   * Prompts the user with a message, that offers given choices as inputs
+   * 
+   * @param message the message to show to the user
+   * @param choices array of choices to show to the user
+   * @returns all of the choices that the user has chosen
+   */
+  static checkboxPrompt = async (instance: any, message: string, choices: string[]): Promise<string[] | null> => {
+    try {
+      const prompt = await instance.prompt({
+        type: "checkbox",
+        name: "output",
+        message: message,
+        choices: choices
+      });
+
+      return prompt.output;
+    } catch (err) {
+      throw new Error(`Error while confirm-prompting "${message}", Error: ${err}`);
+    }
+  }
 }
