@@ -8,7 +8,7 @@ import OsUtils from "./os-utils";
 export default class KubeUtils {
 
   /**
-   * Creates a Minikube component (pod, service, deployment) .yaml file that is
+   * Creates a Kubernetes component (pod, service, deployment) .yaml file that is
    * used to create the component itself
    * 
    * @param {KubeComponent[]} compArr Array of components
