@@ -11,7 +11,7 @@ it("provides create yaml function", async () => {
     replicas: null
   };
   YamlUtils.createYaml = jest.fn();
-  await YamlUtils.createYaml(args, "pod", "namespace", "");
+  await YamlUtils.createYaml(args, "service", "projname", "");
 
   expect((YamlUtils.createYaml)).toReturn();
 });
