@@ -31,7 +31,7 @@ export default class KubeUtils {
    * @param repoPath Repository path where to write file
    * @returns a command string which can be run to attach Keycloak to project
    */
-  public static async attachKeycloak(repoPath: string): Promise<string> {
+  public static async attachKeyCloak(repoPath: string): Promise<string> {
     const copy = await OsUtils.getCommand(CommandNames.copy);
     return `${copy} keycloak.yaml ${repoPath}`;
   }

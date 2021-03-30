@@ -24,7 +24,5 @@ spec:
           image: IMAGE
           resources: {}
           ports:
-            - name: PORT
-              containerPort: 3000
-              protocol: TCP
+            - {}
         - env: []

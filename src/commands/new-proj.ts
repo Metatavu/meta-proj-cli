@@ -155,7 +155,7 @@ async function action() {
         keyCloak = keyCloakResult;
 
         if (keyCloak) {
-          const attachKc: string = await KubeUtils.attachKeycloak(repoPath);
+          const attachKc: string = await KubeUtils.attachKeyCloak(repoPath);
           await runExecSync(attachKc, { cwd: `.${path.sep}resources` });
         }
         

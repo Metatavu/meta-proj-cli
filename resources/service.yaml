@@ -6,9 +6,7 @@ metadata:
     run: NAMESPACE
 spec:
   ports:
-    - name: PORT
-      port: 3000
-      protocol: TCP
+    - {}
   selector:
     app: NAMESPACE
   type: NodePort

@@ -79,7 +79,7 @@ export default class YamlUtils {
   }
 
   /**
-   * Attachs AWS into Minikube, if needed
+   * Enables connectivity to an AWS database from Minikube deployment
    * 
    * @param envArr Array which contains the data for connection
    * @param repoPath Repository path where deployment.yaml is located
@@ -99,7 +99,7 @@ export default class YamlUtils {
    * @param kubeIP Minikube IP address
    * @param repoPath Repository path where to write file
    */
-  public static attachKeycloak = async (kubeIP: string, repoPath: string): Promise<void> => {
+  public static attachKeyCloak = async (kubeIP: string, repoPath: string): Promise<void> => {
     const file = YAML.parse(fs.readFileSync("./resources/keycloak-ingress.yaml", "utf8"));
     file.spec.tls[0].hosts[0] = `keycloak.${kubeIP}.nip.io`;
     file.spec.rules[0].host = `keycloak.${kubeIP}.nip.io`;
