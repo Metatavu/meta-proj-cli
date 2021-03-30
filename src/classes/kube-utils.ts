@@ -26,7 +26,7 @@ export default class KubeUtils {
   }
 
   /**
-   * Returns a command string for attaching KeyCloak into Minikube
+   * Returns a command string for attaching Keycloak into Kubernetes
    * 
    * @param repoPath Repository path where to write file
    * @returns a command string which can be run to attach KeyCloak to project
