@@ -29,7 +29,7 @@ export default class KubeUtils {
    * Returns a command string for attaching Keycloak into Kubernetes
    * 
    * @param repoPath Repository path where to write file
-   * @returns a command string which can be run to attach KeyCloak to project
+   * @returns a command string which can be run to attach Keycloak to project
    */
   public static async attachKeycloak(repoPath: string): Promise<string> {
     const copy = await OsUtils.getCommand(CommandNames.copy);
