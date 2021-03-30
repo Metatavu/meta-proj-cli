@@ -3,7 +3,7 @@ import { CommandNames, KubeComponent } from "../interfaces/types";
 import OsUtils from "./os-utils";
 
 /**
- * Provides utilities for initialising a project into Minikube
+ * Provides utilities for initialising a project into Kubernetes
  */
 export default class KubeUtils {
 
